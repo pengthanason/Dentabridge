@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentaBridge — Executive MVP Demo</title>
+    <!-- Tailwind CSS สำหรับจัดหน้าแบบด่วน -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- LINE LIFF SDK -->
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <!-- นำเข้าฟอนต์ IBM Plex Sans Thai ให้เหมือนเอกสาร Requirement -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'IBM Plex Sans Thai', sans-serif; }
+        .bg-petrol { background-color: #0B3A44; }
+        .text-petrol { color: #0B3A44; }
+        .border-petrol { border-color: #0B3A44; }
+        .bg-mint-soft { background-color: #D7EEEB; }
+        .text-mint { color: #15A99A; }
+        .text-signal { color: #FF5A3C; }
+        .bg-signal-soft { background-color: #FFE2DB; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen pb-12">
+
+    <!-- HEADER BRANDING -->
+    <header class="bg-petrol text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center font-bold text-white text-sm">DB</div>
+                <div>
+                    <h1 class="font-bold text-base tracking-tight">DentaBridge</h1>
+                    <p class="text-[10px] text-teal-200 tracking-wider uppercase font-mono">B2B Compliance Native</p>
+                </div>
+            </div>
+            <span class="text-xs bg-teal-600/50 px-2.5 py-1 rounded-full text-teal-100 font-medium">Phase 1 MVP</span>
+        </div>
+    </header>
+
+    <div class="max-w-md mx-auto px-4 mt-4 space-y-4">
+
+        <!-- 1. LINE DYNAMIC USER PROFILE (โชว์ผู้บริหาร) -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-4">
+            <div id="avatar-loading" class="w-16 h-16 rounded-full bg-gray-200 animate-pulse flex-none"></div>
+            <img id="user-picture" class="w-16 h-16 rounded-full border-2 border-teal-500 hidden flex-none" src="" alt="Profile">
+            <div class="flex-1 min-w-0">
+                <p class="text-xs text-gray-400 font-mono">WELCOME BUYER (LIFF CONNECTED)</p>
+                <h2 id="user-name" class="font-bold text-gray-800 text-lg truncate">กำลังดึงข้อมูล LINE...</h2>
+                <p class="text-xs text-teal-600 flex items-center gap-1 mt-0.5">
+                    <span class="w-2 h-2 rounded-full bg-green-500 inline-block animate-ping"></span>
+                    สิทธิ์การใช้งาน: คลินิกทันตกรรมทั่วไป (Verified)
+                </p>
+            </div>
+        </div>
+
+        <!-- 2. CORE FEATURE 1: COMPLIANCE / FDA CHECKER (ไม้เด็ด อย.) -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-3">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-gray-800 text-sm flex items-center gap-1.5">
+                    🔎 ตรวจสอบทะเบียน อย. ประจำ Listing
+                </h3>
+                <span class="text-[11px] font-mono bg-orange-100 text-orange-700 px-2 py-0.5 rounded-md font-medium">Path A: Open Data</span>
+            </div>
+            <p class="text-xs text-gray-500">จำลองระบบ Compliance Engine สแกนฉลากพัสดุและ cross-check กับ data.go.th อัตโนมัติ เพื่อป้องกันของปลอมหลุดเข้าระบบ</p>
+            
+            <div class="flex gap-2">
+                <input id="fda-input" type="text" value="67-2-3-2-0001234" class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm font-mono focus:outline-none focus:border-teal-500 text-gray-700">
+                <button onclick="simulateFdaCheck()" class="bg-petrol hover:bg-teal-900 text-white font-medium text-xs px-4 py-2 rounded-xl transition-all flex-none">
+                    ตรวจสอบ
+                </button>
+            </div>
+
+            <!-- RESULT BANNER -->
+            <div id="fda-result" class="bg-mint-soft text-teal-800 p-3 rounded-xl border border-teal-100 flex items-start gap-2.5">
+                <span class="text-lg mt-0.5">✅</span>
+                <div class="text-xs">
+                    <p class="font-bold text-gray-900">ผ่านการตรวจสอบ (FDA Approved)</p>
+                    <p class="text-gray-600 mt-0.5">หมวดสินค้า: Brackets จัดฟันเหล็ก (1 ใน 12 รายการควบคุม)</p>
+                    <p class="text-[10px] text-gray-400 font-mono mt-1">Ref: catalog.fda.moph.go.th (Sync ล่าสุดวันนี้)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. CORE FEATURE 2: SMART STOCK MONITORING (เครื่องมือฝั่งคลินิก) -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-3">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-gray-800 text-sm flex items-center gap-1.5">
+                    📦 สต็อกวัสดุสิ้นเปลืองใกล้หมด (SaaS Tooling)
+                </h3>
+                <span class="text-[10px] bg-red-100 text-red-600 font-bold px-2 py-0.5 rounded-full animate-pulse">LOW STOCK</span>
+            </div>
+            <p class="text-xs text-gray-500">ระบบช่วยคุณหมอพยากรณ์การใช้และแจ้งเตือนเติมของ เพื่อดึงยอดสั่งซื้อซ้ำ (Repeat Order) เข้าสู่ระบบ B2B</p>
+            
+            <!-- STOCK LIST -->
+            <div class="space-y-2.5 pt-1">
+                <!-- ITEM 1 -->
+                <div class="flex items-center justify-between border-b border-gray-50 pb-2.5">
+                    <div class="min-w-0">
+                        <p class="text-sm font-semibold text-gray-800 truncate">ยางจัดฟัน O-Ring (คละสีซีรีส์ A)</p>
+                        <p class="text-xs text-signal font-medium mt-0.5">เหลือ 2 แพ็คสุดท้าย · แนะนำเติมด่วน</p>
+                    </div>
+                    <button onclick="quickOrder(this, 'ยางจัดฟัน O-Ring')" class="border border-teal-500 text-teal-600 hover:bg-teal-50 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all flex-none">
+                        สั่งด่วน 1 คลิก
+                    </button>
+                </div>
+                <!-- ITEM 2 -->
+                <div class="flex items-center justify-between">
+                    <div class="min-w-0">
+                        <p class="text-sm font-semibold text-gray-800 truncate">วัสดุอุดฟัน Composite Resin (A2)</p>
+                        <p class="text-xs text-orange-500 font-medium mt-0.5">เหลือใช้ได้อีก 5 วัน · ใกล้หมดอายุ (Exp: 10/2026)</p>
+                    </div>
+                    <button onclick="quickOrder(this, 'วัสดุอุดฟัน A2')" class="border border-teal-500 text-teal-600 hover:bg-teal-50 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all flex-none">
+                        สั่งด่วน 1 คลิก
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. CORE FEATURE 3: COMBINED INVOICE & E-TAX (แก้ปัญหาใบกำกับภาษี) -->
+        <div class="bg-gradient-to-br from-slate-900 to-teal-950 text-white rounded-2xl p-4 shadow-md space-y-3">
+            <h3 class="font-bold text-sm text-teal-300 flex items-center gap-1.5">
+                📄 แดชบอร์ดใบกำกับภาษีรวม (One-Invoice)
+            </h3>
+            <p class="text-xs text-slate-300">สั่งสินค้าจาก Supplier หลายเจ้าในออเดอร์เดียว แต่รับใบกำกับภาษีรวมแผ่นเดียวผ่านระบบ e-Tax สรรพากรโดยตรง</p>
+            
+            <div class="bg-white/10 p-3 rounded-xl space-y-2 text-xs">
+                <div class="flex justify-between text-slate-300">
+                    <span>ยอดจัดซื้อจาก Dental Vision (อันดับ 5)</span>
+                    <span class="font-mono font-medium">12,500 บาท</span>
+                </div>
+                <div class="flex justify-between text-slate-300 border-b border-white/10 pb-2">
+                    <span>ยอดจัดซื้อจาก Distributor รายย่อยอื่นๆ</span>
+                    <span class="font-mono font-medium">4,300 บาท</span>
+                </div>
+                <div class="flex justify-between font-bold text-sm pt-1 text-white">
+                    <span class="text-teal-300">ยอดรวมลดปวดหัวบัญชีปลายเดือน</span>
+                    <span class="font-mono text-teal-300">16,800 บาท</span>
+                </div>
+            </div>
+            <div class="text-[10px] text-slate-400 text-center font-mono">
+                Connected to Revenue Department e-Tax System
+            </div>
+        </div>
+
+        <!-- VISION BANNER FOR EXECUTIVE -->
+        <div class="p-3 bg-teal-50 rounded-xl border border-teal-100 text-[11px] text-teal-900 text-center leading-relaxed">
+            💡 <b>Executive Summary:</b> เราเลือกเป็น Enabler คอยช่วยเหลือและอำนวยความสะดวกเรื่องเอกสาร อย. และภาษีให้คลินิกและดีลเลอร์ มากกว่าการเป็นคู่แข่งตัดราคาหน้าตรงในวันแรก
+        </div>
+
+    </div>
+
+    <script>
+        // ใส่ LIFF ID ที่ได้จาก LINE Developers Console ตรงนี้
+        const MY_LIFF_ID = "YOUR_LIFF_ID_HERE"; 
+
+        async function initLIFF() {
+            try {
+                await liff.init({ liffId: MY_LIFF_ID });
+                if (liff.isLoggedIn()) {
+                    loadUserProfile();
+                } else {
+                    liff.login();
+                }
+            } catch (error) {
+                console.error("LIFF Initialization failed", error);
+                // Fallback ข้อมูลแบบจำลองกรณีเปิดบนเบราว์เซอร์ธรรมดาเพื่อตรวจงาน
+                setMockData();
+            }
+        }
+
+        async function loadUserProfile() {
+            try {
+                const profile = await liff.getProfile();
+                document.getElementById("user-name").textContent = profile.displayName;
+                if (profile.pictureUrl) {
+                    document.getElementById("user-picture").src = profile.pictureUrl;
+                    document.getElementById("user-picture").classList.remove("hidden");
+                    document.getElementById("avatar-loading").classList.add("hidden");
+                }
+            } catch (error) {
+                console.error("Error getting profile", error);
+                setMockData();
+            }
+        }
+
+        function setMockData() {
+            document.getElementById("user-name").textContent = "ท่านผู้บริหาร (Demo Mode)";
+            document.getElementById("user-picture").src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80";
+            document.getElementById("user-picture").classList.remove("hidden");
+            document.getElementById("avatar-loading").classList.add("hidden");
+        }
+
+        // ฟังก์ชันจำลองการคีย์ตรวจ อย. (โชว์ความโปร่งใส)
+        function simulateFdaCheck() {
+            const inputVal = document.getElementById("fda-input").value;
+            const resultBox = document.getElementById("fda-result");
+            
+            if (inputVal.trim() === "") {
+                alert("กรุณากรอกเลข อย.");
+                return;
+            }
+
+            resultBox.innerHTML = `
+                <span class="text-lg mt-0.5">⏳</span>
+                <div class="text-xs animate-pulse">
+                    <p class="font-bold text-gray-900">กำลังดึงข้อมูลเรียลไทม์...</p>
+                    <p class="text-gray-500">ตรวจสอบฐานข้อมูล Compliance Graph ของ DentaBridge</p>
+                </div>
+            `;
+
+            setTimeout(() => {
+                resultBox.innerHTML = `
+                    <span class="text-lg mt-0.5">✅</span>
+                    <div class="text-xs">
+                        <p class="font-bold text-green-700">ยืนยันผลเรียลไทม์สำเร็จ!</p>
+                        <p class="text-gray-600 mt-0.5">เลขทะเบียนสินค้า: ${inputVal} ผ่านการรับรอง ถูกกฎหมาย 100%</p>
+                        <p class="text-[10px] text-gray-400 font-mono mt-1">ผู้จัดจำหน่ายได้รับการประเมินความปลอดภัยประจำปีแล้ว</p>
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        // ฟังก์ชันจำลองการสั่งซื้อด่วน (1-Click Reorder)
+        function quickOrder(button, itemName) {
+            const originalText = button.textContent;
+            button.disabled = true;
+            button.textContent = "กำลังส่งคำสั่ง...";
+            button.classList.replace("text-teal-600", "text-gray-400");
+            
+            setTimeout(() => {
+                button.textContent = "สำเร็จแล้ว! ✓";
+                button.classList.replace("border-teal-500", "border-green-500");
+                button.classList.replace("text-gray-400", "text-green-600");
+                
+                // ถ้ายืนอยู่บน LINE จริง สามารถสั่งยิง Flex Message คอนเฟิร์มออเดอร์กลับไปหาแชตคนสั่งได้ทันที
+                if (liff.isInClient()) {
+                    liff.sendMessages([{
+                        type: 'text',
+                        text: `[DentaBridge] คลินิกของคุณได้ส่งออเดอร์ด่วนสำหรับสินค้า: ${itemName} เรียบร้อยแล้ว ระบบกำลังรวมใบกำกับภาษีให้ค่ะ`
+                    }]).catch(err => console.error(err));
+                }
+            }, 1200);
+        }
+
+        // รันคำสั่งทำงานเมื่อเปิดหน้าเว็บ
+        initLIFF();
+    </script>
+</body>
+</html>
