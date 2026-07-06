@@ -3,10 +3,41 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import ChatSheet, { type ChatThread } from "@/components/ChatSheet";
 import type { Product, Category } from "@/lib/types";
 
 type Tab = "feed" | "fda" | "settings";
 const money = (n: number) => "฿" + n.toLocaleString("th-TH");
+
+// แชทจำลองฝั่งผู้ซื้อ (คุยกับผู้ขาย)
+const BUYER_CHATS: ChatThread[] = [
+  {
+    id: "c1",
+    name: "Dental Vision",
+    avatar: "🏢",
+    last: "ยืนยันออเดอร์แล้วค่ะ จัดส่งพรุ่งนี้",
+    time: "10:24",
+    messages: [
+      { from: "them", text: "สวัสดีค่ะ สนใจสินค้าตัวไหนสอบถามได้เลยนะคะ" },
+      { from: "me", text: "ยาง O-Ring มีสีอะไรบ้างครับ" },
+      { from: "them", text: "มีครบ 8 สีเลยค่ะ สั่งขั้นต่ำ 1 แพ็ค มีใบรับรอง อย. ครบ" },
+      { from: "me", text: "โอเคครับ สั่ง 2 แพ็ค" },
+      { from: "them", text: "รับทราบค่ะ ยืนยันออเดอร์แล้ว จัดส่งพรุ่งนี้" },
+    ],
+  },
+  {
+    id: "c2",
+    name: "MedSupply TH",
+    avatar: "🏭",
+    last: "ขอบคุณที่อุดหนุนค่ะ 🙏",
+    time: "เมื่อวาน",
+    messages: [
+      { from: "me", text: "ถุงมือไนไตรล์ล็อตใหม่ Exp ปีไหนครับ" },
+      { from: "them", text: "ล็อตนี้ Exp 2028 ค่ะ" },
+      { from: "them", text: "ขอบคุณที่อุดหนุนค่ะ 🙏" },
+    ],
+  },
+];
 
 export default function BuyerHome({
   fullName,
@@ -26,9 +57,23 @@ export default function BuyerHome({
   const [tab, setTab] = useState<Tab>("feed");
   const [search, setSearch] = useState("");
   const [catId, setCatId] = useState<number | null>(null);
-  const [cart, setCart] = useState<Record<string, number>>({});
+  const [sheet, setSheet] = useState<"cart" | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [toast, setToast] = useState("");
+
+  // เริ่มต้นมีของในตะกร้า 2 ชิ้น (ให้เห็นตัวอย่าง)
+  const [cart, setCart] = useState<Record<string, number>>(() => {
+    const init: Record<string, number> = {};
+    if (products[0]) init[products[0].id] = 1;
+    if (products[1]) init[products[1].id] = 2;
+    return init;
+  });
 
   const cartCount = Object.values(cart).reduce((a, b) => a + b, 0);
+  const cartItems = Object.entries(cart)
+    .map(([id, qty]) => ({ product: products.find((p) => p.id === id), qty }))
+    .filter((x) => x.product) as { product: Product; qty: number }[];
+  const cartTotal = cartItems.reduce((s, x) => s + x.product.price * x.qty, 0);
 
   const filtered = products.filter(
     (p) =>
@@ -38,8 +83,22 @@ export default function BuyerHome({
         (p.brand ?? "").toLowerCase().includes(search.toLowerCase()))
   );
 
+  function showToast(msg: string) {
+    setToast(msg);
+    window.setTimeout(() => setToast(""), 2200);
+  }
   function addToCart(id: string) {
     setCart((c) => ({ ...c, [id]: (c[id] || 0) + 1 }));
+    const p = products.find((x) => x.id === id);
+    if (p) showToast(`เพิ่ม "${p.name}" ลงตะกร้าแล้ว`);
+  }
+  function changeQty(id: string, d: number) {
+    setCart((c) => {
+      const next = { ...c };
+      next[id] = (next[id] || 0) + d;
+      if (next[id] <= 0) delete next[id];
+      return next;
+    });
   }
 
   async function logout() {
@@ -50,7 +109,7 @@ export default function BuyerHome({
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
-      {/* ===== Top bar (ค้นหา/ตะกร้า/แชท) ===== */}
+      {/* ===== Top bar ===== */}
       <header className="bg-petrol text-white sticky top-0 z-30">
         <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-2">
           <input
@@ -59,7 +118,12 @@ export default function BuyerHome({
             placeholder="ค้นหาสินค้า / ยี่ห้อ..."
             className="flex-1 bg-white/10 placeholder:text-teal-200 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:bg-white/20"
           />
-          <button type="button" className="relative w-9 h-9 grid place-items-center" aria-label="ตะกร้า">
+          <button
+            type="button"
+            onClick={() => setSheet("cart")}
+            className="relative w-9 h-9 grid place-items-center"
+            aria-label="ตะกร้า"
+          >
             🛒
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-signal text-[10px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
@@ -67,8 +131,16 @@ export default function BuyerHome({
               </span>
             )}
           </button>
-          <button type="button" className="w-9 h-9 grid place-items-center" aria-label="แชท">
+          <button
+            type="button"
+            onClick={() => setChatOpen(true)}
+            className="relative w-9 h-9 grid place-items-center"
+            aria-label="แชท"
+          >
             💬
+            <span className="absolute -top-1 -right-1 bg-signal text-[10px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
+              2
+            </span>
           </button>
         </div>
       </header>
@@ -94,7 +166,6 @@ export default function BuyerHome({
               {clinic && <p className="text-xs text-gray-500">{clinic}</p>}
             </div>
 
-            {/* หมวดหมู่ */}
             <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
               <Chip active={catId === null} onClick={() => setCatId(null)}>
                 ทั้งหมด
@@ -106,7 +177,6 @@ export default function BuyerHome({
               ))}
             </div>
 
-            {/* ฟีด */}
             {filtered.length === 0 ? (
               <p className="text-center text-sm text-gray-400 py-10">ไม่พบสินค้า</p>
             ) : (
@@ -148,10 +218,8 @@ export default function BuyerHome({
           </>
         )}
 
-        {/* ===== แท็บ: ตรวจ อย. ===== */}
         {tab === "fda" && <FdaTab products={products} />}
 
-        {/* ===== แท็บ: ตั้งค่า ===== */}
         {tab === "settings" && (
           <div className="space-y-3">
             <h2 className="font-bold text-lg text-gray-900">ตั้งค่า</h2>
@@ -189,6 +257,87 @@ export default function BuyerHome({
           <NavBtn on={tab === "settings"} onClick={() => setTab("settings")} icon="⚙️" label="ตั้งค่า" />
         </div>
       </nav>
+
+      {/* ===== ตะกร้า (bottom sheet) ===== */}
+      {sheet === "cart" && (
+        <>
+          <div onClick={() => setSheet(null)} className="fixed inset-0 bg-black/40 z-40" aria-hidden />
+          <div className="fixed inset-x-0 bottom-0 z-50 max-w-md mx-auto bg-white rounded-t-3xl shadow-2xl">
+            <div className="p-4">
+              <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-3" />
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-bold text-gray-900">ตะกร้าสินค้า</h3>
+                <button type="button" onClick={() => setSheet(null)} className="text-gray-400 text-sm">
+                  ปิด ✕
+                </button>
+              </div>
+
+              {cartItems.length === 0 ? (
+                <p className="text-center text-sm text-gray-400 py-8">ยังไม่มีสินค้าในตะกร้า</p>
+              ) : (
+                <div className="space-y-3 max-h-72 overflow-y-auto">
+                  {cartItems.map(({ product, qty }) => (
+                    <div key={product.id} className="flex items-center gap-3">
+                      <div className="w-11 h-11 rounded-lg bg-mint-soft grid place-items-center text-xl flex-none">
+                        {product.image_emoji ?? "📦"}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-gray-800 truncate">{product.name}</p>
+                        <p className="text-[11px] text-gray-400 mono">{money(product.price)}</p>
+                      </div>
+                      <div className="flex items-center gap-2 flex-none">
+                        <button
+                          type="button"
+                          onClick={() => changeQty(product.id, -1)}
+                          className="w-6 h-6 rounded-md border border-gray-200 text-gray-500"
+                        >
+                          −
+                        </button>
+                        <span className="text-sm font-semibold w-4 text-center">{qty}</span>
+                        <button
+                          type="button"
+                          onClick={() => changeQty(product.id, 1)}
+                          className="w-6 h-6 rounded-md border border-gray-200 text-gray-500"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="border-t border-gray-100 mt-3 pt-3 space-y-1">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">ยอดรวม</span>
+                  <span className="mono font-bold text-gray-900">{money(cartTotal)}</span>
+                </div>
+                <p className="text-[11px] text-teal-600">✓ รวมออกใบกำกับภาษีใบเดียวผ่าน e-Tax</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => showToast("ระบบชำระเงินจะเปิดใน Phase ถัดไป")}
+                className="w-full mt-3 bg-petrol hover:bg-petrol-2 text-white font-semibold text-sm py-3 rounded-xl transition"
+              >
+                ดำเนินการชำระเงิน
+              </button>
+              <p className="text-center text-[11px] text-gray-400 mt-2">
+                * ระบบสั่งซื้อ/ชำระเงินจริงอยู่ใน Phase ถัดไป
+              </p>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* ===== แชท ===== */}
+      <ChatSheet open={chatOpen} onClose={() => setChatOpen(false)} threads={BUYER_CHATS} />
+
+      {/* ===== Toast ===== */}
+      {toast && (
+        <div className="fixed left-1/2 -translate-x-1/2 bottom-24 z-[60] bg-petrol-ink text-white text-xs px-4 py-2.5 rounded-xl shadow-lg">
+          {toast}
+        </div>
+      )}
     </div>
   );
 }
@@ -222,6 +371,7 @@ function FdaTab({ products }: { products: Product[] }) {
           <input
             value={val}
             onChange={(e) => setVal(e.target.value)}
+            aria-label="เลขทะเบียน อย."
             className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm mono focus:outline-none focus:border-mint"
           />
           <button
@@ -235,9 +385,7 @@ function FdaTab({ products }: { products: Product[] }) {
         {result && (
           <div
             className={`p-3 rounded-xl text-xs flex items-start gap-2 ${
-              result.ok
-                ? "bg-mint-soft text-teal-800"
-                : "bg-signal-soft text-red-700"
+              result.ok ? "bg-mint-soft text-teal-800" : "bg-signal-soft text-red-700"
             }`}
           >
             <span>{result.ok ? "✅" : "⚠️"}</span>
@@ -248,9 +396,7 @@ function FdaTab({ products }: { products: Product[] }) {
 
       <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
         <h3 className="font-bold text-gray-900 text-sm mb-1">📦 แจ้งเตือนวัสดุใกล้หมด</h3>
-        <p className="text-xs text-gray-400">
-          จะเชื่อมกับข้อมูลสต็อกจริงในเฟสถัดไป
-        </p>
+        <p className="text-xs text-gray-400">จะเชื่อมกับข้อมูลสต็อกจริงในเฟสถัดไป</p>
       </div>
     </div>
   );
@@ -271,9 +417,7 @@ function Chip({
       type="button"
       onClick={onClick}
       className={`flex-none text-xs px-3 py-1.5 rounded-full border transition ${
-        active
-          ? "bg-petrol text-white border-petrol"
-          : "bg-white text-gray-600 border-gray-200"
+        active ? "bg-petrol text-white border-petrol" : "bg-white text-gray-600 border-gray-200"
       }`}
     >
       {children}
@@ -296,9 +440,7 @@ function NavBtn({
     <button
       type="button"
       onClick={onClick}
-      className={`flex flex-col items-center gap-0.5 py-2.5 ${
-        on ? "text-mint" : "text-gray-400"
-      }`}
+      className={`flex flex-col items-center gap-0.5 py-2.5 ${on ? "text-mint" : "text-gray-400"}`}
     >
       <span className="text-lg">{icon}</span>
       <span className="text-[10px] font-medium">{label}</span>

@@ -3,10 +3,40 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import ChatSheet, { type ChatThread } from "@/components/ChatSheet";
 import type { Product } from "@/lib/types";
 
 type Tab = "dash" | "products" | "orders" | "settings";
 const money = (n: number) => "฿" + n.toLocaleString("th-TH");
+
+// แชทจำลองฝั่งผู้ขาย (คุยกับลูกค้า/คลินิก)
+const SELLER_CHATS: ChatThread[] = [
+  {
+    id: "s1",
+    name: "คลินิกทันตกรรมสไมล์",
+    avatar: "🦷",
+    last: "สั่ง 2 แพ็คครับ",
+    time: "10:24",
+    messages: [
+      { from: "them", text: "ยาง O-Ring มีสีอะไรบ้างครับ" },
+      { from: "me", text: "มีครบ 8 สีเลยค่ะ มีใบรับรอง อย. ครบ" },
+      { from: "them", text: "สั่ง 2 แพ็คครับ" },
+      { from: "me", text: "รับทราบค่ะ ยืนยันออเดอร์แล้ว จัดส่งพรุ่งนี้" },
+    ],
+  },
+  {
+    id: "s2",
+    name: "คลินิกฟันสวย",
+    avatar: "🏥",
+    last: "ขอบคุณครับ",
+    time: "เมื่อวาน",
+    messages: [
+      { from: "them", text: "Composite A2 ล็อตใหม่ Exp ปีไหนครับ" },
+      { from: "me", text: "ล็อตนี้ Exp 2028 ค่ะ" },
+      { from: "them", text: "ขอบคุณครับ" },
+    ],
+  },
+];
 
 export default function SellerHome({
   shopName,
@@ -20,6 +50,7 @@ export default function SellerHome({
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const [tab, setTab] = useState<Tab>("dash");
+  const [chatOpen, setChatOpen] = useState(false);
 
   async function logout() {
     await supabase.auth.signOut();
@@ -45,8 +76,16 @@ export default function SellerHome({
                 รออนุมัติ
               </span>
             )}
-            <button type="button" className="w-9 h-9 grid place-items-center" aria-label="แชท">
+            <button
+              type="button"
+              onClick={() => setChatOpen(true)}
+              className="relative w-9 h-9 grid place-items-center"
+              aria-label="แชท"
+            >
               💬
+              <span className="absolute -top-1 -right-1 bg-signal text-[10px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
+                2
+              </span>
             </button>
           </div>
         </div>
@@ -172,6 +211,8 @@ export default function SellerHome({
           <NavBtn on={tab === "settings"} onClick={() => setTab("settings")} icon="⚙️" label="ตั้งค่า" />
         </div>
       </nav>
+
+      <ChatSheet open={chatOpen} onClose={() => setChatOpen(false)} threads={SELLER_CHATS} />
     </div>
   );
 }
