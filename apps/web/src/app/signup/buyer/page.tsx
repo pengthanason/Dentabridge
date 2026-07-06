@@ -1,0 +1,99 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
+import { buyerAuthEmail, buyerAuthPassword } from "@/lib/auth";
+import { Brand, Field, Submit, ErrMsg } from "@/components/ui";
+
+export default function BuyerSignupPage() {
+  const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+
+  const [fullName, setFullName] = useState("");
+  const [license, setLicense] = useState("");
+  const [clinic, setClinic] = useState("");
+  const [nationalId, setNationalId] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setErr("");
+    if (!fullName || !license || !clinic) return setErr("กรุณากรอกข้อมูลให้ครบ");
+    if (nationalId.length !== 13) return setErr("เลขบัตรประชาชนต้องมี 13 หลัก");
+    if (!email.includes("@")) return setErr("อีเมลไม่ถูกต้อง");
+    if (phone.length < 9) return setErr("เบอร์โทรศัพท์ไม่ถูกต้อง");
+
+    const last5 = nationalId.slice(-5);
+    setLoading(true);
+    const { error } = await supabase.auth.signUp({
+      email: buyerAuthEmail(license),
+      password: buyerAuthPassword(last5),
+      options: {
+        data: {
+          role: "buyer",
+          full_name: fullName,
+          license_no: license,
+          clinic_name: clinic,
+          national_id: nationalId,
+          contact_email: email,
+          phone,
+        },
+      },
+    });
+    setLoading(false);
+    if (error) {
+      return setErr(
+        error.message.includes("already")
+          ? "เลขใบอนุญาตนี้ถูกใช้สมัครแล้ว"
+          : "สมัครไม่สำเร็จ: " + error.message
+      );
+    }
+    // ไปยืนยันตัวตน 2 ชั้น (mock)
+    router.push("/verify?next=/buyer");
+  }
+
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-petrol to-petrol-ink px-6 py-10">
+      <div className="w-full max-w-sm mx-auto">
+        <Brand />
+        <form
+          onSubmit={submit}
+          className="bg-white rounded-2xl p-5 shadow-lg space-y-3"
+        >
+          <div>
+            <h2 className="font-bold text-petrol">สมัครบัญชี · ทันตแพทย์</h2>
+            <p className="text-xs text-gray-500">
+              รหัสผ่านของคุณคือเลขท้ายบัตรประชาชน 5 หลัก
+            </p>
+          </div>
+          <Field label="ชื่อ - นามสกุล" value={fullName} onChange={setFullName} placeholder="เช่น ทพ. ธนสรณ์ ใจดี" />
+          <Field label="เลขใบอนุญาตประกอบวิชาชีพ" value={license} onChange={setLicense} placeholder="เช่น ท.12345" />
+          <Field label="สังกัด / คลินิก" value={clinic} onChange={setClinic} placeholder="เช่น คลินิกทันตกรรมสไมล์" />
+          <Field
+            label="เลขบัตรประชาชน (ยืนยันตัวตน)"
+            value={nationalId}
+            onChange={(v) => setNationalId(v.replace(/\D/g, "").slice(0, 13))}
+            placeholder="13 หลัก"
+            inputMode="numeric"
+            hint="ใช้ 5 หลักท้ายเป็นรหัสผ่านเข้าระบบ"
+          />
+          <Field label="อีเมล" value={email} onChange={setEmail} placeholder="you@email.com" type="email" inputMode="email" />
+          <Field label="เบอร์โทรศัพท์" value={phone} onChange={(v) => setPhone(v.replace(/\D/g, "").slice(0, 10))} placeholder="08XXXXXXXX" inputMode="tel" />
+          <ErrMsg msg={err} />
+          <Submit loading={loading} label="สมัครและยืนยันตัวตน" />
+          <p className="text-xs text-center text-gray-500">
+            มีบัญชีแล้ว?{" "}
+            <Link href="/login" className="text-mint font-semibold">
+              เข้าสู่ระบบ
+            </Link>
+          </p>
+        </form>
+      </div>
+    </main>
+  );
+}

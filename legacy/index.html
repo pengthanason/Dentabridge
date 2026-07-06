@@ -301,13 +301,13 @@
         const byId = id => PRODUCTS.find(p => p.id === id);
 
         // ============ LINE LIFF ============
-        const MY_LIFF_ID = "YOUR_LIFF_ID_HERE";
+        const MY_LIFF_ID = "2010610601-jLbdWAiK";
 
         async function initLIFF() {
             try {
                 await liff.init({ liffId: MY_LIFF_ID });
                 if (liff.isLoggedIn()) { loadUserProfile(); }
-                else { liff.login(); }
+                else { liff.login({ redirectUri: window.location.href }); }
             } catch (error) {
                 console.error("LIFF init failed", error);
                 setFallbackProfile(); // เปิดบนเบราว์เซอร์ปกติ

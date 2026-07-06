@@ -1,0 +1,15 @@
+{
+  "name": "dentabridge",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=web",
+    "dev:admin": "npm run dev --workspace=admin",
+    "build": "npm run build --workspace=web",
+    "typecheck": "npm run typecheck --workspace=web"
+  }
+}
