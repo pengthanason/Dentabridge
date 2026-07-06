@@ -31,8 +31,7 @@ export default function FdaPage() {
           icon="🔎"
           title="ตรวจด้วยเลข อย."
           hint="ค้นทุกประเภท (อาหาร/ยา/เครื่องสำอาง/เครื่องมือแพทย์) — อาจใช้เวลาสักครู่"
-          placeholder="เช่น 10-1-06557-1-0001"
-          defaultValue="10-1-06557-1-0001"
+          placeholder="กรอกเลข อย."
         />
 
         {/* ช่อง 2: เลขจดแจ้งเครื่องมือแพทย์ */}
@@ -41,8 +40,7 @@ export default function FdaPage() {
           icon="🦷"
           title="ตรวจเลขจดแจ้งเครื่องมือแพทย์"
           hint="สำหรับวัสดุ/อุปกรณ์ทันตกรรม"
-          placeholder="เช่น ผ.1/2559"
-          defaultValue="ผ.1/2559"
+          placeholder="กรอกเลขจดแจ้งเครื่องมือแพทย์"
         />
       </main>
     </div>
