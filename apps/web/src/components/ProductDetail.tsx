@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { addToCart } from "@/lib/cart";
 import { addOffer } from "@/lib/offers";
+import { sellerFromBrand } from "@/lib/sellers";
 import ProductImage from "@/components/ProductImage";
 import type { Product } from "@/lib/types";
 
@@ -38,6 +39,7 @@ export default function ProductDetail({
   const hasGeo = product.lat != null && product.lng != null;
   const km = hasGeo ? haversineKm(CLINIC, { lat: product.lat as number, lng: product.lng as number }) : null;
   const eta = km == null ? "1-2 วัน" : km < 10 ? "ภายในวันนี้" : km < 100 ? "พรุ่งนี้" : "2-3 วัน";
+  const seller = sellerFromBrand(product.brand);
 
   function showToast(m: string) {
     setToast(m);
@@ -80,6 +82,28 @@ export default function ProductDetail({
             <p className="text-2xl font-bold text-petrol mono mt-2">{money(product.price)}</p>
             <p className="text-xs text-gray-400 mt-1">คงเหลือ {product.stock} ชิ้น</p>
           </div>
+
+          {/* ผู้ขาย */}
+          <Link
+            href={`/buyer/shop/${encodeURIComponent(product.brand ?? "")}`}
+            className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm p-4"
+          >
+            <div className="w-11 h-11 rounded-full bg-petrol text-white grid place-items-center font-bold flex-none">
+              {(product.brand ?? "S").charAt(0)}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1">
+                <p className="text-sm font-bold text-gray-900 truncate">{seller.shop}</p>
+                {seller.verified && (
+                  <span className="text-[9px] bg-mint-soft text-teal-700 font-semibold px-1.5 py-0.5 rounded">✓</span>
+                )}
+              </div>
+              <p className="text-[11px] text-gray-500">
+                ผู้ขาย: {seller.sellerName} · ⭐ {seller.rating}
+              </p>
+            </div>
+            <span className="text-mint font-semibold text-xs flex-none">ดูร้านค้า ›</span>
+          </Link>
 
           {/* จำนวน */}
           <div className="flex items-center justify-between bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
