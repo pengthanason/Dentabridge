@@ -75,7 +75,7 @@ export default async function ShopPage({
                   href={`/buyer/product/${p.id}`}
                   className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col"
                 >
-                  <ProductImage name={p.name} imageUrl={p.image_url} className="h-24" />
+                  <ProductImage name={p.name} imageUrl={p.image_url} emoji={p.image_emoji} className="h-24" />
                   <div className="p-3 flex flex-col flex-1">
                     <p className="text-xs font-semibold text-gray-800 leading-snug line-clamp-2">{p.name}</p>
                     <div className="flex items-center justify-between mt-auto pt-2">

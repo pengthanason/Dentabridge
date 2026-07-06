@@ -80,7 +80,7 @@ export default function ProductDetail({
       </header>
 
       <main className="max-w-md lg:max-w-4xl mx-auto">
-        <ProductImage name={product.name} imageUrl={product.image_url} className="h-56 w-full" />
+        <ProductImage name={product.name} imageUrl={product.image_url} emoji={product.image_emoji} className="h-56 w-full" />
 
         <div className="px-4 py-4 space-y-4">
           <div>

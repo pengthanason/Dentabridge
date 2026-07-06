@@ -64,7 +64,7 @@ export default function WishlistPage() {
                   >
                     ❤️
                   </button>
-                  <ProductImage name={p.name} imageUrl={p.image_url} className="h-24" />
+                  <ProductImage name={p.name} imageUrl={p.image_url} emoji={p.image_emoji} className="h-24" />
                   <div className="p-3 flex flex-col flex-1">
                     <p className="text-xs font-semibold text-gray-800 leading-snug line-clamp-2">{p.name}</p>
                     <div className="flex items-center gap-1 mt-0.5">

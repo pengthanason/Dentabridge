@@ -5,7 +5,7 @@ import { useState } from "react";
 // ภาพสำรอง (เวกเตอร์) เผื่อรูปถ่ายโหลดไม่ขึ้น — วาดตามชนิดสินค้า
 type Art = { bg: string; svg: React.ReactNode };
 
-function art(name: string): Art {
+function art(name: string): Art | null {
   const n = name.toLowerCase();
   if (n.includes("o-ring") || n.includes("ยาง"))
     return {
@@ -94,30 +94,38 @@ function art(name: string): Art {
         </svg>
       ),
     };
-  return {
-    bg: "from-mint-soft to-emerald-100",
-    svg: (
-      <svg viewBox="0 0 64 64" className="w-1/2 h-1/2">
-        <path d="M32 12l18 8-18 8-18-8z" fill="#2FA25B" stroke="#145C36" strokeWidth="2" strokeLinejoin="round" />
-        <path d="M14 20v22l18 8V28z" fill="#DCF2E4" stroke="#145C36" strokeWidth="2" strokeLinejoin="round" />
-        <path d="M50 20v22l-18 8V28z" fill="#B9E2CC" stroke="#145C36" strokeWidth="2" strokeLinejoin="round" />
-      </svg>
-    ),
-  };
+  // ไม่มีภาพวาดเฉพาะ → ให้ไปใช้อิโมจิของสินค้าแทน
+  return null;
+}
+
+// เลือกพื้นไล่เฉดให้อิโมจิ (คงที่ต่อสินค้า จากชื่อ)
+const EMOJI_BG = [
+  "from-mint-soft to-emerald-100",
+  "from-blue-50 to-mint-soft",
+  "from-amber-soft to-mint-soft",
+  "from-pink-50 to-mint-soft",
+  "from-teal-50 to-blue-50",
+  "from-slate-50 to-mint-soft",
+];
+function emojiBg(name: string) {
+  const h = Math.abs([...name].reduce((s, c) => s + c.charCodeAt(0), 0));
+  return EMOJI_BG[h % EMOJI_BG.length];
 }
 
 export default function ProductImage({
   name,
   imageUrl,
+  emoji,
   className = "",
 }: {
   name: string;
   imageUrl?: string | null;
+  emoji?: string | null;
   className?: string;
 }) {
   const [errored, setErrored] = useState(false);
 
-  // มีรูปจริง (image_url) → ใช้รูปจริง; ไม่มี/โหลดไม่ขึ้น → ภาพวาดเดิม
+  // 1) มีรูปจริง (image_url) → ใช้รูปจริง
   if (imageUrl && !errored) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
@@ -131,10 +139,20 @@ export default function ProductImage({
     );
   }
 
+  // 2) มีภาพวาดเฉพาะชนิด → ใช้ภาพวาด
   const a = art(name);
+  if (a) {
+    return (
+      <div className={`grid place-items-center bg-gradient-to-br ${a.bg} ${className}`}>
+        {a.svg}
+      </div>
+    );
+  }
+
+  // 3) ไม่มีภาพวาด → โชว์อิโมจิของสินค้าตัวใหญ่บนพื้นไล่เฉด
   return (
-    <div className={`grid place-items-center bg-gradient-to-br ${a.bg} ${className}`}>
-      {a.svg}
+    <div className={`grid place-items-center bg-gradient-to-br ${emojiBg(name)} ${className}`}>
+      <span className="text-5xl leading-none">{emoji || "📦"}</span>
     </div>
   );
 }

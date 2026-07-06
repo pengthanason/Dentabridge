@@ -47,7 +47,7 @@ export default function CartPage() {
           <div className="space-y-3">
             {items.map(({ p, qty }) => (
               <div key={p.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 flex items-center gap-3">
-                <ProductImage name={p.name} imageUrl={p.image_url} className="w-14 h-14 rounded-xl flex-none" />
+                <ProductImage name={p.name} imageUrl={p.image_url} emoji={p.image_emoji} className="w-14 h-14 rounded-xl flex-none" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-gray-800 truncate">{p.name}</p>
                   <p className="text-sm font-bold text-petrol mono">{money(p.price)}</p>

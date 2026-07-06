@@ -140,7 +140,7 @@ export default function Marketplace({
                   >
                     {wished ? "❤️" : "🤍"}
                   </button>
-                  <ProductImage name={p.name} imageUrl={p.image_url} className="h-24" />
+                  <ProductImage name={p.name} imageUrl={p.image_url} emoji={p.image_emoji} className="h-24" />
                   <div className="p-3 flex flex-col flex-1">
                     {p.fda_verified && (
                       <span className="text-[9px] mono text-teal-700 bg-mint-soft w-fit px-1.5 py-0.5 rounded mb-1">
