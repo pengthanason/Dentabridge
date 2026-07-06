@@ -22,3 +22,24 @@ body {
   font-family: 'Archivo', 'Prompt', ui-sans-serif, sans-serif;
   letter-spacing: 0.01em;
 }
+
+/* สำหรับ Export PDF (พิมพ์เฉพาะส่วน .print-area) */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 24px;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

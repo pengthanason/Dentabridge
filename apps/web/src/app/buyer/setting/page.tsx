@@ -6,14 +6,13 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const ITEMS: [string, string, string][] = [
-  ["profile", "👤", "โปรไฟล์ / ข้อมูลส่วนตัว"],
+  ["profile", "👤", "ข้อมูลส่วนตัว"],
   ["clinic", "🏥", "ข้อมูลคลินิก & ที่อยู่จัดส่ง"],
   ["tax", "🧾", "ข้อมูลใบกำกับภาษี"],
   ["docs", "📁", "เอกสาร อย. / ใบอนุญาต"],
   ["payment", "💳", "ช่องทางการชำระเงิน"],
   ["notifications", "🔔", "การแจ้งเตือน"],
-  ["security", "🔒", "ความปลอดภัย (รหัสผ่าน / 2FA)"],
-  ["history", "📜", "ประวัติการซื้อขาย"],
+  ["history", "📜", "ประวัติการซื้อ"],
 ];
 
 export default function SettingPage() {
