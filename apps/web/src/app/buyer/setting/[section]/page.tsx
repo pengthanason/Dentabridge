@@ -20,7 +20,7 @@ export default function SettingSectionPage({
   return (
     <div>
       <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
+        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link href="/buyer/setting" className="text-lg" aria-label="กลับ">
             ‹
           </Link>
@@ -28,7 +28,7 @@ export default function SettingSectionPage({
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 pt-10 text-center">
+      <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-10 text-center">
         <div className="text-5xl mb-3">🚧</div>
         <h2 className="font-bold text-gray-800">{title}</h2>
         <p className="text-sm text-gray-500 mt-2">

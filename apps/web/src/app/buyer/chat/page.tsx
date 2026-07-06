@@ -42,7 +42,7 @@ export default function ChatPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
+        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           {active ? (
             <button type="button" onClick={() => setActiveId(null)} className="text-lg" aria-label="กลับ">
               ‹
@@ -58,7 +58,7 @@ export default function ChatPage() {
 
       {/* รายการแชท */}
       {!active && (
-        <div className="max-w-md mx-auto w-full flex-1 divide-y divide-gray-100 bg-white">
+        <div className="max-w-md lg:max-w-4xl mx-auto w-full flex-1 divide-y divide-gray-100 bg-white">
           {THREADS.map((t) => (
             <button
               key={t.id}
@@ -84,7 +84,7 @@ export default function ChatPage() {
       {/* บทสนทนา */}
       {active && (
         <>
-          <div className="max-w-md mx-auto w-full flex-1 overflow-y-auto p-4 space-y-2">
+          <div className="max-w-md lg:max-w-4xl mx-auto w-full flex-1 overflow-y-auto p-4 space-y-2">
             {active.messages.map((m, i) => (
               <div key={i} className={`flex ${m.from === "me" ? "justify-end" : "justify-start"}`}>
                 <div
@@ -99,7 +99,7 @@ export default function ChatPage() {
               </div>
             ))}
           </div>
-          <div className="max-w-md mx-auto w-full p-3 border-t border-gray-100 bg-white flex items-center gap-2">
+          <div className="max-w-md lg:max-w-4xl mx-auto w-full p-3 border-t border-gray-100 bg-white flex items-center gap-2">
             <input
               disabled
               placeholder="พิมพ์ข้อความ... (เปิดใช้ใน Phase ถัดไป)"

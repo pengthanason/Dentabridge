@@ -39,7 +39,7 @@ export default function NotificationsPage() {
   return (
     <div>
       <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
+        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link href="/buyer/setting" className="text-lg" aria-label="กลับ">
             ‹
           </Link>
@@ -47,7 +47,7 @@ export default function NotificationsPage() {
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 pt-4">
+      <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4">
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
           {NOTIS.map((n, i) => (
             <div key={i} className="flex items-start gap-3 px-4 py-3">

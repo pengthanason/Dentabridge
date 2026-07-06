@@ -26,7 +26,7 @@ export default function BuyerNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100">
-      <div className="max-w-md mx-auto grid grid-cols-4">
+      <div className="max-w-md lg:max-w-4xl mx-auto grid grid-cols-4">
         {items.map((it) => {
           const on = it.match(pathname);
           return (

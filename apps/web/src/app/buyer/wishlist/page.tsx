@@ -25,7 +25,7 @@ export default function WishlistPage() {
   return (
     <div>
       <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
+        <div className="max-w-md lg:max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link href="/buyer" className="text-lg" aria-label="กลับ">
             ‹
           </Link>
@@ -33,7 +33,7 @@ export default function WishlistPage() {
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 pt-4">
+      <main className="max-w-md lg:max-w-6xl mx-auto px-4 pt-4">
         {items.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-5xl mb-3">🤍</div>
@@ -43,7 +43,7 @@ export default function WishlistPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {items.map((p) => {
               const r = ratingFor(p.name);
               return (

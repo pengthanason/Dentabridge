@@ -47,7 +47,8 @@ function tag(block: string, name: string) {
   return m ? decode(m[1]) : "";
 }
 
-async function callOp(op: string, q: string): Promise<Row[]> {
+// คืน ok=false เมื่อ "ต่อไม่ติด/timeout" (ต่างจากตอบแล้วไม่มีผล)
+async function callOp(op: string, q: string): Promise<{ ok: boolean; rows: Row[] }> {
   const envelope = `<?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
   <soap:Body><${op} xmlns="http://tempuri.org/"><DATAS>${escapeXml(q)}</DATAS></${op}></soap:Body>
@@ -61,11 +62,12 @@ async function callOp(op: string, q: string): Promise<Row[]> {
         "User-Agent": "Mozilla/5.0 (DentaBridge FDA check)",
       },
       body: envelope,
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(9000),
     });
+    if (!res.ok) return { ok: false, rows: [] };
     const xml = await res.text();
     const blocks = (xml.match(/<Table1[\s\S]*?<\/Table1>/g) || []).slice(0, 25);
-    return blocks
+    const rows = blocks
       .map((b) => ({
         lcnno: tag(b, "lcnno"),
         nameTh: tag(b, "productha"),
@@ -77,8 +79,9 @@ async function callOp(op: string, q: string): Promise<Row[]> {
         url: tag(b, "URLs_NEW"),
       }))
       .filter((r) => r.nameTh || r.nameEn || r.lcnno);
+    return { ok: true, rows };
   } catch {
-    return [];
+    return { ok: false, rows: [] };
   }
 }
 
@@ -89,20 +92,30 @@ export async function GET(req: NextRequest) {
 
   try {
     let rows: Row[];
+    let anyOk = false;
     if (type === "mdc") {
-      rows = await callOp("GET_DATA_MDC", q);
+      let r = await callOp("GET_DATA_MDC", q);
+      if (!r.ok) r = await callOp("GET_DATA_MDC", q); // retry 1 ครั้ง
+      anyOk = r.ok;
+      rows = r.rows;
     } else {
-      // ยิงทุกประเภทพร้อมกัน + soft-deadline: รวมผลจาก op ที่ตอบทันใน 6.5s
+      // ยิงทุกประเภทพร้อมกัน + soft-deadline: รวมผลจาก op ที่ตอบทันใน 7s
       // ไม่รอตัวที่ค้าง (เช่น GET_DATA_DRUG อาจช้ามาก)
       const collected: Row[] = [];
       const ps = TYPE_OPS.map((op) =>
-        callOp(op, q).then((rs) => {
-          collected.push(...rs);
+        callOp(op, q).then((r) => {
+          if (r.ok) anyOk = true;
+          collected.push(...r.rows);
         })
       );
-      const deadline = new Promise<void>((r) => setTimeout(r, 6500));
+      const deadline = new Promise<void>((r) => setTimeout(r, 7000));
       await Promise.race([Promise.allSettled(ps), deadline]);
       rows = collected;
+    }
+
+    // ต่อ อย. ไม่ติดเลย (ไม่มี op ไหนตอบสำเร็จ) → แจ้งว่าเชื่อมไม่ได้ (ไม่ใช่ "ไม่พบ")
+    if (!anyOk && rows.length === 0) {
+      return NextResponse.json({ ok: false, error: "upstream" }, { status: 503 });
     }
 
     // dedupe + จัดอันดับตรงเป๊ะก่อน

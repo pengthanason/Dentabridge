@@ -34,7 +34,7 @@ export default function ChatSheet({
         className="fixed inset-0 bg-black/40 z-40"
         aria-hidden
       />
-      <div className="fixed inset-x-0 bottom-0 z-50 max-w-md mx-auto bg-white rounded-t-3xl shadow-2xl h-[78vh] flex flex-col">
+      <div className="fixed inset-x-0 bottom-0 z-50 max-w-md lg:max-w-4xl mx-auto bg-white rounded-t-3xl shadow-2xl h-[78vh] flex flex-col">
         {/* header */}
         <div className="flex items-center gap-2 p-4 border-b border-gray-100">
           {active ? (

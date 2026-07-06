@@ -69,7 +69,7 @@ export default function PayPage() {
 
   if (done) {
     return (
-      <div className="max-w-md mx-auto px-6 pt-20 text-center">
+      <div className="max-w-md lg:max-w-4xl mx-auto px-6 pt-20 text-center">
         <div className="text-6xl mb-4">✅</div>
         <h2 className="text-xl font-bold text-gray-900">ชำระเงินสำเร็จ (ตัวอย่าง)</h2>
         <p className="text-sm text-gray-500 mt-2">
@@ -85,7 +85,7 @@ export default function PayPage() {
   return (
     <div className="pb-28">
       <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
+        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <button type="button" onClick={() => router.back()} className="text-lg" aria-label="กลับ">
             ‹
           </button>
@@ -93,7 +93,7 @@ export default function PayPage() {
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 pt-4 space-y-4">
+      <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
         {/* คูปอง */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
           <p className="text-[10px] mono uppercase text-gray-400 mb-2">คูปองส่วนลด</p>
@@ -172,7 +172,7 @@ export default function PayPage() {
       </main>
 
       <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100">
-        <div className="max-w-md mx-auto px-4 py-3">
+        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3">
           <button
             type="button"
             disabled={items.length === 0}

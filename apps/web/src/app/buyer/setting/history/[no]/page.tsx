@@ -17,7 +17,7 @@ export default function OrderDetailPage({
   return (
     <div>
       <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
+        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link href="/buyer/setting/history" className="text-lg" aria-label="กลับ">
             ‹
           </Link>
@@ -28,7 +28,7 @@ export default function OrderDetailPage({
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 pt-4 space-y-4">
+      <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
         {/* ข้อมูลออเดอร์ */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-2 text-sm">
           <Row label="วันที่สั่งซื้อ" value={order.date} />

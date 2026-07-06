@@ -30,12 +30,12 @@ export default function SettingPage() {
   return (
     <div>
       <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md mx-auto px-4 py-3">
+        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3">
           <h1 className="font-semibold">Setting</h1>
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 pt-4 space-y-3">
+      <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-3">
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
           {ITEMS.map(([slug, icon, label]) => (
             <Link

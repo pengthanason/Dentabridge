@@ -29,12 +29,12 @@ export default function CartPage() {
   return (
     <div className="pb-40">
       <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md mx-auto px-4 py-3">
+        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3">
           <h1 className="font-semibold">ตะกร้าสินค้า</h1>
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 pt-4">
+      <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4">
         {items.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-5xl mb-3">🛒</div>
@@ -72,7 +72,7 @@ export default function CartPage() {
 
       {items.length > 0 && (
         <div className="fixed bottom-16 left-0 right-0 z-20 bg-white border-t border-gray-100">
-          <div className="max-w-md mx-auto px-4 py-3">
+          <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3">
             <div className="flex justify-between text-sm mb-1">
               <span className="text-gray-500">ยอดรวม</span>
               <span className="mono font-bold text-gray-900">{money(total)}</span>

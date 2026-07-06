@@ -68,7 +68,7 @@ export default function ProductDetail({
   return (
     <div className="pb-28">
       <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
+        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link href="/buyer" className="text-lg" aria-label="กลับ">
             ‹
           </Link>
@@ -79,7 +79,7 @@ export default function ProductDetail({
         </div>
       </header>
 
-      <main className="max-w-md mx-auto">
+      <main className="max-w-md lg:max-w-4xl mx-auto">
         <ProductImage name={product.name} imageUrl={product.image_url} className="h-56 w-full" />
 
         <div className="px-4 py-4 space-y-4">
@@ -252,7 +252,7 @@ export default function ProductDetail({
 
       {/* แถบล่าง: เพิ่มตะกร้า / ซื้อเลย */}
       <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100">
-        <div className="max-w-md mx-auto px-4 py-3 flex gap-2">
+        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex gap-2">
           <button
             type="button"
             onClick={() => {
@@ -280,7 +280,7 @@ export default function ProductDetail({
       {showOffer && (
         <>
           <div onClick={() => setShowOffer(false)} className="fixed inset-0 bg-black/40 z-40" aria-hidden />
-          <div className="fixed inset-x-0 bottom-0 z-50 max-w-md mx-auto bg-white rounded-t-3xl shadow-2xl p-5">
+          <div className="fixed inset-x-0 bottom-0 z-50 max-w-md lg:max-w-4xl mx-auto bg-white rounded-t-3xl shadow-2xl p-5">
             <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-3" />
             <form onSubmit={submitOffer} className="space-y-3">
               <div>

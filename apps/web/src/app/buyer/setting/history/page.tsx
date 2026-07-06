@@ -5,7 +5,7 @@ export default function HistoryPage() {
   return (
     <div>
       <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
+        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link href="/buyer/setting" className="text-lg" aria-label="กลับ">
             ‹
           </Link>
@@ -13,7 +13,7 @@ export default function HistoryPage() {
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 pt-4 space-y-3">
+      <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-3">
         {MOCK_ORDERS.map((o) => (
           <Link
             key={o.no}

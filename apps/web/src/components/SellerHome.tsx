@@ -61,7 +61,7 @@ export default function SellerHome({
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       <header className="bg-petrol text-white sticky top-0 z-30">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="min-w-0">
             <p className="text-[10px] text-teal-200 mono uppercase">ร้านค้าผู้ขาย</p>
             <h1 className="font-bold truncate">{shopName}</h1>
@@ -91,7 +91,7 @@ export default function SellerHome({
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 pt-4 space-y-4">
+      <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
         {tab === "dash" && (
           <>
             <div className="grid grid-cols-2 gap-3">
@@ -204,7 +204,7 @@ export default function SellerHome({
       </main>
 
       <nav className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100">
-        <div className="max-w-md mx-auto grid grid-cols-4">
+        <div className="max-w-md lg:max-w-4xl mx-auto grid grid-cols-4">
           <NavBtn on={tab === "dash"} onClick={() => setTab("dash")} icon="📊" label="แดชบอร์ด" />
           <NavBtn on={tab === "products"} onClick={() => setTab("products")} icon="📦" label="สินค้า" />
           <NavBtn on={tab === "orders"} onClick={() => setTab("orders")} icon="🧾" label="ออเดอร์" />

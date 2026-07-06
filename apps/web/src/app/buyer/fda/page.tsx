@@ -17,12 +17,12 @@ export default function FdaPage() {
   return (
     <div className="pb-6">
       <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md mx-auto px-4 py-3">
+        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3">
           <h1 className="font-semibold">ตรวจสอบ อย.</h1>
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 pt-4 space-y-4">
+      <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
         <p className="text-[11px] text-mint text-center">✓ ดึงข้อมูลจริงจาก อย. (porta.fda.moph.go.th) ในแอป</p>
 
         {/* ช่อง 1: เลข อย. ทุกประเภท */}
