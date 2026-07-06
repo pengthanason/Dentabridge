@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/user";
 import BuyerNav from "@/components/BuyerNav";
 
 export const dynamic = "force-dynamic";
@@ -10,12 +11,10 @@ export default async function BuyerLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
   if (!user) redirect("/login");
 
+  const supabase = createClient();
   const { data: profile } = await supabase
     .from("profiles")
     .select("role")
