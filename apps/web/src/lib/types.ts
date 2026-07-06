@@ -25,6 +25,7 @@ export type Product = {
   fda_no: string | null;
   fda_verified: boolean;
   image_emoji: string | null;
+  image_url: string | null;
   stock: number;
   active: boolean;
   lat: number | null;

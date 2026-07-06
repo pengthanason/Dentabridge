@@ -137,11 +137,20 @@ function art(name: string): Art {
 
 export default function ProductImage({
   name,
+  imageUrl,
   className = "",
 }: {
   name: string;
+  imageUrl?: string | null;
   className?: string;
 }) {
+  // ถ้ามีรูปจริง (image_url จาก DB) → ใช้รูปจริง; ไม่มี → ภาพวาดเวกเตอร์
+  if (imageUrl) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={imageUrl} alt={name} className={`object-cover ${className}`} />
+    );
+  }
   const a = art(name);
   return (
     <div className={`grid place-items-center bg-gradient-to-br ${a.bg} ${className}`}>

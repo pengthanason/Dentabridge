@@ -16,8 +16,12 @@ export default function BuyerNav() {
   const cart = useCart();
   const count = cartCount(cart);
 
-  // ซ่อน nav ในหน้าแชท + หน้ารายละเอียดสินค้า (เป็นหน้าเต็ม/มีแถบซื้อของตัวเอง)
-  if (pathname.startsWith("/buyer/chat") || pathname.startsWith("/buyer/product"))
+  // ซ่อน nav ในหน้าแชท / รายละเอียดสินค้า / ชำระเงิน (หน้าเต็ม มีแถบของตัวเอง)
+  if (
+    pathname.startsWith("/buyer/chat") ||
+    pathname.startsWith("/buyer/product") ||
+    pathname.startsWith("/buyer/cart/pay")
+  )
     return null;
 
   return (
