@@ -6,7 +6,10 @@ import { useRouter } from "next/navigation";
 import { addToCart } from "@/lib/cart";
 import { addOffer } from "@/lib/offers";
 import { sellerFromBrand } from "@/lib/sellers";
+import { useWishlist, toggleWish } from "@/lib/wishlist";
+import { ratingFor, useReviews, addReview } from "@/lib/reviews";
 import ProductImage from "@/components/ProductImage";
+import Stars from "@/components/Stars";
 import type { Product } from "@/lib/types";
 
 const money = (n: number) => "฿" + n.toLocaleString("th-TH");
@@ -35,6 +38,13 @@ export default function ProductDetail({
   const [showOffer, setShowOffer] = useState(false);
   const [offerPrice, setOfferPrice] = useState(String(product.price));
   const [offerQty, setOfferQty] = useState(1);
+  const [myRating, setMyRating] = useState(5);
+  const [myText, setMyText] = useState("");
+
+  const wishlist = useWishlist();
+  const wished = wishlist.includes(product.id);
+  const reviews = useReviews(product.id);
+  const rate = ratingFor(product.name);
 
   const hasGeo = product.lat != null && product.lng != null;
   const km = hasGeo ? haversineKm(CLINIC, { lat: product.lat as number, lng: product.lng as number }) : null;
@@ -63,6 +73,9 @@ export default function ProductDetail({
             ‹
           </Link>
           <h1 className="font-semibold truncate flex-1">รายละเอียดสินค้า</h1>
+          <button type="button" onClick={() => toggleWish(product.id)} className="text-xl" aria-label="ถูกใจ">
+            {wished ? "❤️" : "🤍"}
+          </button>
         </div>
       </header>
 
@@ -79,6 +92,12 @@ export default function ProductDetail({
               {product.brand}
               {categoryName ? ` · หมวด ${categoryName}` : ""}
             </p>
+            <div className="flex items-center gap-1 mt-1">
+              <Stars rating={rate.rating} />
+              <span className="text-xs text-gray-500">
+                {rate.rating} · {rate.count} รีวิว
+              </span>
+            </div>
             <p className="text-2xl font-bold text-petrol mono mt-2">{money(product.price)}</p>
             <p className="text-xs text-gray-400 mt-1">คงเหลือ {product.stock} ชิ้น</p>
           </div>
@@ -165,6 +184,68 @@ export default function ProductDetail({
               {product.description ??
                 "สินค้าผ่านการตรวจสอบทะเบียน อย. และการประเมินผู้จัดจำหน่ายประจำปี พร้อมใบรับรองครบถ้วน"}
             </p>
+          </div>
+
+          {/* รีวิว */}
+          <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm font-bold text-gray-900">รีวิว ({reviews.length})</p>
+              <div className="flex items-center gap-1">
+                <Stars rating={rate.rating} />
+                <span className="text-xs text-gray-500">{rate.rating}</span>
+              </div>
+            </div>
+
+            {/* เขียนรีวิว */}
+            <div className="border border-gray-100 rounded-xl p-3 mb-3">
+              <div className="flex items-center gap-1 mb-2">
+                <span className="text-xs text-gray-500 mr-1">ให้คะแนน:</span>
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => setMyRating(n)}
+                    className={`text-lg ${n <= myRating ? "text-amber" : "text-gray-300"}`}
+                    aria-label={`${n} ดาว`}
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
+              <textarea
+                value={myText}
+                onChange={(e) => setMyText(e.target.value)}
+                placeholder="เขียนรีวิวสินค้านี้..."
+                rows={2}
+                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mint"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  if (!myText.trim()) return showToast("กรุณาเขียนรีวิวก่อน");
+                  addReview(product.id, myRating, myText.trim());
+                  setMyText("");
+                  showToast("ขอบคุณสำหรับรีวิว ✓");
+                }}
+                className="mt-2 bg-petrol text-white text-xs font-semibold px-4 py-2 rounded-lg"
+              >
+                ส่งรีวิว
+              </button>
+            </div>
+
+            {/* รายการรีวิว */}
+            <div className="space-y-3">
+              {reviews.map((rv) => (
+                <div key={rv.id} className="border-t border-gray-50 pt-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-800">{rv.name}</span>
+                    <span className="text-[10px] text-gray-400">{rv.date}</span>
+                  </div>
+                  <Stars rating={rv.rating} />
+                  <p className="text-xs text-gray-600 mt-0.5">{rv.text}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </main>

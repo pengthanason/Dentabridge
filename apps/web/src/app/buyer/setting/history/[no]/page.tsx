@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MOCK_ORDERS, orderTotal, money, toneCls } from "@/lib/mockOrders";
+import ReorderButton from "@/components/ReorderButton";
 
 export default function OrderDetailPage({
   params,
@@ -74,6 +75,8 @@ export default function OrderDetailPage({
             </div>
           </div>
         )}
+
+        <ReorderButton items={order.items} />
 
         <Link
           href="/buyer/setting/history"
