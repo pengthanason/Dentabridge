@@ -51,7 +51,7 @@ export default function Marketplace({
   return (
     <>
       <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-2">
+        <div className="max-w-md lg:max-w-6xl mx-auto px-4 py-3 flex items-center gap-2">
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -75,7 +75,7 @@ export default function Marketplace({
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 pt-4 space-y-4">
+      <main className="max-w-md lg:max-w-6xl mx-auto px-4 pt-4 space-y-4">
         <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
           <p className="text-[10px] text-gray-400 mono uppercase">Marketplace</p>
           <h2 className="font-bold text-gray-900">{fullName}</h2>
@@ -118,7 +118,7 @@ export default function Marketplace({
         {list.length === 0 ? (
           <p className="text-center text-sm text-gray-400 py-10">ไม่พบสินค้า</p>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {list.map((p) => {
               const r = ratingFor(p.name);
               const wished = wishlist.includes(p.id);
