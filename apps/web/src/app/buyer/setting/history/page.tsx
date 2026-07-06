@@ -1,26 +1,5 @@
 import Link from "next/link";
-
-const money = (n: number) => "฿" + n.toLocaleString("th-TH");
-
-const ORDERS: {
-  no: string;
-  date: string;
-  items: number;
-  total: number;
-  status: string;
-  tone: "ok" | "ship" | "cancel";
-}[] = [
-  { no: "INV-2026-0001", date: "06/07/2026", items: 2, total: 4230, status: "กำลังจัดส่ง", tone: "ship" },
-  { no: "INV-2026-0000", date: "28/06/2026", items: 5, total: 8900, status: "สำเร็จ", tone: "ok" },
-  { no: "INV-2025-0092", date: "15/06/2026", items: 3, total: 2760, status: "สำเร็จ", tone: "ok" },
-  { no: "INV-2025-0088", date: "02/06/2026", items: 1, total: 550, status: "ยกเลิก", tone: "cancel" },
-];
-
-const toneCls: Record<string, string> = {
-  ok: "bg-mint-soft text-teal-700",
-  ship: "bg-amber-soft text-amber",
-  cancel: "bg-gray-100 text-gray-400",
-};
+import { MOCK_ORDERS, orderTotal, money, toneCls } from "@/lib/mockOrders";
 
 export default function HistoryPage() {
   return (
@@ -35,8 +14,12 @@ export default function HistoryPage() {
       </header>
 
       <main className="max-w-md mx-auto px-4 pt-4 space-y-3">
-        {ORDERS.map((o) => (
-          <div key={o.no} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+        {MOCK_ORDERS.map((o) => (
+          <Link
+            key={o.no}
+            href={`/buyer/setting/history/${o.no}`}
+            className="block bg-white rounded-2xl border border-gray-100 shadow-sm p-4 active:scale-[0.99] transition"
+          >
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold text-gray-800 mono">{o.no}</p>
               <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${toneCls[o.tone]}`}>
@@ -45,11 +28,12 @@ export default function HistoryPage() {
             </div>
             <div className="flex items-center justify-between mt-1 text-xs text-gray-500">
               <span>
-                {o.date} · {o.items} รายการ
+                {o.date} · {o.items.length} รายการ
               </span>
-              <span className="text-petrol font-bold mono text-sm">{money(o.total)}</span>
+              <span className="text-petrol font-bold mono text-sm">{money(orderTotal(o))}</span>
             </div>
-          </div>
+            <p className="text-[11px] text-mint font-semibold mt-1">ดูรายละเอียด ›</p>
+          </Link>
         ))}
         <p className="text-center text-[11px] text-gray-400">
           * ประวัติตัวอย่าง — เชื่อมกับออเดอร์จริงในเฟสถัดไป

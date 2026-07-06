@@ -71,7 +71,7 @@ export default function BuyerSignupPage() {
               รหัสผ่านของคุณคือเลขท้ายบัตรประชาชน 5 หลัก
             </p>
           </div>
-          <Field label="ชื่อ - นามสกุล" value={fullName} onChange={setFullName} placeholder="เช่น ทพ. ธนสรณ์ ใจดี" />
+          <Field label="ชื่อ - นามสกุล" value={fullName} onChange={setFullName} placeholder="เช่น ทพ. ธนสันต์ บุญมาก" />
           <Field label="เลขใบอนุญาตประกอบวิชาชีพ" value={license} onChange={setLicense} placeholder="เช่น ท.12345" />
           <Field label="สังกัด / คลินิก" value={clinic} onChange={setClinic} placeholder="เช่น คลินิกทันตกรรมสไมล์" />
           <Field

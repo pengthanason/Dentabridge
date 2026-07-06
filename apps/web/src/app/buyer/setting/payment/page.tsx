@@ -5,6 +5,7 @@ import Link from "next/link";
 
 const KEY = "db_payment_method";
 const CARDS_KEY = "db_cards";
+const BANKS_KEY = "db_bank_accounts";
 
 const BANKS = [
   { id: "bank:kbank", name: "ธนาคารกสิกรไทย", short: "KBANK", color: "#138f2d", dark: false },
@@ -39,12 +40,23 @@ export default function PaymentPage() {
   const [exp, setExp] = useState("");
   const [cvv, setCvv] = useState("");
 
+  // บัญชีธนาคาร
+  const [bankAccounts, setBankAccounts] = useState<Record<string, { name: string; last4: string }>>({});
+  const [bankForm, setBankForm] = useState<string | null>(null);
+  const [acctName, setAcctName] = useState("");
+  const [acctNo, setAcctNo] = useState("");
+
   useEffect(() => {
     setSelected(localStorage.getItem(KEY) || "");
     try {
       setCards(JSON.parse(localStorage.getItem(CARDS_KEY) || "[]"));
     } catch {
       setCards([]);
+    }
+    try {
+      setBankAccounts(JSON.parse(localStorage.getItem(BANKS_KEY) || "{}"));
+    } catch {
+      setBankAccounts({});
     }
   }, []);
 
@@ -83,6 +95,27 @@ export default function PaymentPage() {
     setShowForm(false);
     choose(card.id);
     showToast("เพิ่มบัตรแล้ว ✓");
+  }
+
+  function openBankForm(id: string) {
+    setBankForm(id);
+    setAcctName(bankAccounts[id]?.name || "");
+    setAcctNo("");
+  }
+  function saveBank(e: React.FormEvent) {
+    e.preventDefault();
+    if (!bankForm) return;
+    if (!acctName.trim()) return showToast("กรุณากรอกชื่อเจ้าของบัญชี");
+    const digits = acctNo.replace(/\D/g, "");
+    if (digits.length < 6) return showToast("เลขที่บัญชีไม่ถูกต้อง");
+    const next = { ...bankAccounts, [bankForm]: { name: acctName.trim(), last4: digits.slice(-4) } };
+    setBankAccounts(next);
+    localStorage.setItem(BANKS_KEY, JSON.stringify(next));
+    choose(bankForm);
+    setBankForm(null);
+    setAcctName("");
+    setAcctNo("");
+    showToast("เชื่อมบัญชีธนาคารแล้ว ✓");
   }
 
   const selectedBank = BANKS.find((b) => b.id === selected);
@@ -147,7 +180,7 @@ export default function PaymentPage() {
                 label="ชื่อบนบัตร"
                 value={name}
                 onChange={setName}
-                placeholder="THANASON B."
+                placeholder="THANASON BOONMAK"
               />
               <div className="grid grid-cols-2 gap-2">
                 <CardInput
@@ -210,34 +243,42 @@ export default function PaymentPage() {
           {/* รายการธนาคาร — เลื่อนออกมา */}
           <div
             className="transition-all duration-300 overflow-hidden"
-            style={{ maxHeight: bankOpen ? BANKS.length * 60 + 16 : 0 }}
+            style={{ maxHeight: bankOpen ? 1600 : 0 }}
           >
             <div className="px-3 pb-3 space-y-1.5">
-              {BANKS.map((b) => (
-                <button
-                  key={b.id}
-                  type="button"
-                  onClick={() => choose(b.id)}
-                  className={`w-full flex items-center gap-3 p-2 rounded-xl border transition ${
-                    selected === b.id ? "border-mint bg-mint-soft" : "border-gray-100"
-                  }`}
-                >
-                  <div
-                    className="w-11 h-11 rounded-lg grid place-items-center text-[11px] font-extrabold flex-none shadow-sm"
-                    style={{ backgroundColor: b.color, color: b.dark ? "#1a1a1a" : "#fff" }}
-                  >
-                    {b.short}
-                  </div>
-                  <span className="flex-1 text-left text-sm text-gray-800">{b.name}</span>
-                  <span
-                    className={`w-5 h-5 rounded-full border-2 grid place-items-center flex-none ${
-                      selected === b.id ? "border-mint" : "border-gray-300"
+              {BANKS.map((b) => {
+                const acct = bankAccounts[b.id];
+                return (
+                  <button
+                    key={b.id}
+                    type="button"
+                    onClick={() => openBankForm(b.id)}
+                    className={`w-full flex items-center gap-3 p-2 rounded-xl border transition ${
+                      selected === b.id ? "border-mint bg-mint-soft" : "border-gray-100"
                     }`}
                   >
-                    {selected === b.id && <span className="w-2.5 h-2.5 rounded-full bg-mint" />}
-                  </span>
-                </button>
-              ))}
+                    <div
+                      className="w-11 h-11 rounded-lg grid place-items-center text-[11px] font-extrabold flex-none shadow-sm"
+                      style={{ backgroundColor: b.color, color: b.dark ? "#1a1a1a" : "#fff" }}
+                    >
+                      {b.short}
+                    </div>
+                    <span className="flex-1 text-left">
+                      <span className="block text-sm text-gray-800">{b.name}</span>
+                      <span className="block text-[11px] text-gray-400">
+                        {acct ? `บัญชี •••• ${acct.last4}` : "แตะเพื่อเชื่อมบัญชี"}
+                      </span>
+                    </span>
+                    <span
+                      className={`w-5 h-5 rounded-full border-2 grid place-items-center flex-none ${
+                        selected === b.id ? "border-mint" : "border-gray-300"
+                      }`}
+                    >
+                      {selected === b.id && <span className="w-2.5 h-2.5 rounded-full bg-mint" />}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -246,6 +287,50 @@ export default function PaymentPage() {
           * ข้อมูลบัตรบันทึกในเครื่อง (mock) เพื่อสาธิต — ระบบตัดเงินจริงต่อในเฟสถัดไป
         </p>
       </main>
+
+      {/* ฟอร์มใส่ข้อมูลบัญชีธนาคาร */}
+      {bankForm &&
+        (() => {
+          const b = BANKS.find((x) => x.id === bankForm)!;
+          return (
+            <>
+              <div onClick={() => setBankForm(null)} className="fixed inset-0 bg-black/40 z-40" aria-hidden />
+              <div className="fixed inset-x-0 bottom-0 z-50 max-w-md mx-auto bg-white rounded-t-3xl shadow-2xl p-5">
+                <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-3" />
+                <form onSubmit={saveBank} className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-9 h-9 rounded-lg grid place-items-center text-[10px] font-extrabold"
+                      style={{ backgroundColor: b.color, color: b.dark ? "#1a1a1a" : "#fff" }}
+                    >
+                      {b.short}
+                    </div>
+                    <h3 className="font-bold text-gray-900">เชื่อมบัญชี{b.name}</h3>
+                  </div>
+                  <CardInput label="ชื่อเจ้าของบัญชี" value={acctName} onChange={setAcctName} placeholder="ชื่อ-นามสกุล" />
+                  <CardInput
+                    label="เลขที่บัญชี"
+                    value={acctNo}
+                    onChange={(v) => setAcctNo(v.replace(/\D/g, "").slice(0, 15))}
+                    placeholder="xxx-x-xxxxx-x"
+                    inputMode="numeric"
+                  />
+                  <div className="flex gap-2 pt-1">
+                    <button type="button" onClick={() => setBankForm(null)} className="flex-1 border border-gray-200 text-gray-500 text-sm py-2.5 rounded-xl">
+                      ยกเลิก
+                    </button>
+                    <button type="submit" className="flex-1 bg-petrol text-white font-semibold text-sm py-2.5 rounded-xl">
+                      บันทึกและใช้บัญชีนี้
+                    </button>
+                  </div>
+                  <p className="text-[11px] text-amber text-center">
+                    * ข้อมูลบัญชีบันทึกในเครื่อง (mock) — ระบบตัดเงินจริงต่อในเฟสถัดไป
+                  </p>
+                </form>
+              </div>
+            </>
+          );
+        })()}
 
       {toast && (
         <div className="fixed left-1/2 -translate-x-1/2 bottom-24 z-40 bg-petrol-ink text-white text-xs px-4 py-2.5 rounded-xl shadow-lg">
