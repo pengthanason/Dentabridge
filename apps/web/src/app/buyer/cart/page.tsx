@@ -29,11 +29,8 @@ export default function CartPage() {
   return (
     <div className="pb-40">
       <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
-          <Link href="/buyer" className="text-lg" aria-label="กลับ">
-            ‹
-          </Link>
-          <h1 className="font-semibold flex-1">ตะกร้าสินค้า</h1>
+        <div className="max-w-md mx-auto px-4 py-3">
+          <h1 className="font-semibold">ตะกร้าสินค้า</h1>
         </div>
       </header>
 
