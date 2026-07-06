@@ -3,7 +3,7 @@
 -- ============================================================
 
 insert into public.categories (slug, name_th, sort) values
-  ('consumable', 'วัสดุสิ้นเปลือง', 1),
+  ('consumable', 'วัสดุ', 1),
   ('ortho',      'จัดฟัน',          2),
   ('filling',    'อุดฟัน',          3),
   ('sterile',    'ฆ่าเชื้อ',         4),
