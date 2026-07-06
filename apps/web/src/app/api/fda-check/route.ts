@@ -25,14 +25,22 @@ function tag(block: string, name: string) {
   return m ? decode(m[1]) : "";
 }
 
+// op ตามประเภท: all = เลข อย. ทุกประเภท, mdc = เลขจดแจ้งเครื่องมือแพทย์
+const OPS: Record<string, string> = {
+  all: "GET_DATA_ALL",
+  mdc: "GET_DATA_MDC",
+};
+
 export async function GET(req: NextRequest) {
   const q = (req.nextUrl.searchParams.get("q") || "").trim();
+  const type = req.nextUrl.searchParams.get("type") || "all";
+  const op = OPS[type] || OPS.all;
   if (!q) return NextResponse.json({ ok: false, error: "empty" }, { status: 400 });
 
   const envelope = `<?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
   <soap:Body>
-    <GET_DATA_MDC xmlns="http://tempuri.org/"><DATAS>${escapeXml(q)}</DATAS></GET_DATA_MDC>
+    <${op} xmlns="http://tempuri.org/"><DATAS>${escapeXml(q)}</DATAS></${op}>
   </soap:Body>
 </soap:Envelope>`;
 
@@ -41,7 +49,7 @@ export async function GET(req: NextRequest) {
       method: "POST",
       headers: {
         "Content-Type": "text/xml; charset=utf-8",
-        SOAPAction: "http://tempuri.org/GET_DATA_MDC",
+        SOAPAction: `http://tempuri.org/${op}`,
       },
       body: envelope,
       signal: AbortSignal.timeout(15000),
@@ -54,6 +62,7 @@ export async function GET(req: NextRequest) {
         nameTh: tag(b, "productha"),
         nameEn: tag(b, "produceng"),
         licensee: tag(b, "licen"),
+        productType: tag(b, "typepro"),
         type: tag(b, "typeallow"),
         status: tag(b, "cncnm"),
         url: tag(b, "URLs_NEW"),
