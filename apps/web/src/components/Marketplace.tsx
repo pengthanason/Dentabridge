@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { seedCartOnce } from "@/lib/cart";
+import ProductImage from "@/components/ProductImage";
 import type { Product, Category } from "@/lib/types";
 
 const money = (n: number) => "฿" + n.toLocaleString("th-TH");
@@ -84,9 +85,7 @@ export default function Marketplace({
                 href={`/buyer/product/${p.id}`}
                 className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col active:scale-[0.98] transition"
               >
-                <div className="h-24 bg-mint-soft grid place-items-center text-4xl">
-                  {p.image_emoji ?? "📦"}
-                </div>
+                <ProductImage name={p.name} className="h-24" />
                 <div className="p-3 flex flex-col flex-1">
                   {p.fda_verified && (
                     <span className="text-[9px] mono text-teal-700 bg-mint-soft w-fit px-1.5 py-0.5 rounded mb-1">

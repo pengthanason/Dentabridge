@@ -99,22 +99,6 @@ export default function PaymentPage() {
       </header>
 
       <main className="max-w-md mx-auto px-4 pt-4 space-y-4">
-        {/* พร้อมเพย์ */}
-        <Section title="พร้อมเพย์ (PromptPay QR)">
-          <Option
-            active={selected === "promptpay"}
-            onClick={() => choose("promptpay")}
-            icon={<div className="w-11 h-11 rounded-lg bg-[#003d7a] text-white grid place-items-center text-xs font-bold">QR</div>}
-            label="สแกน QR พร้อมเพย์"
-          />
-          {selected === "promptpay" && (
-            <div className="mt-3 flex flex-col items-center">
-              <QrMock />
-              <p className="text-[11px] text-gray-400 mt-2">QR ตัวอย่าง — ระบบชำระจริงต่อในเฟสถัดไป</p>
-            </div>
-          )}
-        </Section>
-
         {/* บัตรเครดิต/เดบิต */}
         <Section title="บัตรเครดิต / เดบิต">
           <div className="space-y-2">
@@ -345,18 +329,5 @@ function CardInput({
         className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm mono focus:outline-none focus:border-mint"
       />
     </label>
-  );
-}
-
-function QrMock() {
-  const cells = Array.from({ length: 49 }, (_, i) => (i * 7 + (i % 5) * 3) % 3 === 0);
-  return (
-    <div className="bg-white p-3 rounded-xl border border-gray-200">
-      <div className="grid grid-cols-7 gap-0.5 w-36 h-36">
-        {cells.map((on, i) => (
-          <div key={i} className={on ? "bg-petrol-ink rounded-[1px]" : "bg-transparent"} />
-        ))}
-      </div>
-    </div>
   );
 }

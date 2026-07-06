@@ -4,15 +4,32 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCart, setQty, clearCart } from "@/lib/cart";
+import ProductImage from "@/components/ProductImage";
 import type { Product } from "@/lib/types";
 
 const money = (n: number) => "฿" + n.toLocaleString("th-TH");
+
+const BANK_LABEL: Record<string, string> = {
+  kbank: "กสิกรไทย",
+  scb: "ไทยพาณิชย์",
+  bbl: "กรุงเทพ",
+  ktb: "กรุงไทย",
+  bay: "กรุงศรีอยุธยา",
+  ttb: "ทหารไทยธนชาต",
+  gsb: "ออมสิน",
+  uob: "ยูโอบี",
+};
+
+type Card = { id: string; last4: string; brand: string };
+type Method = { id: string; label: string; icon: React.ReactNode };
 
 export default function CartPage() {
   const supabase = useMemo(() => createClient(), []);
   const cart = useCart();
   const [products, setProducts] = useState<Product[]>([]);
-  const [placed, setPlaced] = useState(false);
+  const [step, setStep] = useState<"cart" | "pay" | "done">("cart");
+  const [payMethod, setPayMethod] = useState("promptpay");
+  const [methods, setMethods] = useState<Method[]>([]);
 
   useEffect(() => {
     supabase
@@ -21,18 +38,53 @@ export default function CartPage() {
       .then(({ data }) => setProducts((data ?? []) as Product[]));
   }, [supabase]);
 
+  // สร้างรายการช่องทางชำระเงินจากที่บันทึกไว้ใน Setting + พร้อมเพย์
+  useEffect(() => {
+    const list: Method[] = [
+      {
+        id: "promptpay",
+        label: "พร้อมเพย์ (QR)",
+        icon: <Tile className="bg-[#003d7a] text-white text-[9px]">QR</Tile>,
+      },
+    ];
+    try {
+      const cards: Card[] = JSON.parse(localStorage.getItem("db_cards") || "[]");
+      cards.forEach((c) =>
+        list.push({
+          id: c.id,
+          label: `${c.brand} •••• ${c.last4}`,
+          icon: <Tile className="bg-[#1a1f71] text-white text-[8px] italic">{c.brand}</Tile>,
+        })
+      );
+      const sel = localStorage.getItem("db_payment_method") || "";
+      if (sel.startsWith("bank:")) {
+        const code = sel.slice(5);
+        list.push({
+          id: sel,
+          label: `ธนาคาร${BANK_LABEL[code] ?? ""}`,
+          icon: <Tile className="bg-mint-soft">🏦</Tile>,
+        });
+      }
+      if (sel && list.some((m) => m.id === sel)) setPayMethod(sel);
+    } catch {
+      /* noop */
+    }
+    setMethods(list);
+  }, []);
+
   const items = Object.entries(cart)
     .map(([id, qty]) => ({ p: products.find((x) => x.id === id), qty }))
     .filter((x) => x.p) as { p: Product; qty: number }[];
   const total = items.reduce((s, x) => s + x.p.price * x.qty, 0);
 
-  if (placed) {
+  /* ---------- หน้าสำเร็จ ---------- */
+  if (step === "done") {
     return (
       <div className="max-w-md mx-auto px-6 pt-20 text-center">
         <div className="text-6xl mb-4">✅</div>
-        <h2 className="text-xl font-bold text-gray-900">สั่งซื้อสำเร็จ (ตัวอย่าง)</h2>
+        <h2 className="text-xl font-bold text-gray-900">ชำระเงินสำเร็จ (ตัวอย่าง)</h2>
         <p className="text-sm text-gray-500 mt-2">
-          ระบบจะรวมออกใบกำกับภาษีใบเดียวผ่าน e-Tax — ระบบชำระเงิน/บันทึกออเดอร์จริงอยู่ใน Phase ถัดไป
+          ระบบจะรวมออกใบกำกับภาษีใบเดียวผ่าน e-Tax — การตัดเงิน/บันทึกออเดอร์จริงอยู่ใน Phase ถัดไป
         </p>
         <Link
           href="/buyer"
@@ -44,6 +96,75 @@ export default function CartPage() {
     );
   }
 
+  /* ---------- ขั้นตอนชำระเงิน ---------- */
+  if (step === "pay") {
+    return (
+      <div className="pb-40">
+        <header className="bg-petrol text-white sticky top-0 z-20">
+          <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
+            <button type="button" onClick={() => setStep("cart")} className="text-lg" aria-label="กลับ">
+              ‹
+            </button>
+            <h1 className="font-semibold flex-1">เลือกวิธีชำระเงิน</h1>
+          </div>
+        </header>
+
+        <main className="max-w-md mx-auto px-4 pt-4 space-y-4">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-2">
+            {methods.map((m) => (
+              <button
+                key={m.id}
+                type="button"
+                onClick={() => setPayMethod(m.id)}
+                className={`w-full flex items-center gap-3 p-2 rounded-xl border transition ${
+                  payMethod === m.id ? "border-mint bg-mint-soft" : "border-gray-100"
+                }`}
+              >
+                {m.icon}
+                <span className="flex-1 text-left text-sm text-gray-800">{m.label}</span>
+                <span
+                  className={`w-5 h-5 rounded-full border-2 grid place-items-center flex-none ${
+                    payMethod === m.id ? "border-mint" : "border-gray-300"
+                  }`}
+                >
+                  {payMethod === m.id && <span className="w-2.5 h-2.5 rounded-full bg-mint" />}
+                </span>
+              </button>
+            ))}
+            <Link href="/buyer/setting/payment" className="block text-xs text-mint font-semibold pt-1">
+              + จัดการช่องทางชำระเงิน
+            </Link>
+          </div>
+
+          {/* QR เมื่อเลือกพร้อมเพย์ */}
+          {payMethod === "promptpay" && (
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col items-center">
+              <p className="text-sm font-semibold text-gray-800 mb-2">สแกนเพื่อจ่าย {money(total)}</p>
+              <QrMock />
+              <p className="text-[11px] text-gray-400 mt-2">QR ตัวอย่าง — สแกนด้วยแอปธนาคาร</p>
+            </div>
+          )}
+        </main>
+
+        <div className="fixed bottom-16 left-0 right-0 z-20 bg-white border-t border-gray-100">
+          <div className="max-w-md mx-auto px-4 py-3">
+            <button
+              type="button"
+              onClick={() => {
+                clearCart();
+                setStep("done");
+              }}
+              className="w-full bg-petrol hover:bg-petrol-2 text-white font-semibold text-sm py-3 rounded-xl transition"
+            >
+              ยืนยันการชำระเงิน · {money(total)}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ---------- ตะกร้า ---------- */
   return (
     <div className="pb-40">
       <header className="bg-petrol text-white sticky top-0 z-20">
@@ -60,58 +181,37 @@ export default function CartPage() {
           <div className="text-center py-20">
             <div className="text-5xl mb-3">🛒</div>
             <p className="text-sm text-gray-400">ยังไม่มีสินค้าในตะกร้า</p>
-            <Link
-              href="/buyer"
-              className="inline-block mt-4 text-mint font-semibold text-sm"
-            >
+            <Link href="/buyer" className="inline-block mt-4 text-mint font-semibold text-sm">
               เลือกซื้อสินค้า ›
             </Link>
           </div>
         ) : (
           <div className="space-y-3">
             {items.map(({ p, qty }) => (
-              <div
-                key={p.id}
-                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 flex items-center gap-3"
-              >
-                <div className="w-14 h-14 rounded-xl bg-mint-soft grid place-items-center text-2xl flex-none">
-                  {p.image_emoji ?? "📦"}
-                </div>
+              <div key={p.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 flex items-center gap-3">
+                <ProductImage name={p.name} className="w-14 h-14 rounded-xl flex-none" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-gray-800 truncate">{p.name}</p>
                   <p className="text-sm font-bold text-petrol mono">{money(p.price)}</p>
                 </div>
                 <div className="flex items-center gap-2 flex-none">
-                  <button
-                    type="button"
-                    onClick={() => setQty(p.id, qty - 1)}
-                    className="w-7 h-7 rounded-md border border-gray-200 text-gray-500"
-                  >
+                  <button type="button" onClick={() => setQty(p.id, qty - 1)} className="w-7 h-7 rounded-md border border-gray-200 text-gray-500">
                     −
                   </button>
                   <span className="text-sm font-semibold w-5 text-center">{qty}</span>
-                  <button
-                    type="button"
-                    onClick={() => setQty(p.id, qty + 1)}
-                    className="w-7 h-7 rounded-md border border-gray-200 text-gray-500"
-                  >
+                  <button type="button" onClick={() => setQty(p.id, qty + 1)} className="w-7 h-7 rounded-md border border-gray-200 text-gray-500">
                     +
                   </button>
                 </div>
               </div>
             ))}
-            <button
-              type="button"
-              onClick={() => clearCart()}
-              className="text-xs text-gray-400 underline"
-            >
+            <button type="button" onClick={() => clearCart()} className="text-xs text-gray-400 underline">
               ล้างตะกร้า
             </button>
           </div>
         )}
       </main>
 
-      {/* แถบสรุป + ชำระเงิน (เหนือ bottom nav) */}
       {items.length > 0 && (
         <div className="fixed bottom-16 left-0 right-0 z-20 bg-white border-t border-gray-100">
           <div className="max-w-md mx-auto px-4 py-3">
@@ -122,10 +222,7 @@ export default function CartPage() {
             <p className="text-[11px] text-teal-600 mb-2">✓ รวมออกใบกำกับภาษีใบเดียวผ่าน e-Tax</p>
             <button
               type="button"
-              onClick={() => {
-                clearCart();
-                setPlaced(true);
-              }}
+              onClick={() => setStep("pay")}
               className="w-full bg-petrol hover:bg-petrol-2 text-white font-semibold text-sm py-3 rounded-xl transition"
             >
               ดำเนินการชำระเงิน · {money(total)}
@@ -133,6 +230,27 @@ export default function CartPage() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function Tile({ className = "", children }: { className?: string; children: React.ReactNode }) {
+  return (
+    <div className={`w-11 h-11 rounded-lg grid place-items-center font-bold flex-none ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+function QrMock() {
+  const cells = Array.from({ length: 49 }, (_, i) => (i * 7 + (i % 5) * 3) % 3 === 0);
+  return (
+    <div className="bg-white p-3 rounded-xl border border-gray-200">
+      <div className="grid grid-cols-7 gap-0.5 w-40 h-40">
+        {cells.map((on, i) => (
+          <div key={i} className={on ? "bg-petrol-ink rounded-[1px]" : "bg-transparent"} />
+        ))}
+      </div>
     </div>
   );
 }

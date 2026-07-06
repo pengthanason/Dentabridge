@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { addToCart } from "@/lib/cart";
+import ProductImage from "@/components/ProductImage";
 import type { Product } from "@/lib/types";
 
 const money = (n: number) => "฿" + n.toLocaleString("th-TH");
@@ -60,9 +61,7 @@ export default function ProductDetail({
 
       <main className="max-w-md mx-auto">
         {/* รูป */}
-        <div className="h-56 bg-mint-soft grid place-items-center text-7xl">
-          {product.image_emoji ?? "📦"}
-        </div>
+        <ProductImage name={product.name} className="h-56" />
 
         <div className="px-4 py-4 space-y-4">
           <div>
