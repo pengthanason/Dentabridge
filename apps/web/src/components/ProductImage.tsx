@@ -106,26 +106,6 @@ function art(name: string): Art {
   };
 }
 
-// เลือก keyword รูปถ่าย stock ตามชนิดสินค้า
-function keyword(name: string): string {
-  const n = name.toLowerCase();
-  if (n.includes("o-ring") || n.includes("ยาง")) return "orthodontics,dental";
-  if (n.includes("composite") || n.includes("อุด")) return "dental,tooth";
-  if (n.includes("ถุงมือ") || n.includes("glove")) return "medical,gloves";
-  if (n.includes("น้ำยา") || n.includes("ฆ่าเชื้อ")) return "disinfectant,bottle";
-  if (n.includes("bracket")) return "braces,orthodontics";
-  if (n.includes("เข็ม") || n.includes("ฉีด")) return "syringe,medical";
-  if (n.includes("หัวกรอ") || n.includes("เพชร") || n.includes("bur")) return "dental,drill";
-  if (n.includes("ก๊อซ") || n.includes("ผ้า")) return "gauze,medical";
-  return "dental,medical";
-}
-
-// รูป stock จริง (คงที่ต่อสินค้าด้วย lock) — ใช้ชั่วคราวจนกว่าจะมี image_url จริง
-function stockUrl(name: string): string {
-  const lock = Math.abs([...name].reduce((s, c) => s + c.charCodeAt(0), 0)) % 90;
-  return `https://loremflickr.com/400/400/${keyword(name)}?lock=${lock}`;
-}
-
 export default function ProductImage({
   name,
   imageUrl,
@@ -136,13 +116,13 @@ export default function ProductImage({
   className?: string;
 }) {
   const [errored, setErrored] = useState(false);
-  const src = imageUrl || stockUrl(name);
 
-  if (src && !errored) {
+  // มีรูปจริง (image_url) → ใช้รูปจริง; ไม่มี/โหลดไม่ขึ้น → ภาพวาดเดิม
+  if (imageUrl && !errored) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={src}
+        src={imageUrl}
         alt={name}
         loading="lazy"
         onError={() => setErrored(true)}
