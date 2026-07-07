@@ -49,7 +49,10 @@ async function geminiReply(messages: ChatMsg[], apiKey: string): Promise<Assista
     }
   );
 
-  if (!res.ok) throw new Error(`gemini ${res.status}`);
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`gemini ${res.status}: ${body.slice(0, 300)}`);
+  }
   const data = (await res.json()) as {
     candidates?: Array<{
       content?: { parts?: Array<{ text?: string }> };
@@ -146,9 +149,37 @@ export async function POST(req: Request) {
   try {
     if (geminiKey) return NextResponse.json(await geminiReply(messages, geminiKey));
     if (anthropicKey) return NextResponse.json(await liveReply(messages, anthropicKey));
-  } catch {
+  } catch (e) {
+    console.error("[assistant] live provider failed:", e);
     // ค้นเว็บ/LLM ล้ม → ตกไปใช้ FAQ ที่ยืนยันได้ (ยังไม่มั่ว)
     return NextResponse.json(mockReply(last.content));
   }
   return NextResponse.json(mockReply(last.content));
+}
+
+// GET = หน้าตรวจสอบ: เซิร์ฟเวอร์เห็น key ไหม + เรียก provider จริงแล้วได้/พังเพราะอะไร
+export async function GET() {
+  const geminiKey = process.env.GEMINI_API_KEY;
+  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  const info: Record<string, unknown> = {
+    hasGeminiKey: !!geminiKey,
+    hasAnthropicKey: !!anthropicKey,
+    geminiModel: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+    mode: geminiKey ? "gemini" : anthropicKey ? "claude" : "mock",
+  };
+  const test: ChatMsg[] = [{ role: "user", content: "อย. ย่อมาจากอะไร ตอบสั้น ๆ" }];
+  try {
+    if (geminiKey) {
+      const r = await geminiReply(test, geminiKey);
+      info.test = { ok: true, mode: r.mode, sources: r.sources.length, answerPreview: r.answer.slice(0, 100) };
+    } else if (anthropicKey) {
+      const r = await liveReply(test, anthropicKey);
+      info.test = { ok: true, mode: r.mode, sources: r.sources.length, answerPreview: r.answer.slice(0, 100) };
+    } else {
+      info.test = { ok: false, note: "ยังไม่พบ API key — เซิร์ฟเวอร์ตอบด้วย FAQ (mock)" };
+    }
+  } catch (e) {
+    info.test = { ok: false, error: String(e).slice(0, 400) };
+  }
+  return NextResponse.json(info);
 }
