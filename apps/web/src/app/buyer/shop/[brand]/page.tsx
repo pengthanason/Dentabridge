@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { sellerFromBrand } from "@/lib/sellers";
 import ProductImage from "@/components/ProductImage";
+import AppHeader from "@/components/AppHeader";
 import type { Product } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -24,14 +25,7 @@ export default async function ShopPage({
 
   return (
     <div className="pb-6">
-      <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md lg:max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Link href="/buyer" className="text-lg" aria-label="กลับ">
-            ‹
-          </Link>
-          <h1 className="font-semibold flex-1 truncate">{seller.shop}</h1>
-        </div>
-      </header>
+      <AppHeader title={seller.shop} back />
 
       <main className="max-w-md lg:max-w-6xl mx-auto px-4 pt-4 space-y-4">
         {/* หัวร้าน */}

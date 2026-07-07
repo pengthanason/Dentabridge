@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import AppHeader from "@/components/AppHeader";
 import { COUPONS } from "@/lib/coupons";
 
 const money = (n: number) => "฿" + n.toLocaleString("th-TH");
@@ -19,14 +19,7 @@ export default function CouponPage() {
 
   return (
     <div className="pb-10">
-      <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Link href="/buyer/setting" className="text-lg" aria-label="กลับ">
-            ‹
-          </Link>
-          <h1 className="font-semibold flex-1">คูปองของฉัน</h1>
-        </div>
-      </header>
+      <AppHeader title="คูปองของฉัน" back />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
         <div>

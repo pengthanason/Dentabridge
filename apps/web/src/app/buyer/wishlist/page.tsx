@@ -8,6 +8,7 @@ import { ratingFor } from "@/lib/reviews";
 import ProductImage from "@/components/ProductImage";
 import Stars from "@/components/Stars";
 import { IconHeart } from "@/components/Icons";
+import AppHeader from "@/components/AppHeader";
 import type { Product } from "@/lib/types";
 
 const money = (n: number) => "฿" + n.toLocaleString("th-TH");
@@ -25,14 +26,7 @@ export default function WishlistPage() {
 
   return (
     <div>
-      <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md lg:max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Link href="/buyer" className="text-lg" aria-label="กลับ">
-            ‹
-          </Link>
-          <h1 className="font-semibold flex-1">รายการโปรด</h1>
-        </div>
-      </header>
+      <AppHeader title="รายการโปรด" back />
 
       <main className="max-w-md lg:max-w-6xl mx-auto px-4 pt-4">
         {items.length === 0 ? (

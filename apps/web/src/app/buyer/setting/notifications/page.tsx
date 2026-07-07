@@ -1,4 +1,4 @@
-import Link from "next/link";
+import AppHeader from "@/components/AppHeader";
 
 const NOTIS: { icon: string; title: string; detail: string; time: string; unread?: boolean }[] = [
   {
@@ -38,14 +38,7 @@ const NOTIS: { icon: string; title: string; detail: string; time: string; unread
 export default function NotificationsPage() {
   return (
     <div>
-      <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Link href="/buyer/setting" className="text-lg" aria-label="กลับ">
-            ‹
-          </Link>
-          <h1 className="font-semibold flex-1">การแจ้งเตือน</h1>
-        </div>
-      </header>
+      <AppHeader title="การแจ้งเตือน" back />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4">
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">

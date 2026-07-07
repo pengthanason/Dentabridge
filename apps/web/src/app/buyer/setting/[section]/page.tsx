@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AppHeader from "@/components/AppHeader";
 
 const TITLES: Record<string, string> = {
   profile: "โปรไฟล์ / ข้อมูลส่วนตัว",
@@ -19,14 +20,7 @@ export default function SettingSectionPage({
   const title = TITLES[params.section] ?? "การตั้งค่า";
   return (
     <div>
-      <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Link href="/buyer/setting" className="text-lg" aria-label="กลับ">
-            ‹
-          </Link>
-          <h1 className="font-semibold flex-1 truncate">{title}</h1>
-        </div>
-      </header>
+      <AppHeader title={title} back />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-10 text-center">
         <div className="text-5xl mb-3">🚧</div>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useCart, clearCart } from "@/lib/cart";
 import { findCoupon, discountOf, type Coupon } from "@/lib/coupons";
+import AppHeader from "@/components/AppHeader";
 import type { Product } from "@/lib/types";
 
 const money = (n: number) => "฿" + n.toLocaleString("th-TH");
@@ -84,14 +85,7 @@ export default function PayPage() {
 
   return (
     <div className="pb-28">
-      <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
-          <button type="button" onClick={() => router.back()} className="text-lg" aria-label="กลับ">
-            ‹
-          </button>
-          <h1 className="font-semibold flex-1">ชำระเงิน</h1>
-        </div>
-      </header>
+      <AppHeader title="ชำระเงิน" back />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
         {/* คูปอง */}

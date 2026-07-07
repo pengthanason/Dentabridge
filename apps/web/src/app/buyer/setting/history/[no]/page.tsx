@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MOCK_ORDERS, orderTotal, money, toneCls } from "@/lib/mockOrders";
 import ReorderButton from "@/components/ReorderButton";
+import AppHeader from "@/components/AppHeader";
 
 export default function OrderDetailPage({
   params,
@@ -16,21 +17,17 @@ export default function OrderDetailPage({
 
   return (
     <div>
-      <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Link href="/buyer/setting/history" className="text-lg" aria-label="กลับ">
-            ‹
-          </Link>
-          <h1 className="font-semibold flex-1 truncate mono">{order.no}</h1>
-          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${toneCls[order.tone]}`}>
-            {order.status}
-          </span>
-        </div>
-      </header>
+      <AppHeader title={order.no} back />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
         {/* ข้อมูลออเดอร์ */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-2 text-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-gray-400">สถานะ</span>
+            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${toneCls[order.tone]}`}>
+              {order.status}
+            </span>
+          </div>
           <Row label="วันที่สั่งซื้อ" value={order.date} />
           <Row label="ผู้ขาย" value={order.seller} />
           <Row label="ชำระโดย" value={order.payment} />

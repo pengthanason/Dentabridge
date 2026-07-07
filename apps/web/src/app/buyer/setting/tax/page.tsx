@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import AppHeader from "@/components/AppHeader";
 
 const money = (n: number) => "฿" + n.toLocaleString("th-TH", { minimumFractionDigits: 2 });
 
@@ -64,14 +64,9 @@ export default function TaxPage() {
 
   return (
     <div className="pb-10">
-      <header className="bg-petrol text-white sticky top-0 z-20 no-print">
-        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Link href="/buyer/setting" className="text-lg" aria-label="กลับ">
-            ‹
-          </Link>
-          <h1 className="font-semibold flex-1">ข้อมูลใบกำกับภาษี</h1>
-        </div>
-      </header>
+      <div className="no-print">
+        <AppHeader title="ข้อมูลใบกำกับภาษี" back />
+      </div>
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
         <div className="print-area bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">

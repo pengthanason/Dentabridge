@@ -11,6 +11,7 @@ import { ratingFor, useReviews, addReview } from "@/lib/reviews";
 import ProductImage from "@/components/ProductImage";
 import Stars from "@/components/Stars";
 import { IconHeart } from "@/components/Icons";
+import AppHeader from "@/components/AppHeader";
 import type { Product } from "@/lib/types";
 
 const money = (n: number) => "฿" + n.toLocaleString("th-TH");
@@ -68,22 +69,7 @@ export default function ProductDetail({
 
   return (
     <div className="pb-28">
-      <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Link href="/buyer" className="text-lg" aria-label="กลับ">
-            ‹
-          </Link>
-          <h1 className="font-semibold truncate flex-1">รายละเอียดสินค้า</h1>
-          <button
-            type="button"
-            onClick={() => toggleWish(product.id)}
-            className={wished ? "text-signal" : "text-white"}
-            aria-label={wished ? "เอาออกจากรายการโปรด" : "เพิ่มในรายการโปรด"}
-          >
-            <IconHeart filled={wished} className="w-6 h-6" />
-          </button>
-        </div>
-      </header>
+      <AppHeader title="รายละเอียดสินค้า" back />
 
       <main className="max-w-md lg:max-w-4xl mx-auto">
         <ProductImage name={product.name} imageUrl={product.image_url} emoji={product.image_emoji} className="h-56 w-full" />
@@ -104,7 +90,20 @@ export default function ProductDetail({
                 {rate.rating} · {rate.count} รีวิว
               </span>
             </div>
-            <p className="text-2xl font-bold text-petrol mono mt-2">{money(product.price)}</p>
+            <div className="flex items-center justify-between mt-2">
+              <p className="text-2xl font-bold text-petrol mono">{money(product.price)}</p>
+              <button
+                type="button"
+                onClick={() => toggleWish(product.id)}
+                className={`flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full border ${
+                  wished ? "border-signal text-signal bg-signal-soft" : "border-gray-200 text-gray-500"
+                }`}
+                aria-label={wished ? "เอาออกจากรายการโปรด" : "เพิ่มในรายการโปรด"}
+              >
+                <IconHeart filled={wished} className="w-4 h-4" />
+                {wished ? "อยู่ในรายการโปรด" : "เพิ่มรายการโปรด"}
+              </button>
+            </div>
             <p className="text-xs text-gray-400 mt-1">คงเหลือ {product.stock} ชิ้น</p>
           </div>
 

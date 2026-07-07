@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import AppHeader from "@/components/AppHeader";
 
 const KEY = "db_delivery_address";
 
@@ -103,14 +103,7 @@ export default function ClinicAddress({
 
   return (
     <div className="pb-6">
-      <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Link href="/buyer/setting" className="text-lg" aria-label="กลับ">
-            ‹
-          </Link>
-          <h1 className="font-semibold flex-1">ข้อมูลคลินิก & ที่อยู่จัดส่ง</h1>
-        </div>
-      </header>
+      <AppHeader title="ข้อมูลคลินิก & ที่อยู่จัดส่ง" back />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
         {/* คลินิก */}

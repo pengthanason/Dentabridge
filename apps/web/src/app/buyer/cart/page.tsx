@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCart, setQty, clearCart } from "@/lib/cart";
 import ProductImage from "@/components/ProductImage";
+import AppHeader from "@/components/AppHeader";
 import type { Product } from "@/lib/types";
 
 const money = (n: number) => "฿" + n.toLocaleString("th-TH");
@@ -28,11 +29,7 @@ export default function CartPage() {
 
   return (
     <div className="pb-40">
-      <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3">
-          <h1 className="font-semibold">ตะกร้าสินค้า</h1>
-        </div>
-      </header>
+      <AppHeader title="ตะกร้าสินค้า" />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4">
         {items.length === 0 ? (
