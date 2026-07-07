@@ -73,6 +73,15 @@ export default function OrderDetailPage({
           </div>
         )}
 
+        {order.tone !== "cancel" && (
+          <Link
+            href={`/buyer/receive/${order.no}`}
+            className="block w-full text-center bg-mint text-petrol-ink font-semibold text-sm py-3 rounded-xl"
+          >
+            📷 ตรวจรับของ (Safety Net)
+          </Link>
+        )}
+
         <ReorderButton items={order.items} />
 
         <Link
