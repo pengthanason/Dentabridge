@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import AppHeader from "@/components/AppHeader";
+import CameraScan from "@/components/CameraScan";
 
 type Row = {
   lcnno: string;
@@ -63,9 +64,10 @@ function FdaSearch({
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState<Row[] | null>(null);
   const [err, setErr] = useState("");
+  const [scanOpen, setScanOpen] = useState(false);
 
-  async function check() {
-    const q = val.trim();
+  async function check(override?: string) {
+    const q = (override ?? val).trim();
     if (!q) return;
     setErr("");
     setRows(null);
@@ -100,13 +102,33 @@ function FdaSearch({
         />
         <button
           type="button"
-          onClick={check}
+          onClick={() => setScanOpen(true)}
+          aria-label="สแกนด้วยกล้อง"
+          className="bg-mint-soft text-petrol text-base px-3 rounded-xl flex-none"
+        >
+          📷
+        </button>
+        <button
+          type="button"
+          onClick={() => check()}
           disabled={loading}
           className="bg-petrol hover:bg-petrol-2 disabled:opacity-60 text-white text-xs font-medium px-4 rounded-xl"
         >
           {loading ? "..." : "ตรวจ"}
         </button>
       </div>
+
+      {scanOpen && (
+        <CameraScan
+          demoValue={type === "mdc" ? "ผ.1/2559" : "10-3-03468-5-0007"}
+          onClose={() => setScanOpen(false)}
+          onDetect={(v) => {
+            setScanOpen(false);
+            setVal(v);
+            check(v);
+          }}
+        />
+      )}
 
       {loading && (
         <div className="flex flex-col items-center py-4 gap-2">
