@@ -1,0 +1,106 @@
+import { NextResponse } from "next/server";
+import { searchKb, FALLBACK_ANSWER, FALLBACK_SOURCES, type Source } from "@/lib/helpKb";
+
+export const runtime = "nodejs";
+export const maxDuration = 30;
+
+type ChatMsg = { role: "user" | "assistant"; content: string };
+type AssistantReply = { answer: string; sources: Source[]; mode: "mock" | "live" };
+
+// โดเมนทางการที่อนุญาตให้บอตค้น (กันมั่ว — ตอบเฉพาะจากเว็บทางการ)
+const ALLOWED_DOMAINS = ["oryor.com", "fda.moph.go.th", "mdcontrol.fda.moph.go.th", "porta.fda.moph.go.th"];
+
+const SYSTEM_PROMPT = `คุณคือ "ผู้ช่วย DentaBridge" — ผู้ช่วย Help Center ของแอปสั่งซื้อวัสดุทันตกรรม B2B สำหรับคลินิกในไทย
+หน้าที่: ตอบคำถามเกี่ยวกับการใช้งานแอป และเรื่องเกี่ยวกับ อย. (สำนักงานคณะกรรมการอาหารและยา)
+
+กฎเหล็ก (ห้ามฝ่าฝืน):
+1. ห้ามเดาหรือแต่งข้อมูลเด็ดขาด ถ้าไม่รู้หรือค้นไม่พบ ให้บอกตรง ๆ ว่าไม่พบข้อมูลที่ยืนยันได้ และแนะนำให้ติดต่อ อย. สายด่วน 1556
+2. เรื่อง อย. / กฎหมาย / ผลิตภัณฑ์สุขภาพ ต้องใช้ web_search ค้นจากเว็บทางการก่อนตอบเสมอ และอ้างอิงลิงก์ที่ค้นเจอ
+3. แนบแหล่งอ้างอิง (ลิงก์) ทุกครั้งที่ให้ข้อมูลเชิงข้อเท็จจริง
+4. ตอบเป็นภาษาไทย กระชับ สุภาพ เข้าใจง่าย
+5. ห้ามให้คำวินิจฉัย/คำแนะนำทางการแพทย์ ให้ชี้ไปแหล่งทางการหรือผู้เชี่ยวชาญ`;
+
+// ── โหมด mock: ตอบจากคลัง FAQ (เขียนจากข้อมูลจริง) + แนบ source เสมอ ──
+function mockReply(question: string): AssistantReply {
+  const hit = searchKb(question);
+  if (hit) return { answer: hit.answer, sources: hit.sources, mode: "mock" };
+  return { answer: FALLBACK_ANSWER, sources: FALLBACK_SOURCES, mode: "mock" };
+}
+
+// ── โหมดจริง: Claude + web_search จำกัดเฉพาะโดเมนทางการ ──
+async function liveReply(messages: ChatMsg[], apiKey: string): Promise<AssistantReply> {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model: process.env.ASSISTANT_MODEL || "claude-sonnet-5",
+      max_tokens: 1024,
+      system: SYSTEM_PROMPT,
+      messages,
+      tools: [
+        {
+          type: "web_search_20250305",
+          name: "web_search",
+          max_uses: 5,
+          allowed_domains: ALLOWED_DOMAINS,
+        },
+      ],
+    }),
+  });
+
+  if (!res.ok) throw new Error(`anthropic ${res.status}`);
+  const data = (await res.json()) as {
+    content?: Array<{
+      type: string;
+      text?: string;
+      citations?: Array<{ url?: string; title?: string }>;
+    }>;
+  };
+
+  let answer = "";
+  const sourceMap = new Map<string, Source>();
+  for (const block of data.content || []) {
+    if (block.type === "text" && block.text) {
+      answer += block.text;
+      for (const c of block.citations || []) {
+        if (c.url && !sourceMap.has(c.url)) {
+          sourceMap.set(c.url, { label: c.title || c.url, url: c.url });
+        }
+      }
+    }
+  }
+  answer = answer.trim();
+  if (!answer) return mockReply(messages[messages.length - 1]?.content || "");
+  return { answer, sources: Array.from(sourceMap.values()), mode: "live" };
+}
+
+export async function POST(req: Request) {
+  let messages: ChatMsg[];
+  try {
+    const body = (await req.json()) as { messages?: ChatMsg[] };
+    messages = (body.messages || [])
+      .filter((m) => (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
+      .slice(-10);
+  } catch {
+    return NextResponse.json({ error: "bad request" }, { status: 400 });
+  }
+  const last = messages[messages.length - 1];
+  if (!last || last.role !== "user" || !last.content.trim()) {
+    return NextResponse.json({ error: "empty question" }, { status: 400 });
+  }
+
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (apiKey) {
+    try {
+      return NextResponse.json(await liveReply(messages, apiKey));
+    } catch {
+      // ค้นเว็บ/LLM ล้ม → ตกไปใช้ FAQ ที่ยืนยันได้ (ยังไม่มั่ว)
+      return NextResponse.json(mockReply(last.content));
+    }
+  }
+  return NextResponse.json(mockReply(last.content));
+}

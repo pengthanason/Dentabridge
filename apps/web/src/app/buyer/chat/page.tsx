@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import AssistantChat from "@/components/AssistantChat";
 
 type Msg = { from: "me" | "them"; text: string };
 type Thread = { id: string; name: string; avatar: string; last: string; time: string; messages: Msg[] };
@@ -38,11 +39,12 @@ const THREADS: Thread[] = [
 export default function ChatPage() {
   const router = useRouter();
   const [activeId, setActiveId] = useState<string | null>(null);
+  const isAssistant = activeId === "assistant";
   const active = THREADS.find((t) => t.id === activeId) || null;
 
   function back() {
     // มือถือ + กำลังดูแชท → กลับไปรายการ; นอกนั้น → ออกไปหน้า Marketplace
-    if (active && typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches) {
+    if ((active || isAssistant) && typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches) {
       setActiveId(null);
     } else {
       router.push("/buyer");
@@ -57,7 +59,7 @@ export default function ChatPage() {
             ‹
           </button>
           <h1 className="font-semibold flex-1 truncate">
-            <span className="lg:hidden">{active ? active.name : "ข้อความ"}</span>
+            <span className="lg:hidden">{isAssistant ? "ผู้ช่วย DentaBridge" : active ? active.name : "ข้อความ"}</span>
             <span className="hidden lg:inline">ข้อความ</span>
           </h1>
         </div>
@@ -67,9 +69,30 @@ export default function ChatPage() {
         {/* รายการแชท (ซ้าย) */}
         <aside
           className={`w-full lg:w-80 lg:flex-none lg:border-r border-gray-200 overflow-y-auto bg-white ${
-            active ? "hidden lg:block" : "block"
+            active || isAssistant ? "hidden lg:block" : "block"
           }`}
         >
+          {/* ผู้ช่วย AI (ปักหมุดบนสุด) */}
+          <button
+            type="button"
+            onClick={() => setActiveId("assistant")}
+            className={`w-full flex items-center gap-3 px-4 py-3 text-left border-b border-gray-100 ${
+              isAssistant ? "lg:bg-mint-soft" : "bg-mint-soft/40"
+            }`}
+          >
+            <div className="w-12 h-12 rounded-full bg-petrol grid place-items-center text-xl text-white flex-none">🤖</div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <p className="font-semibold text-sm text-gray-800 truncate flex items-center gap-1.5">
+                  ผู้ช่วย DentaBridge
+                  <span className="text-[9px] font-bold bg-petrol text-white px-1.5 py-0.5 rounded">AI</span>
+                </p>
+                <span className="text-[10px] text-mint ml-2 flex-none">ออนไลน์</span>
+              </div>
+              <p className="text-xs text-gray-500 truncate">ถามเรื่องเว็บ &amp; อย. ได้เลย · อ้างอิงแหล่งจริง</p>
+            </div>
+          </button>
+
           {THREADS.map((t) => (
             <button
               key={t.id}
@@ -94,8 +117,10 @@ export default function ChatPage() {
         </aside>
 
         {/* สนทนา (ขวา) */}
-        <section className={`w-full lg:flex-1 flex-col ${active ? "flex" : "hidden lg:flex"}`}>
-          {active ? (
+        <section className={`w-full lg:flex-1 flex-col ${active || isAssistant ? "flex" : "hidden lg:flex"}`}>
+          {isAssistant ? (
+            <AssistantChat />
+          ) : active ? (
             <>
               {/* ชื่อคู่สนทนา (โชว์บน desktop) */}
               <div className="hidden lg:flex items-center gap-2 px-4 py-3 border-b border-gray-100 bg-white flex-none">
