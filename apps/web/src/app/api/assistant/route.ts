@@ -27,7 +27,54 @@ function mockReply(question: string): AssistantReply {
   return { answer: FALLBACK_ANSWER, sources: FALLBACK_SOURCES, mode: "mock" };
 }
 
-// ── โหมดจริง: Claude + web_search จำกัดเฉพาะโดเมนทางการ ──
+// ── โหมดจริง (Gemini): Gemini + Google Search grounding ──
+async function geminiReply(messages: ChatMsg[], apiKey: string): Promise<AssistantReply> {
+  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const contents = messages.map((m) => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }],
+  }));
+
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents,
+        tools: [{ google_search: {} }],
+        generationConfig: { temperature: 0.2, maxOutputTokens: 1024 },
+      }),
+    }
+  );
+
+  if (!res.ok) throw new Error(`gemini ${res.status}`);
+  const data = (await res.json()) as {
+    candidates?: Array<{
+      content?: { parts?: Array<{ text?: string }> };
+      groundingMetadata?: { groundingChunks?: Array<{ web?: { uri?: string; title?: string } }> };
+    }>;
+  };
+
+  const cand = data.candidates?.[0];
+  const answer = (cand?.content?.parts || [])
+    .map((p) => p.text || "")
+    .join("")
+    .trim();
+
+  const sourceMap = new Map<string, Source>();
+  for (const g of cand?.groundingMetadata?.groundingChunks || []) {
+    if (g.web?.uri && !sourceMap.has(g.web.uri)) {
+      sourceMap.set(g.web.uri, { label: g.web.title || g.web.uri, url: g.web.uri });
+    }
+  }
+
+  if (!answer) return mockReply(messages[messages.length - 1]?.content || "");
+  return { answer, sources: Array.from(sourceMap.values()), mode: "live" };
+}
+
+// ── โหมดจริง (Claude): web_search จำกัดเฉพาะโดเมนทางการ ──
 async function liveReply(messages: ChatMsg[], apiKey: string): Promise<AssistantReply> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -93,14 +140,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "empty question" }, { status: 400 });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (apiKey) {
-    try {
-      return NextResponse.json(await liveReply(messages, apiKey));
-    } catch {
-      // ค้นเว็บ/LLM ล้ม → ตกไปใช้ FAQ ที่ยืนยันได้ (ยังไม่มั่ว)
-      return NextResponse.json(mockReply(last.content));
-    }
+  // ลำดับ: Gemini → Claude → mock (ตกลงมาเรื่อย ๆ ถ้าล้ม จะไม่มั่ว ใช้ FAQ แทน)
+  const geminiKey = process.env.GEMINI_API_KEY;
+  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  try {
+    if (geminiKey) return NextResponse.json(await geminiReply(messages, geminiKey));
+    if (anthropicKey) return NextResponse.json(await liveReply(messages, anthropicKey));
+  } catch {
+    // ค้นเว็บ/LLM ล้ม → ตกไปใช้ FAQ ที่ยืนยันได้ (ยังไม่มั่ว)
+    return NextResponse.json(mockReply(last.content));
   }
   return NextResponse.json(mockReply(last.content));
 }

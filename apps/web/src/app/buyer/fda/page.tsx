@@ -121,10 +121,10 @@ function FdaSearch({
       {scanOpen && (
         <CameraScan
           onClose={() => setScanOpen(false)}
-          onDetect={(v) => {
+          onDetect={(v, auto) => {
             setScanOpen(false);
             setVal(v);
-            check(v);
+            if (auto) check(v); // QR = แม่น → ตรวจเลย; OCR = กรอกให้ ผู้ใช้กดตรวจเอง
           }}
         />
       )}
