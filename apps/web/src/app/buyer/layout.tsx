@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentUser } from "@/lib/supabase/user";
 import BuyerNav from "@/components/BuyerNav";
+import PageFade from "@/components/PageFade";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +26,7 @@ export default async function BuyerLayout({
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      {children}
+      <PageFade>{children}</PageFade>
       <BuyerNav />
     </div>
   );

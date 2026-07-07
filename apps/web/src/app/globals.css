@@ -23,6 +23,47 @@ body {
   letter-spacing: 0.01em;
 }
 
+/* ---------- ฟีดแบ็กเวลากดปุ่ม + ทรานซิชัน ---------- */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.08s ease,
+    opacity 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+button:active:not(:disabled),
+a:active {
+  transform: scale(0.96);
+}
+
+/* ---------- fade ตอนเปลี่ยนหน้า ---------- */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-fade {
+  animation: fadeUp 0.28s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a,
+  button {
+    transition: none;
+  }
+  button:active:not(:disabled),
+  a:active {
+    transform: none;
+  }
+  .animate-fade {
+    animation: none;
+  }
+}
+
 /* สำหรับ Export PDF (พิมพ์เฉพาะส่วน .print-area) */
 @media print {
   body * {

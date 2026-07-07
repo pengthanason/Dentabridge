@@ -52,29 +52,39 @@ export default function Marketplace({
   return (
     <>
       <header className="bg-petrol text-white sticky top-0 z-20">
-        <div className="max-w-md lg:max-w-6xl mx-auto px-4 py-3 flex items-center gap-2">
+        <div className="max-w-md lg:max-w-6xl mx-auto px-4 py-2.5">
+          {/* แถวบน: แบรนด์ + ไอคอน */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <div className="w-7 h-7 rounded-lg bg-mint grid place-items-center font-bold text-petrol-ink text-xs mono flex-none">
+                DB
+              </div>
+              <span className="font-bold tracking-tight truncate">DentaBridge</span>
+            </div>
+            <Link href="/buyer/wishlist" className="relative flex flex-col items-center justify-center px-1.5 flex-none text-white" aria-label="รายการโปรด">
+              <IconHeart className="w-5 h-5" />
+              <span className="text-[9px] leading-none mt-0.5 whitespace-nowrap">รายการโปรด</span>
+              {wishlist.length > 0 && (
+                <span className="absolute top-0 right-1.5 bg-signal text-white text-[9px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
+                  {wishlist.length}
+                </span>
+              )}
+            </Link>
+            <Link href="/buyer/chat" className="relative flex flex-col items-center justify-center w-12 flex-none text-white" aria-label="แชท">
+              <IconChat className="w-5 h-5" />
+              <span className="text-[9px] leading-none mt-0.5">แชท</span>
+              <span className="absolute top-0 right-1.5 bg-signal text-white text-[9px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
+                2
+              </span>
+            </Link>
+          </div>
+          {/* แถวล่าง: ค้นหา */}
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="ค้นหาสินค้า / ยี่ห้อ..."
-            className="flex-1 bg-white/10 placeholder:text-white/60 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:bg-white/20"
+            className="mt-2 w-full bg-white/10 placeholder:text-white/60 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:bg-white/20"
           />
-          <Link href="/buyer/wishlist" className="relative flex flex-col items-center justify-center px-1.5 flex-none text-white" aria-label="รายการโปรด">
-            <IconHeart className="w-5 h-5" />
-            <span className="text-[9px] leading-none mt-0.5 whitespace-nowrap">รายการโปรด</span>
-            {wishlist.length > 0 && (
-              <span className="absolute top-0 right-1.5 bg-signal text-white text-[9px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
-                {wishlist.length}
-              </span>
-            )}
-          </Link>
-          <Link href="/buyer/chat" className="relative flex flex-col items-center justify-center w-12 flex-none text-white" aria-label="แชท">
-            <IconChat className="w-5 h-5" />
-            <span className="text-[9px] leading-none mt-0.5">แชท</span>
-            <span className="absolute top-0 right-1.5 bg-signal text-white text-[9px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
-              2
-            </span>
-          </Link>
         </div>
       </header>
 
