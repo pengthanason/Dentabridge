@@ -120,7 +120,6 @@ function FdaSearch({
 
       {scanOpen && (
         <CameraScan
-          demoValue={type === "mdc" ? "ผ.1/2559" : "10-3-03468-5-0007"}
           onClose={() => setScanOpen(false)}
           onDetect={(v) => {
             setScanOpen(false);

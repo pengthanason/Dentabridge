@@ -77,6 +77,33 @@ a:active {
   animation: sheetUp 0.32s cubic-bezier(0.22, 0.8, 0.28, 1) both;
 }
 
+/* เส้นสแกนกวาดในกรอบกล้อง */
+@keyframes scanSweep {
+  0% {
+    transform: translateY(6px);
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100px);
+    opacity: 0.2;
+  }
+}
+.scanline {
+  position: absolute;
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, #2fa25b, transparent);
+  box-shadow: 0 0 8px #2fa25b;
+  animation: scanSweep 1.8s ease-in-out infinite;
+  will-change: transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
