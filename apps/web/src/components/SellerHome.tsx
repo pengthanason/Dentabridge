@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import ChatSheet, { type ChatThread } from "@/components/ChatSheet";
+import { IconChat } from "@/components/Icons";
 import type { Product } from "@/lib/types";
 
 type Tab = "dash" | "products" | "orders" | "settings";
@@ -82,8 +83,8 @@ export default function SellerHome({
               className="relative w-9 h-9 grid place-items-center"
               aria-label="แชท"
             >
-              💬
-              <span className="absolute -top-1 -right-1 bg-signal text-[10px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
+              <IconChat className="w-5 h-5" />
+              <span className="absolute -top-1 -right-1 bg-signal text-white text-[10px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
                 2
               </span>
             </button>

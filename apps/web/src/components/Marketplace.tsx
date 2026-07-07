@@ -7,6 +7,7 @@ import { useWishlist, toggleWish } from "@/lib/wishlist";
 import { ratingFor } from "@/lib/reviews";
 import ProductImage from "@/components/ProductImage";
 import Stars from "@/components/Stars";
+import { IconHeart, IconChat } from "@/components/Icons";
 import type { Product, Category } from "@/lib/types";
 
 const money = (n: number) => "฿" + n.toLocaleString("th-TH");
@@ -58,17 +59,19 @@ export default function Marketplace({
             placeholder="ค้นหาสินค้า / ยี่ห้อ..."
             className="flex-1 bg-white/10 placeholder:text-white/60 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:bg-white/20"
           />
-          <Link href="/buyer/wishlist" className="relative w-9 h-9 grid place-items-center" aria-label="รายการโปรด">
-            ❤️
+          <Link href="/buyer/wishlist" className="relative flex flex-col items-center justify-center w-12 flex-none text-white" aria-label="รายการโปรด">
+            <IconHeart className="w-5 h-5" />
+            <span className="text-[9px] leading-none mt-0.5">โปรด</span>
             {wishlist.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-signal text-white text-[10px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
+              <span className="absolute top-0 right-1.5 bg-signal text-white text-[9px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
                 {wishlist.length}
               </span>
             )}
           </Link>
-          <Link href="/buyer/chat" className="relative w-9 h-9 grid place-items-center" aria-label="แชท">
-            💬
-            <span className="absolute -top-1 -right-1 bg-signal text-white text-[10px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
+          <Link href="/buyer/chat" className="relative flex flex-col items-center justify-center w-12 flex-none text-white" aria-label="แชท">
+            <IconChat className="w-5 h-5" />
+            <span className="text-[9px] leading-none mt-0.5">แชท</span>
+            <span className="absolute top-0 right-1.5 bg-signal text-white text-[9px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
               2
             </span>
           </Link>
@@ -135,10 +138,12 @@ export default function Marketplace({
                       e.stopPropagation();
                       toggleWish(p.id);
                     }}
-                    className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-white/90 grid place-items-center text-sm shadow"
-                    aria-label="ถูกใจ"
+                    className={`absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-white/90 grid place-items-center shadow ${
+                      wished ? "text-signal" : "text-gray-400"
+                    }`}
+                    aria-label={wished ? "เอาออกจากรายการโปรด" : "เพิ่มในรายการโปรด"}
                   >
-                    {wished ? "❤️" : "🤍"}
+                    <IconHeart filled={wished} className="w-4 h-4" />
                   </button>
                   <ProductImage name={p.name} imageUrl={p.image_url} emoji={p.image_emoji} className="h-24" />
                   <div className="p-3 flex flex-col flex-1">

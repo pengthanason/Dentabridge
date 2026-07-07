@@ -10,6 +10,7 @@ import { useWishlist, toggleWish } from "@/lib/wishlist";
 import { ratingFor, useReviews, addReview } from "@/lib/reviews";
 import ProductImage from "@/components/ProductImage";
 import Stars from "@/components/Stars";
+import { IconHeart } from "@/components/Icons";
 import type { Product } from "@/lib/types";
 
 const money = (n: number) => "฿" + n.toLocaleString("th-TH");
@@ -73,8 +74,13 @@ export default function ProductDetail({
             ‹
           </Link>
           <h1 className="font-semibold truncate flex-1">รายละเอียดสินค้า</h1>
-          <button type="button" onClick={() => toggleWish(product.id)} className="text-xl" aria-label="ถูกใจ">
-            {wished ? "❤️" : "🤍"}
+          <button
+            type="button"
+            onClick={() => toggleWish(product.id)}
+            className={wished ? "text-signal" : "text-white"}
+            aria-label={wished ? "เอาออกจากรายการโปรด" : "เพิ่มในรายการโปรด"}
+          >
+            <IconHeart filled={wished} className="w-6 h-6" />
           </button>
         </div>
       </header>

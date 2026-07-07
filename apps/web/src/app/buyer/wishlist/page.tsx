@@ -7,6 +7,7 @@ import { useWishlist, toggleWish } from "@/lib/wishlist";
 import { ratingFor } from "@/lib/reviews";
 import ProductImage from "@/components/ProductImage";
 import Stars from "@/components/Stars";
+import { IconHeart } from "@/components/Icons";
 import type { Product } from "@/lib/types";
 
 const money = (n: number) => "฿" + n.toLocaleString("th-TH");
@@ -36,7 +37,7 @@ export default function WishlistPage() {
       <main className="max-w-md lg:max-w-6xl mx-auto px-4 pt-4">
         {items.length === 0 ? (
           <div className="text-center py-20">
-            <div className="text-5xl mb-3">🤍</div>
+            <div className="flex justify-center mb-3 text-gray-300"><IconHeart className="w-12 h-12" /></div>
             <p className="text-sm text-gray-400">ยังไม่มีสินค้าที่ถูกใจ</p>
             <Link href="/buyer" className="inline-block mt-4 text-mint font-semibold text-sm">
               เลือกดูสินค้า ›
@@ -59,10 +60,10 @@ export default function WishlistPage() {
                       e.stopPropagation();
                       toggleWish(p.id);
                     }}
-                    className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-white/90 grid place-items-center text-sm shadow"
+                    className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-white/90 grid place-items-center text-signal shadow"
                     aria-label="เอาออกจากรายการโปรด"
                   >
-                    ❤️
+                    <IconHeart filled className="w-4 h-4" />
                   </button>
                   <ProductImage name={p.name} imageUrl={p.image_url} emoji={p.image_emoji} className="h-24" />
                   <div className="p-3 flex flex-col flex-1">
