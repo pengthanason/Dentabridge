@@ -128,6 +128,7 @@ export default function Marketplace({
           <span className="text-[11px] text-gray-400 ml-auto">{list.length} รายการ</span>
         </div>
 
+        <div key={`${catId}-${sort}-${verifiedOnly}`} className="animate-fade">
         {list.length === 0 ? (
           <p className="text-center text-sm text-gray-400 py-10">ไม่พบสินค้า</p>
         ) : (
@@ -177,6 +178,7 @@ export default function Marketplace({
             })}
           </div>
         )}
+        </div>
       </main>
     </>
   );

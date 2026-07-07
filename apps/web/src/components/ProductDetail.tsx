@@ -286,7 +286,7 @@ export default function ProductDetail({
       {showOffer && (
         <>
           <div onClick={() => setShowOffer(false)} className="fixed inset-0 bg-black/40 z-40" aria-hidden />
-          <div className="fixed inset-x-0 bottom-0 z-50 max-w-md lg:max-w-4xl mx-auto bg-white rounded-t-3xl shadow-2xl p-5">
+          <div className="fixed inset-x-0 bottom-0 z-50 max-w-md lg:max-w-4xl mx-auto bg-white rounded-t-3xl shadow-2xl p-5 animate-sheet">
             <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-3" />
             <form onSubmit={submitOffer} className="space-y-3">
               <div>

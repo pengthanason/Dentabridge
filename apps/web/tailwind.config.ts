@@ -21,7 +21,7 @@ const config: Config = {
         "amber-soft": "#F6E7CE",
       },
       fontFamily: {
-        sans: ['"Archivo"', '"Prompt"', "system-ui", "sans-serif"],
+        sans: ['"Prompt"', '"Archivo"', "system-ui", "sans-serif"],
         mono: ['"Archivo"', '"Prompt"', "ui-monospace", "monospace"],
       },
     },
