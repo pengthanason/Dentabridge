@@ -28,8 +28,25 @@ function mockReply(question: string): AssistantReply {
 }
 
 // ── โหมดจริง (Gemini): Gemini + Google Search grounding ──
+// ลองรุ่นที่ตั้งไว้ก่อน ถ้าโดนจำกัดโควตา/หาไม่เจอ (429/404) ค่อยตกไป flash ที่มี free tier
 async function geminiReply(messages: ChatMsg[], apiKey: string): Promise<AssistantReply> {
-  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const configured = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const models = [...new Set([configured, "gemini-2.5-flash", "gemini-2.0-flash"])];
+  let lastErr: unknown = null;
+  for (const model of models) {
+    try {
+      return await geminiCall(messages, apiKey, model);
+    } catch (e) {
+      lastErr = e;
+      const s = String(e);
+      // เฉพาะ 429 (โควตา) / 404 (รุ่นไม่มี) เท่านั้นที่ลองรุ่นถัดไป — error อื่นเลิกเลย
+      if (!s.includes(" 429") && !s.includes(" 404")) throw e;
+    }
+  }
+  throw lastErr || new Error("gemini failed");
+}
+
+async function geminiCall(messages: ChatMsg[], apiKey: string, model: string): Promise<AssistantReply> {
   const contents = messages.map((m) => ({
     role: m.role === "assistant" ? "model" : "user",
     parts: [{ text: m.content }],
@@ -51,7 +68,7 @@ async function geminiReply(messages: ChatMsg[], apiKey: string): Promise<Assista
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(`gemini ${res.status}: ${body.slice(0, 300)}`);
+    throw new Error(`gemini(${model}) ${res.status}: ${body.slice(0, 300)}`);
   }
   const data = (await res.json()) as {
     candidates?: Array<{
