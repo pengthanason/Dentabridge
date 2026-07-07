@@ -59,9 +59,9 @@ export default function Marketplace({
             placeholder="ค้นหาสินค้า / ยี่ห้อ..."
             className="flex-1 bg-white/10 placeholder:text-white/60 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:bg-white/20"
           />
-          <Link href="/buyer/wishlist" className="relative flex flex-col items-center justify-center w-12 flex-none text-white" aria-label="รายการโปรด">
+          <Link href="/buyer/wishlist" className="relative flex flex-col items-center justify-center px-1.5 flex-none text-white" aria-label="รายการโปรด">
             <IconHeart className="w-5 h-5" />
-            <span className="text-[9px] leading-none mt-0.5">โปรด</span>
+            <span className="text-[9px] leading-none mt-0.5 whitespace-nowrap">รายการโปรด</span>
             {wishlist.length > 0 && (
               <span className="absolute top-0 right-1.5 bg-signal text-white text-[9px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
                 {wishlist.length}
