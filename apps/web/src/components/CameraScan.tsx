@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// แปลงข้อความที่อ่านได้ให้เป็นเลข อย. ที่ใช้ตรวจได้ ("" = ยังไม่เจอที่ชัดพอ)
+// แปลงข้อความที่อ่านได้ให้เป็นเลข อย. ("" = ไม่เจอรูปแบบที่ชัดพอ)
 function matchFda(raw: string): string {
   const s = decodeURIComponent(raw || "");
   const full = s.match(/\d{1,2}-\d-\d{4,5}-\d-\d{4}/); // เลขสารบบเต็ม 10-3-03468-5-0007
@@ -18,7 +18,6 @@ function matchFda(raw: string): string {
   return "";
 }
 
-type BD = { detect: (v: unknown) => Promise<{ rawValue: string }[]> };
 type QRFn = (d: Uint8ClampedArray, w: number, h: number, o?: unknown) => { data: string } | null;
 type Worker = {
   recognize: (c: unknown) => Promise<{ data: { text: string } }>;
@@ -45,7 +44,8 @@ export default function CameraScan({
   const [ocrReady, setOcrReady] = useState(false);
   const [ocrErr, setOcrErr] = useState(false);
   const [reading, setReading] = useState(false);
-  const [lastRead, setLastRead] = useState("");
+  const [candidate, setCandidate] = useState<string | null>(null);
+  const [msg, setMsg] = useState("");
 
   // จับภาพเฉพาะแถบกลางจอ + ทำขาวดำ/ไบนารี (Otsu) ให้ตัวเลขคมก่อนส่งเข้า OCR
   function grabBand(): HTMLCanvasElement | null {
@@ -65,7 +65,6 @@ export default function CameraScan({
     if (!ctx) return null;
     ctx.drawImage(v, sx, sy, cw, ch, 0, 0, c.width, c.height);
 
-    // ขาวดำ + Otsu threshold
     const img = ctx.getImageData(0, 0, c.width, c.height);
     const px = img.data;
     const hist = new Array(256).fill(0);
@@ -107,7 +106,7 @@ export default function CameraScan({
   function grabFull(): ImageData | null {
     const v = videoRef.current;
     if (!v || !v.videoWidth) return null;
-    const maxW = 640;
+    const maxW = 720;
     const scale = Math.min(1, maxW / v.videoWidth);
     const w = Math.round(v.videoWidth * scale);
     const h = Math.round(v.videoHeight * scale);
@@ -118,12 +117,6 @@ export default function CameraScan({
     if (!ctx) return null;
     ctx.drawImage(v, 0, 0, w, h);
     return ctx.getImageData(0, 0, w, h);
-  }
-
-  function finish(value: string, auto: boolean) {
-    if (stoppedRef.current || !value) return;
-    cleanup();
-    onDetect(value, auto);
   }
 
   function cleanup() {
@@ -138,37 +131,57 @@ export default function CameraScan({
     }
   }
 
-  // อ่าน OCR จากเฟรมปัจจุบัน 1 ครั้ง — คืน { number, digits, text }
-  async function runOcr(): Promise<{ number: string; digits: string; text: string }> {
-    const worker = workerRef.current;
-    const band = grabBand();
-    if (!worker || !band) return { number: "", digits: "", text: "" };
-    const { data } = await worker.recognize(band);
-    const text = (data.text || "").replace(/\s+/g, " ").trim();
-    return { number: matchFda(text), digits: text.replace(/\D/g, ""), text };
+  function finish(value: string, auto: boolean) {
+    if (!value) return;
+    cleanup();
+    onDetect(value, auto);
   }
 
-  // ปุ่มถ่าย & อ่าน (ผู้ใช้ถือนิ่ง ๆ แล้วกด — แม่นกว่าลูป)
+  // กดถ่าย → อ่านจากภาพนิ่งครั้งเดียว (ไม่เด้งเอง): ลอง QR ก่อน แล้วค่อย OCR
   async function capture() {
-    if (reading || !workerRef.current) return;
+    if (reading) return;
     setReading(true);
-    try {
-      const r = await runOcr();
-      setLastRead(r.text.slice(0, 40));
-      if (r.number) return finish(r.number, false);
-      if (r.digits.length >= 8) return finish(r.digits, false); // ให้ผู้ใช้แก้เลขในช่องแล้วกดตรวจเอง
-      setLastRead(r.text ? `อ่านได้: ${r.text.slice(0, 30)} (ยังไม่ครบ ลองขยับให้ชัด)` : "อ่านไม่ออก ลองขยับ/เพิ่มแสง");
-    } catch {
-      setOcrErr(true);
+    setMsg("");
+    setCandidate(null);
+
+    // QR จากภาพนิ่ง (แม่น → ใช้ได้ทันที)
+    const qr = decodeQRRef.current;
+    const im = grabFull();
+    if (qr && im) {
+      try {
+        const r = qr(im.data, im.width, im.height, { inversionAttempts: "attemptBoth" });
+        if (r && r.data) {
+          setReading(false);
+          return finish(matchFda(r.data) || r.data, true);
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+
+    // OCR ตัวเลข → ให้ยืนยันก่อน (ไม่ auto)
+    const band = grabBand();
+    if (workerRef.current && band) {
+      try {
+        const { data } = await workerRef.current.recognize(band);
+        const text = (data.text || "").replace(/\s+/g, " ").trim();
+        const num = matchFda(text);
+        const digits = text.replace(/\D/g, "");
+        if (num) setCandidate(num);
+        else if (digits.length >= 8) setCandidate(digits);
+        else setMsg(text ? `อ่านได้ไม่ชัด: “${text.slice(0, 24)}” — เลื่อนให้ชัดแล้วถ่ายใหม่` : "อ่านไม่ออก — เพิ่มแสง/ขยับให้ชัดแล้วถ่ายใหม่");
+      } catch {
+        setOcrErr(true);
+      }
+    } else {
+      setMsg("ตัวอ่านเลขยังไม่พร้อม (โหลดไม่ได้) — สแกน QR หรือกรอกเลขเอง");
     }
     setReading(false);
   }
 
   useEffect(() => {
     stoppedRef.current = false;
-
     (async () => {
-      // 1) เปิดกล้องหลัง
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: "environment" },
@@ -184,45 +197,18 @@ export default function CameraScan({
         return;
       }
 
-      // 2) ตัวถอด QR (jsQR) — ทุกอุปกรณ์รวม iOS
       try {
         decodeQRRef.current = ((await import("jsqr")).default as unknown) as QRFn;
       } catch {
-        /* ยังใช้ทางอื่นได้ */
+        /* ยังกรอกเองได้ */
       }
 
-      // 3) BarcodeDetector (Android/Chrome) — QR/บาร์โค้ดเร็วสุด
-      const BDClass = (window as unknown as { BarcodeDetector?: new (o?: unknown) => BD }).BarcodeDetector;
-      if (BDClass) {
-        let detector: BD;
-        try {
-          detector = new BDClass({ formats: ["qr_code", "code_128", "ean_13", "code_39", "data_matrix", "pdf417"] });
-        } catch {
-          detector = new BDClass();
-        }
-        const loopBD = async () => {
-          if (stoppedRef.current || !videoRef.current) return;
-          try {
-            const codes = await detector.detect(videoRef.current);
-            if (codes && codes.length) {
-              const rv = codes[0].rawValue || "";
-              return finish(matchFda(rv) || rv, true); // QR = แม่น → กรอก+ตรวจอัตโนมัติ
-            }
-          } catch {
-            /* frame not ready */
-          }
-          requestAnimationFrame(loopBD);
-        };
-        requestAnimationFrame(loopBD);
-      }
-
-      // 4) โหลด OCR (Tesseract) — บอกสถานะจริงถ้าโหลดไม่ได้
       try {
         const { createWorker } = await import("tesseract.js");
         const w = (await createWorker("eng")) as unknown as Worker;
         await w.setParameters({
           tessedit_char_whitelist: "0123456789-/",
-          tessedit_pageseg_mode: "6", // uniform block
+          tessedit_pageseg_mode: "6",
         });
         if (stoppedRef.current) {
           w.terminate();
@@ -230,34 +216,6 @@ export default function CameraScan({
         }
         workerRef.current = w;
         setOcrReady(true);
-
-        // 5) ลูปอ่านอัตโนมัติ (เผื่อจับได้เอง) + jsQR ทุกรอบ
-        const loop = async () => {
-          if (stoppedRef.current) return;
-          const qr = decodeQRRef.current;
-          if (qr) {
-            const im = grabFull();
-            if (im) {
-              try {
-                const res = qr(im.data, im.width, im.height, { inversionAttempts: "attemptBoth" });
-                if (res && res.data) return finish(matchFda(res.data) || res.data, true);
-              } catch {
-                /* ignore */
-              }
-            }
-          }
-          if (workerRef.current) {
-            try {
-              const r = await runOcr();
-              if (r.text) setLastRead(r.text.slice(0, 30));
-              if (r.number) return finish(r.number, false); // เจอเลขครบรูปแบบ → กรอกให้ (ผู้ใช้กดตรวจเอง)
-            } catch {
-              /* ignore */
-            }
-          }
-          if (!stoppedRef.current) setTimeout(loop, 700);
-        };
-        loop();
       } catch {
         setOcrErr(true);
       }
@@ -271,11 +229,9 @@ export default function CameraScan({
     <div className="fixed inset-0 z-[70] bg-black flex flex-col">
       <video ref={videoRef} playsInline muted className="absolute inset-0 w-full h-full object-cover" />
 
-      {/* กรอบสแกน */}
+      {/* กรอบเล็งเลข */}
       <div className="absolute inset-0 grid place-items-center pointer-events-none">
-        <div className="relative w-[88%] max-w-sm h-28 rounded-2xl border-2 border-mint shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]">
-          <div className="scanline" />
-        </div>
+        <div className="relative w-[88%] max-w-sm h-28 rounded-2xl border-2 border-mint shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]" />
       </div>
 
       {/* หัว */}
@@ -288,27 +244,47 @@ export default function CameraScan({
       <div className="relative z-10 mt-auto p-5 text-center text-white space-y-3">
         {err ? (
           <p className="text-sm bg-signal/90 rounded-lg px-3 py-2">{err}</p>
+        ) : candidate ? (
+          // ยืนยันเลขที่อ่านได้ก่อน (แก้ปัญหาอ่านผิดแล้วเด้งเอง)
+          <div className="bg-black/70 rounded-xl p-4 space-y-3 max-w-sm mx-auto">
+            <p className="text-xs text-white/70">อ่านเลขได้:</p>
+            <p className="text-2xl font-bold mono text-mint break-all">{candidate}</p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => { setCandidate(null); setMsg(""); }}
+                className="flex-1 border border-white/40 text-white font-medium text-sm py-2.5 rounded-xl"
+              >
+                ถ่ายใหม่
+              </button>
+              <button
+                type="button"
+                onClick={() => finish(candidate, false)}
+                className="flex-1 bg-mint text-petrol-ink font-bold text-sm py-2.5 rounded-xl"
+              >
+                ✓ ใช้เลขนี้
+              </button>
+            </div>
+            <p className="text-[10px] text-white/50">ถ้าเลขไม่ถูก กด “ถ่ายใหม่” หรือแก้ในช่องหลังกดใช้ได้</p>
+          </div>
         ) : (
           <>
             <p className="text-xs text-white/85">
-              {ready ? "วางเลข อย. ให้อยู่ในกรอบ ถือนิ่ง ๆ แล้วกดปุ่มด้านล่าง" : "กำลังเปิดกล้อง…"}
+              {ready ? "วางเลข อย. ให้อยู่ในกรอบ รอกล้องโฟกัสให้ชัด แล้วกดถ่าย" : "กำลังเปิดกล้อง…"}
             </p>
-            {lastRead && (
-              <p className="text-[11px] text-mint bg-black/50 rounded-lg px-3 py-1.5 inline-block mono">{lastRead}</p>
-            )}
+            {msg && <p className="text-[11px] text-amber bg-black/50 rounded-lg px-3 py-1.5 inline-block">{msg}</p>}
             {ocrErr && (
               <p className="text-[11px] text-amber bg-black/50 rounded-lg px-3 py-1.5">
                 โหลดตัวอ่านเลขไม่ได้ (เน็ตช้า/ถูกบล็อก) — สแกน QR ได้ หรือกรอกเลขเอง
               </p>
             )}
-
             <button
               type="button"
               onClick={capture}
-              disabled={!ocrReady || reading}
-              className="w-full max-w-sm mx-auto bg-mint disabled:opacity-50 text-petrol-ink font-bold text-sm py-3.5 rounded-xl flex items-center justify-center gap-2"
+              disabled={!ready || reading}
+              className="w-full max-w-sm mx-auto bg-mint disabled:opacity-50 text-petrol-ink font-bold text-base py-4 rounded-xl flex items-center justify-center gap-2"
             >
-              {reading ? "กำลังอ่าน…" : ocrReady ? "📸 อ่านเลขในกรอบ" : "กำลังเตรียมตัวอ่านเลข…"}
+              {reading ? "กำลังอ่าน…" : "📸 ถ่าย & อ่านเลข"}
             </button>
             <button
               type="button"
