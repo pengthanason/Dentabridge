@@ -14,12 +14,16 @@ export default function CartPage() {
   const supabase = useMemo(() => createClient(), []);
   const cart = useCart();
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     supabase
       .from("products")
       .select("*")
-      .then(({ data }) => setProducts((data ?? []) as Product[]));
+      .then(({ data }) => {
+        setProducts((data ?? []) as Product[]);
+        setLoading(false);
+      });
   }, [supabase]);
 
   const items = Object.entries(cart)
@@ -32,7 +36,12 @@ export default function CartPage() {
       <AppHeader title="ตะกร้าสินค้า" />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4">
-        {items.length === 0 ? (
+        {loading ? (
+          <div className="flex flex-col items-center py-20 gap-3">
+            <div className="w-8 h-8 rounded-full border-[3px] border-mint-soft border-t-petrol animate-spin" />
+            <p className="text-xs text-gray-400">กำลังโหลดตะกร้า…</p>
+          </div>
+        ) : items.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-5xl mb-3">🛒</div>
             <p className="text-sm text-gray-400">ยังไม่มีสินค้าในตะกร้า</p>
@@ -67,7 +76,7 @@ export default function CartPage() {
         )}
       </main>
 
-      {items.length > 0 && (
+      {!loading && items.length > 0 && (
         <div className="fixed bottom-16 left-0 right-0 z-20 bg-white border-t border-gray-100">
           <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3">
             <div className="flex justify-between text-sm mb-1">

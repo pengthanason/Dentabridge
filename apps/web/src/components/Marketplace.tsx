@@ -27,7 +27,6 @@ export default function Marketplace({
   const [search, setSearch] = useState("");
   const [catId, setCatId] = useState<number | null>(null);
   const [sort, setSort] = useState<Sort>("popular");
-  const [verifiedOnly, setVerifiedOnly] = useState(false);
   const wishlist = useWishlist();
 
   useEffect(() => {
@@ -37,7 +36,6 @@ export default function Marketplace({
   let list = products.filter(
     (p) =>
       (catId === null || p.category_id === catId) &&
-      (!verifiedOnly || p.fda_verified) &&
       (search === "" ||
         p.name.toLowerCase().includes(search.toLowerCase()) ||
         (p.brand ?? "").toLowerCase().includes(search.toLowerCase()))
@@ -61,19 +59,19 @@ export default function Marketplace({
               </div>
               <span className="font-bold tracking-tight truncate">DentaBridge</span>
             </div>
-            <Link href="/buyer/wishlist" className="relative flex flex-col items-center justify-center px-1.5 flex-none text-white" aria-label="รายการโปรด">
+            <Link href="/buyer/wishlist" className="relative flex flex-col items-center justify-center px-1 flex-none text-white" aria-label="รายการโปรด">
               <IconHeart className="w-5 h-5" />
               <span className="text-[9px] leading-none mt-0.5 whitespace-nowrap">รายการโปรด</span>
               {wishlist.length > 0 && (
-                <span className="absolute top-0 right-1.5 bg-signal text-white text-[9px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
+                <span className="absolute top-0 right-1 bg-signal text-white text-[9px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
                   {wishlist.length}
                 </span>
               )}
             </Link>
-            <Link href="/buyer/chat" className="relative flex flex-col items-center justify-center w-12 flex-none text-white" aria-label="แชท">
+            <Link href="/buyer/chat" className="relative flex flex-col items-center justify-center w-11 flex-none text-white" aria-label="แชท">
               <IconChat className="w-5 h-5" />
               <span className="text-[9px] leading-none mt-0.5">แชท</span>
-              <span className="absolute top-0 right-1.5 bg-signal text-white text-[9px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
+              <span className="absolute top-0 right-1 bg-signal text-white text-[9px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
                 2
               </span>
             </Link>
@@ -116,19 +114,10 @@ export default function Marketplace({
             <option value="price-desc">ราคา: มาก → น้อย</option>
             <option value="rating">คะแนนสูงสุด</option>
           </select>
-          <button
-            type="button"
-            onClick={() => setVerifiedOnly((v) => !v)}
-            className={`text-xs px-3 py-1.5 rounded-lg border ${
-              verifiedOnly ? "bg-mint-soft border-mint text-teal-700" : "bg-white border-gray-200 text-gray-500"
-            }`}
-          >
-            ✓ อย. verified
-          </button>
           <span className="text-[11px] text-gray-400 ml-auto">{list.length} รายการ</span>
         </div>
 
-        <div key={`${catId}-${sort}-${verifiedOnly}`} className="animate-fade">
+        <div key={`${catId}-${sort}`} className="animate-fade">
         {list.length === 0 ? (
           <p className="text-center text-sm text-gray-400 py-10">ไม่พบสินค้า</p>
         ) : (

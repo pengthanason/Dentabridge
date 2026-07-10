@@ -44,7 +44,7 @@ export default async function ProfilePage() {
             🦷
           </div>
           <div className="min-w-0">
-            <p className="font-bold text-gray-900 truncate">{buyer?.full_name ?? "ทันตแพทย์"}</p>
+            <p className="font-bold text-gray-900 truncate">{buyer?.full_name ?? "ธนสันต์ บุญมาก"}</p>
             <div className="flex items-center gap-1 mt-1 flex-wrap">
               <Badge ok={!!profile?.email_verified}>อีเมล</Badge>
               <Badge ok={!!profile?.phone_verified}>เบอร์</Badge>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCart, cartCount } from "@/lib/cart";
+import { useCart } from "@/lib/cart";
 
 const items = [
   { href: "/buyer", icon: "🛍️", label: "Marketplace", match: (p: string) => p === "/buyer" || p.startsWith("/buyer/product") },
@@ -14,7 +14,7 @@ const items = [
 export default function BuyerNav() {
   const pathname = usePathname();
   const cart = useCart();
-  const count = cartCount(cart);
+  const count = Object.keys(cart).length; // จำนวน "รายการ" (ไม่ใช่จำนวนชิ้นรวม)
 
   // ซ่อน nav ในหน้าแชท / รายละเอียดสินค้า / ชำระเงิน (หน้าเต็ม มีแถบของตัวเอง)
   if (
