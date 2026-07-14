@@ -12,9 +12,19 @@ export type LineProfile = {
 
 // init ครั้งเดียว (แชร์ promise) — กันเรียกซ้ำหลายคอมโพเนนต์
 let initPromise: Promise<void> | null = null;
-function ensureInit(liffId: string) {
-  if (!initPromise) initPromise = liff.init({ liffId });
-  return initPromise;
+
+// init LIFF ครั้งเดียว แล้วคืน liff object (null ถ้าไม่มี LIFF_ID / init ล้ม)
+export async function ensureLiff(): Promise<typeof liff | null> {
+  const liffId = process.env.NEXT_PUBLIC_LIFF_ID;
+  if (!liffId) return null;
+  try {
+    if (!initPromise) initPromise = liff.init({ liffId });
+    await initPromise;
+    return liff;
+  } catch (e) {
+    console.error("LIFF init failed", e);
+    return null;
+  }
 }
 
 // hook: ดึงโปรไฟล์ LINE (ชื่อ/รูป) ถ้าเปิดผ่าน LINE หรือเคยล็อกอิน LINE แล้ว
@@ -32,8 +42,11 @@ export function useLineProfile() {
         return;
       }
       try {
-        await ensureInit(liffId);
-        if (cancel) return;
+        const l = await ensureLiff();
+        if (cancel || !l) {
+          if (!cancel) setReady(true);
+          return;
+        }
         if (liff.isLoggedIn()) {
           setLoggedIn(true);
           const p = await liff.getProfile();

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { buyerAuthEmail, buyerAuthPassword } from "@/lib/auth";
+import LineAutoLogin from "@/components/LineAutoLogin";
 
 type Mode = "select" | "buyer" | "seller";
 
@@ -52,6 +53,7 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-6 py-10 bg-gradient-to-b from-petrol to-petrol-ink text-white">
+      <LineAutoLogin />
       <div className="w-full max-w-sm">
         {/* แบรนด์ */}
         <div className="flex items-center gap-2 justify-center mb-8">
