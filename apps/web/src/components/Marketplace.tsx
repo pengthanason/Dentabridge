@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { seedCartOnce } from "@/lib/cart";
+import { useLineProfile } from "@/lib/liff";
 import { useWishlist, toggleWish } from "@/lib/wishlist";
 import { ratingFor } from "@/lib/reviews";
 import ProductImage from "@/components/ProductImage";
@@ -28,6 +29,7 @@ export default function Marketplace({
   const [catId, setCatId] = useState<number | null>(null);
   const [sort, setSort] = useState<Sort>("popular");
   const wishlist = useWishlist();
+  const { profile: lineProfile } = useLineProfile();
 
   useEffect(() => {
     seedCartOnce(products.slice(0, 2).map((p) => p.id));
@@ -87,10 +89,20 @@ export default function Marketplace({
       </header>
 
       <main className="max-w-md lg:max-w-6xl mx-auto px-4 pt-4 space-y-4">
-        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
-          <p className="text-[10px] text-gray-400 mono uppercase">Marketplace</p>
-          <h2 className="font-bold text-gray-900">{fullName}</h2>
-          {clinic && <p className="text-xs text-gray-500">{clinic}</p>}
+        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center gap-3">
+          <div className="w-11 h-11 rounded-full bg-mint-soft grid place-items-center text-xl flex-none overflow-hidden">
+            {lineProfile?.pictureUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={lineProfile.pictureUrl} alt="" className="w-full h-full object-cover" />
+            ) : (
+              "🦷"
+            )}
+          </div>
+          <div className="min-w-0">
+            <p className="text-[10px] text-gray-400 mono uppercase">Marketplace</p>
+            <h2 className="font-bold text-gray-900 truncate">{lineProfile?.displayName ?? fullName}</h2>
+            {clinic && <p className="text-xs text-gray-500 truncate">{clinic}</p>}
+          </div>
         </div>
 
         {/* หมวดหมู่ */}

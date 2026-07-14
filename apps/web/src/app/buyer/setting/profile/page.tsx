@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import AppHeader from "@/components/AppHeader";
+import ProfileIdentity from "@/components/ProfileIdentity";
 
 export const dynamic = "force-dynamic";
 
@@ -39,27 +40,12 @@ export default async function ProfilePage() {
       <AppHeader title="ข้อมูลส่วนตัว" back />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-mint-soft grid place-items-center text-2xl flex-none">
-            🦷
-          </div>
-          <div className="min-w-0">
-            <p className="font-bold text-gray-900 truncate">{buyer?.full_name ?? "ธนสันต์ บุญมาก"}</p>
-            <div className="flex items-center gap-1 mt-1 flex-wrap">
-              <Badge ok={!!profile?.email_verified}>อีเมล</Badge>
-              <Badge ok={!!profile?.phone_verified}>เบอร์</Badge>
-              {profile?.verified ? (
-                <span className="text-[10px] bg-mint-soft text-teal-700 font-semibold px-2 py-0.5 rounded-full">
-                  ✓ ยืนยันโดยแอดมิน
-                </span>
-              ) : (
-                <span className="text-[10px] bg-amber-soft text-amber font-semibold px-2 py-0.5 rounded-full">
-                  รออนุมัติ
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
+        <ProfileIdentity
+          fallbackName={buyer?.full_name ?? "ธนสันต์ บุญมาก"}
+          emailVerified={!!profile?.email_verified}
+          phoneVerified={!!profile?.phone_verified}
+          verified={!!profile?.verified}
+        />
 
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
           {rows.map(([label, value]) => (
@@ -75,18 +61,5 @@ export default async function ProfilePage() {
         </p>
       </main>
     </div>
-  );
-}
-
-function Badge({ ok, children }: { ok: boolean; children: React.ReactNode }) {
-  return (
-    <span
-      className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-        ok ? "bg-mint-soft text-teal-700" : "bg-gray-100 text-gray-400"
-      }`}
-    >
-      {ok ? "✓ " : ""}
-      {children}
-    </span>
   );
 }
