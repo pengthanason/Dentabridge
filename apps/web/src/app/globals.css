@@ -19,8 +19,16 @@ body {
 }
 
 body {
-  @apply bg-gray-50 text-gray-800 font-sans antialiased;
+  @apply text-gray-800 font-sans antialiased;
+  background-color: #f4f7f5; /* พื้น neutral โทนเขียวจาง ๆ ดูสะอาด/พรีเมียม */
   text-rendering: optimizeLegibility;
+}
+
+/* focus ring เฉพาะคีย์บอร์ด (a11y + ดูเรียบร้อย) */
+:focus-visible {
+  outline: 2px solid #2fa25b;
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 
 /* label/ตัวเลข */

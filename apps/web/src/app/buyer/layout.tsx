@@ -33,7 +33,7 @@ export default async function BuyerLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-[#f4f7f5] pb-20">
       <SmoothTransitions />
       <PageFade>{children}</PageFade>
       <BuyerNav />

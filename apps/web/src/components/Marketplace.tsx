@@ -51,7 +51,7 @@ export default function Marketplace({
 
   return (
     <>
-      <header className="bg-petrol text-white sticky top-0 z-20">
+      <header className="bg-gradient-to-b from-petrol to-petrol-2 text-white sticky top-0 z-30 shadow-[0_6px_24px_rgba(14,63,37,0.22)]">
         <div className="max-w-md lg:max-w-6xl mx-auto px-4 py-2.5">
           {/* แถวบน: แบรนด์ + ไอคอน */}
           <div className="flex items-center gap-2">
@@ -79,18 +79,24 @@ export default function Marketplace({
             </Link>
           </div>
           {/* แถวล่าง: ค้นหา */}
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="ค้นหาสินค้า / ยี่ห้อ..."
-            className="mt-2 w-full bg-white/10 placeholder:text-white/60 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:bg-white/20"
-          />
+          <div className="relative mt-2.5">
+            <svg viewBox="0 0 24 24" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/60" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <circle cx="11" cy="11" r="7" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="ค้นหาสินค้า / ยี่ห้อ..."
+              className="w-full bg-white/12 placeholder:text-white/55 text-white rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:bg-white/20 focus:ring-2 focus:ring-white/25 transition"
+            />
+          </div>
         </div>
       </header>
 
       <main className="max-w-md lg:max-w-6xl mx-auto px-4 pt-4 space-y-4">
-        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-card flex items-center gap-3">
-          <div className="w-11 h-11 rounded-full bg-mint-soft grid place-items-center text-xl flex-none overflow-hidden">
+        <div className="bg-white rounded-2xl p-4 shadow-card flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-full bg-mint-soft ring-2 ring-white shadow-sm grid place-items-center text-xl flex-none overflow-hidden">
             {lineProfile?.pictureUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={lineProfile.pictureUrl} alt="" className="w-full h-full object-cover" />
@@ -99,9 +105,9 @@ export default function Marketplace({
             )}
           </div>
           <div className="min-w-0">
-            <p className="text-[10px] text-gray-400 mono uppercase">Marketplace</p>
-            <h2 className="font-bold text-gray-900 truncate">{lineProfile?.displayName ?? fullName}</h2>
-            {clinic && <p className="text-xs text-gray-500 truncate">{clinic}</p>}
+            <p className="text-[10px] font-semibold tracking-[0.15em] text-mint uppercase">ยินดีต้อนรับ</p>
+            <h2 className="font-bold text-gray-900 text-[15px] leading-tight truncate">{lineProfile?.displayName ?? fullName}</h2>
+            {clinic && <p className="text-xs text-gray-400 truncate mt-0.5">{clinic}</p>}
           </div>
         </div>
 
@@ -157,23 +163,25 @@ export default function Marketplace({
                   >
                     <IconHeart filled={wished} className="w-4 h-4" />
                   </button>
-                  <ProductImage name={p.name} imageUrl={p.image_url} emoji={p.image_emoji} className="h-24" />
+                  <ProductImage name={p.name} imageUrl={p.image_url} emoji={p.image_emoji} className="h-28 bg-gray-50" />
                   <div className="p-3 flex flex-col flex-1">
                     <span
-                      className={`text-[9px] mono w-fit px-1.5 py-0.5 rounded mb-1 ${
+                      className={`text-[9px] mono font-medium w-fit px-1.5 py-0.5 rounded-md mb-1.5 ${
                         p.fda_verified ? "text-teal-700 bg-mint-soft" : "text-amber bg-amber-soft"
                       }`}
                     >
-                      {p.fda_verified ? "✓ อย. verified" : "⚠️ ยังไม่ยืนยัน อย."}
+                      {p.fda_verified ? "✓ อย." : "⚠️ ยังไม่ยืนยัน"}
                     </span>
-                    <p className="text-xs font-semibold text-gray-800 leading-snug line-clamp-2">{p.name}</p>
-                    <div className="flex items-center gap-1 mt-0.5">
+                    <p className="text-[13px] font-semibold text-gray-800 leading-snug line-clamp-2">{p.name}</p>
+                    <div className="flex items-center gap-1 mt-1">
                       <Stars rating={r.rating} />
                       <span className="text-[10px] text-gray-400">({r.count})</span>
                     </div>
-                    <div className="flex items-center justify-between mt-auto pt-2">
-                      <span className="text-sm font-bold text-petrol mono">{money(p.price)}</span>
-                      <span className="text-[10px] text-mint font-semibold">ดู ›</span>
+                    <div className="flex items-end justify-between mt-auto pt-2.5">
+                      <span className="text-[15px] font-bold text-petrol mono leading-none">{money(p.price)}</span>
+                      <span className="w-6 h-6 rounded-full bg-mint-soft text-petrol grid place-items-center flex-none" aria-hidden>
+                        <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                      </span>
                     </div>
                   </div>
                 </Link>
