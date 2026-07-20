@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { lineAuthEmail } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 
 export const runtime = "nodejs";
 
@@ -38,6 +39,14 @@ export async function POST(req: Request) {
 
   // password = HMAC(userId, SERVER_SECRET) — client เดาเองไม่ได้เพราะไม่รู้ secret
   const password = crypto.createHmac("sha256", secret).update(userId).digest("hex");
+
+  // audit: บันทึกการยืนยันตัวตนผ่าน LINE (no-op ถ้ายังไม่เปิดใช้ audit)
+  await logAudit({
+    action: "line_verify",
+    target: userId,
+    ip: req.headers.get("x-forwarded-for"),
+    meta: { displayName: line.name ?? null },
+  });
 
   return NextResponse.json({
     configured: true,
