@@ -26,10 +26,12 @@ export default function LoginPage() {
     e.preventDefault();
     setErr("");
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: buyerAuthEmail(license),
-      password,
-    });
+    const email = buyerAuthEmail(license);
+    let { error } = await supabase.auth.signInWithPassword({ email, password });
+    // เผื่อบัญชีเดิม: รหัสผ่านเก่า = db_ + เลขท้ายบัตร 5 หลัก → ให้พิมพ์แค่ 5 หลักก็เข้าได้
+    if (error && /^\d{5}$/.test(password)) {
+      ({ error } = await supabase.auth.signInWithPassword({ email, password: `db_${password}` }));
+    }
     setLoading(false);
     if (error) return setErr("เลขใบอนุญาตหรือรหัสผ่านไม่ถูกต้อง");
     router.push("/buyer");
