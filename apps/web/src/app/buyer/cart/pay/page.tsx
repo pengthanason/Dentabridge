@@ -215,13 +215,35 @@ function Row({ label, value, green }: { label: string; value: string; green?: bo
 function Tile({ className = "", children }: { className?: string; children: React.ReactNode }) {
   return <div className={`w-11 h-11 rounded-lg grid place-items-center font-bold flex-none ${className}`}>{children}</div>;
 }
+// QR ตัวอย่าง (เดโม) — สร้างลาย finder pattern มุม + modules ให้ดูเหมือน QR จริง (deterministic กัน hydration mismatch)
 function QrMock() {
-  const cells = Array.from({ length: 49 }, (_, i) => (i * 7 + (i % 5) * 3) % 3 === 0);
+  const N = 21;
+  const finder = (r: number, c: number): boolean | null => {
+    const box = (br: number, bc: number) => {
+      const rr = r - br,
+        cc = c - bc;
+      if (rr < 0 || cc < 0 || rr > 6 || cc > 6) return null;
+      const ring = rr === 0 || rr === 6 || cc === 0 || cc === 6;
+      const core = rr >= 2 && rr <= 4 && cc >= 2 && cc <= 4;
+      return ring || core;
+    };
+    const a = box(0, 0);
+    if (a !== null) return a;
+    const b = box(0, N - 7);
+    if (b !== null) return b;
+    return box(N - 7, 0);
+  };
+  const cells: boolean[] = [];
+  for (let r = 0; r < N; r++)
+    for (let c = 0; c < N; c++) {
+      const f = finder(r, c);
+      cells.push(f !== null ? f : (r * 7 + c * 13 + r * c) % 3 === 0);
+    }
   return (
-    <div className="bg-white p-3 rounded-xl border border-gray-200">
-      <div className="grid grid-cols-7 gap-0.5 w-40 h-40">
+    <div className="bg-white p-3 rounded-2xl border border-gray-200 shadow-card">
+      <div className="grid gap-px w-44 h-44" style={{ gridTemplateColumns: `repeat(${N}, minmax(0,1fr))` }}>
         {cells.map((on, i) => (
-          <div key={i} className={on ? "bg-petrol-ink rounded-[1px]" : "bg-transparent"} />
+          <div key={i} className={on ? "bg-petrol-ink" : "bg-transparent"} />
         ))}
       </div>
     </div>

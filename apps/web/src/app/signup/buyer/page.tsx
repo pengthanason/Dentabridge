@@ -19,6 +19,7 @@ export default function BuyerSignupPage() {
   const [nationalId, setNationalId] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [consent, setConsent] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -27,6 +28,7 @@ export default function BuyerSignupPage() {
     if (nationalId.length !== 13) return setErr("เลขบัตรประชาชนต้องมี 13 หลัก");
     if (!email.includes("@")) return setErr("อีเมลไม่ถูกต้อง");
     if (phone.length < 9) return setErr("เบอร์โทรศัพท์ไม่ถูกต้อง");
+    if (!consent) return setErr("กรุณายอมรับการเก็บและใช้ข้อมูลส่วนบุคคล (PDPA)");
 
     const last5 = nationalId.slice(-5);
     setLoading(true);
@@ -42,6 +44,7 @@ export default function BuyerSignupPage() {
           national_id: nationalId,
           contact_email: email,
           phone,
+          pdpa_consent: true,
         },
       },
     });
@@ -84,6 +87,18 @@ export default function BuyerSignupPage() {
           />
           <Field label="อีเมล" value={email} onChange={setEmail} placeholder="you@email.com" type="email" inputMode="email" />
           <Field label="เบอร์โทรศัพท์" value={phone} onChange={(v) => setPhone(v.replace(/\D/g, "").slice(0, 10))} placeholder="08XXXXXXXX" inputMode="tel" />
+          <label className="flex items-start gap-2 text-[11px] text-gray-500 leading-snug">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              className="mt-0.5 accent-mint flex-none"
+            />
+            <span>
+              ยินยอมให้ DentaBridge เก็บ รวบรวม และใช้ข้อมูลส่วนบุคคล (รวมถึงเลขใบอนุญาต/เลขบัตรประชาชน)
+              เพื่อยืนยันตัวตนและให้บริการ ตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล (PDPA)
+            </span>
+          </label>
           <ErrMsg msg={err} />
           <Submit loading={loading} label="สมัครและยืนยันตัวตน" />
           <p className="text-xs text-center text-gray-500">
