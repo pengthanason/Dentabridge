@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { buyerAuthEmail, buyerAuthPassword } from "@/lib/auth";
+import { buyerAuthEmail } from "@/lib/auth";
 import { Brand, Field, Submit, ErrMsg } from "@/components/ui";
 
 export default function BuyerSignupPage() {
@@ -19,6 +19,7 @@ export default function BuyerSignupPage() {
   const [nationalId, setNationalId] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
   const [consent, setConsent] = useState(false);
 
   async function submit(e: React.FormEvent) {
@@ -28,13 +29,13 @@ export default function BuyerSignupPage() {
     if (nationalId.length !== 13) return setErr("เลขบัตรประชาชนต้องมี 13 หลัก");
     if (!email.includes("@")) return setErr("อีเมลไม่ถูกต้อง");
     if (phone.length < 9) return setErr("เบอร์โทรศัพท์ไม่ถูกต้อง");
+    if (password.length < 8) return setErr("รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร");
     if (!consent) return setErr("กรุณายอมรับการเก็บและใช้ข้อมูลส่วนบุคคล (PDPA)");
 
-    const last5 = nationalId.slice(-5);
     setLoading(true);
     const { error } = await supabase.auth.signUp({
       email: buyerAuthEmail(license),
-      password: buyerAuthPassword(last5),
+      password,
       options: {
         data: {
           role: "buyer",
@@ -71,7 +72,7 @@ export default function BuyerSignupPage() {
           <div>
             <h2 className="font-bold text-petrol">สมัครบัญชี · ทันตแพทย์</h2>
             <p className="text-xs text-gray-500">
-              รหัสผ่านของคุณคือเลขท้ายบัตรประชาชน 5 หลัก
+              ตั้งรหัสผ่านของคุณเอง · เลขบัตรใช้ยืนยันตัวตนเท่านั้น
             </p>
           </div>
           <Field label="ชื่อ - นามสกุล" value={fullName} onChange={setFullName} placeholder="เช่น ทพ. ธนสันต์ บุญมาก" />
@@ -83,10 +84,11 @@ export default function BuyerSignupPage() {
             onChange={(v) => setNationalId(v.replace(/\D/g, "").slice(0, 13))}
             placeholder="13 หลัก"
             inputMode="numeric"
-            hint="ใช้ 5 หลักท้ายเป็นรหัสผ่านเข้าระบบ"
+            hint="ใช้ยืนยันตัวตนคลินิก (ไม่ใช่รหัสผ่าน)"
           />
           <Field label="อีเมล" value={email} onChange={setEmail} placeholder="you@email.com" type="email" inputMode="email" />
           <Field label="เบอร์โทรศัพท์" value={phone} onChange={(v) => setPhone(v.replace(/\D/g, "").slice(0, 10))} placeholder="08XXXXXXXX" inputMode="tel" />
+          <Field label="ตั้งรหัสผ่าน" value={password} onChange={setPassword} placeholder="อย่างน้อย 8 ตัวอักษร" type="password" hint="ใช้เข้าสู่ระบบครั้งต่อไป" />
           <label className="flex items-start gap-2 text-[11px] text-gray-500 leading-snug">
             <input
               type="checkbox"

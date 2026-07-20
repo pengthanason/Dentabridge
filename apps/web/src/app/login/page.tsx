@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { buyerAuthEmail, buyerAuthPassword } from "@/lib/auth";
+import { buyerAuthEmail } from "@/lib/auth";
 import LineAutoLogin from "@/components/LineAutoLogin";
 
 type Mode = "select" | "buyer" | "seller";
@@ -18,8 +18,7 @@ export default function LoginPage() {
 
   // buyer fields
   const [license, setLicense] = useState("");
-  const [idLast5, setIdLast5] = useState("");
-  // seller fields
+  // ใช้ password ร่วมกับฝั่ง seller ได้ (แสดงทีละโหมด)
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -29,10 +28,10 @@ export default function LoginPage() {
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
       email: buyerAuthEmail(license),
-      password: buyerAuthPassword(idLast5),
+      password,
     });
     setLoading(false);
-    if (error) return setErr("เลขใบอนุญาตหรือเลขบัตรไม่ถูกต้อง");
+    if (error) return setErr("เลขใบอนุญาตหรือรหัสผ่านไม่ถูกต้อง");
     router.push("/buyer");
     router.refresh();
   }
@@ -121,12 +120,11 @@ export default function LoginPage() {
               placeholder="เช่น ท.12345"
             />
             <Field
-              label="เลขท้ายบัตรประชาชน 5 หลัก"
-              value={idLast5}
-              onChange={(v) => setIdLast5(v.replace(/\D/g, "").slice(0, 5))}
-              placeholder="•••••"
+              label="รหัสผ่าน"
+              value={password}
+              onChange={setPassword}
+              placeholder="••••••••"
               type="password"
-              inputMode="numeric"
             />
             {err && <Err msg={err} />}
             <Submit loading={loading} label="เข้าสู่ระบบ" />
