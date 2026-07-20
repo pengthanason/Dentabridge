@@ -77,7 +77,7 @@ export default function CartPage() {
       </main>
 
       {!loading && items.length > 0 && (
-        <div className="fixed bottom-16 left-0 right-0 z-20 bg-white border-t border-gray-100">
+        <div className="fixed bottom-16 left-0 right-0 z-20 bg-white border-t border-gray-100 pb-[env(safe-area-inset-bottom)]">
           <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3">
             <div className="flex justify-between text-sm mb-1">
               <span className="text-gray-500">ยอดรวม</span>

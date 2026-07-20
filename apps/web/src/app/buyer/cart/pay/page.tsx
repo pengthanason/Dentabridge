@@ -185,7 +185,7 @@ export default function PayPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100">
+      <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100 pb-[env(safe-area-inset-bottom)]">
         <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3">
           {payErr && (
             <p className="text-[11px] text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-2">{payErr}</p>
