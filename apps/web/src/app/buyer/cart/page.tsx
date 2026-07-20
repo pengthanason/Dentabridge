@@ -6,9 +6,8 @@ import { createClient } from "@/lib/supabase/client";
 import { useCart, setQty, clearCart } from "@/lib/cart";
 import ProductImage from "@/components/ProductImage";
 import AppHeader from "@/components/AppHeader";
+import { money } from "@/lib/format";
 import type { Product } from "@/lib/types";
-
-const money = (n: number) => "฿" + n.toLocaleString("th-TH");
 
 export default function CartPage() {
   const supabase = useMemo(() => createClient(), []);
@@ -52,7 +51,7 @@ export default function CartPage() {
         ) : (
           <div className="space-y-3">
             {items.map(({ p, qty }) => (
-              <div key={p.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 flex items-center gap-3">
+              <div key={p.id} className="bg-white rounded-2xl border border-gray-100 shadow-card p-3 flex items-center gap-3">
                 <ProductImage name={p.name} imageUrl={p.image_url} emoji={p.image_emoji} className="w-14 h-14 rounded-xl flex-none" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-gray-800 truncate">{p.name}</p>

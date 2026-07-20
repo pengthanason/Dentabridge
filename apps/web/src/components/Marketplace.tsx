@@ -9,9 +9,9 @@ import { ratingFor } from "@/lib/reviews";
 import ProductImage from "@/components/ProductImage";
 import Stars from "@/components/Stars";
 import { IconHeart, IconChat } from "@/components/Icons";
+import { money } from "@/lib/format";
 import type { Product, Category } from "@/lib/types";
 
-const money = (n: number) => "฿" + n.toLocaleString("th-TH");
 type Sort = "popular" | "price-asc" | "price-desc" | "rating";
 
 export default function Marketplace({
@@ -89,7 +89,7 @@ export default function Marketplace({
       </header>
 
       <main className="max-w-md lg:max-w-6xl mx-auto px-4 pt-4 space-y-4">
-        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center gap-3">
+        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-card flex items-center gap-3">
           <div className="w-11 h-11 rounded-full bg-mint-soft grid place-items-center text-xl flex-none overflow-hidden">
             {lineProfile?.pictureUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -141,7 +141,7 @@ export default function Marketplace({
                 <Link
                   key={p.id}
                   href={`/buyer/product/${p.id}`}
-                  className="relative bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col active:scale-[0.98] transition"
+                  className="relative bg-white rounded-2xl border border-gray-100 shadow-card hover:shadow-card-hover hover:-translate-y-0.5 overflow-hidden flex flex-col active:scale-[0.98] transition"
                 >
                   <button
                     type="button"
@@ -159,11 +159,13 @@ export default function Marketplace({
                   </button>
                   <ProductImage name={p.name} imageUrl={p.image_url} emoji={p.image_emoji} className="h-24" />
                   <div className="p-3 flex flex-col flex-1">
-                    {p.fda_verified && (
-                      <span className="text-[9px] mono text-teal-700 bg-mint-soft w-fit px-1.5 py-0.5 rounded mb-1">
-                        ✓ อย. verified
-                      </span>
-                    )}
+                    <span
+                      className={`text-[9px] mono w-fit px-1.5 py-0.5 rounded mb-1 ${
+                        p.fda_verified ? "text-teal-700 bg-mint-soft" : "text-amber bg-amber-soft"
+                      }`}
+                    >
+                      {p.fda_verified ? "✓ อย. verified" : "⚠️ ยังไม่ยืนยัน อย."}
+                    </span>
                     <p className="text-xs font-semibold text-gray-800 leading-snug line-clamp-2">{p.name}</p>
                     <div className="flex items-center gap-1 mt-0.5">
                       <Stars rating={r.rating} />

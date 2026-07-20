@@ -13,8 +13,8 @@ import Stars from "@/components/Stars";
 import { IconHeart } from "@/components/Icons";
 import AppHeader from "@/components/AppHeader";
 import type { Product } from "@/lib/types";
+import { money } from "@/lib/format";
 
-const money = (n: number) => "฿" + n.toLocaleString("th-TH");
 
 const CLINIC = { lat: 13.746, lng: 100.533 };
 function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }) {

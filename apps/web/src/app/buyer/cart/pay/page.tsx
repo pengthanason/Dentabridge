@@ -7,9 +7,8 @@ import { createClient } from "@/lib/supabase/client";
 import { useCart, clearCart } from "@/lib/cart";
 import { findCoupon, discountOf, type Coupon } from "@/lib/coupons";
 import AppHeader from "@/components/AppHeader";
+import { money } from "@/lib/format";
 import type { Product } from "@/lib/types";
-
-const money = (n: number) => "฿" + n.toLocaleString("th-TH");
 const BANK_LABEL: Record<string, string> = {
   kbank: "กสิกรไทย", scb: "ไทยพาณิชย์", bbl: "กรุงเทพ", ktb: "กรุงไทย",
   bay: "กรุงศรีอยุธยา", ttb: "ทหารไทยธนชาต", gsb: "ออมสิน", uob: "ยูโอบี",

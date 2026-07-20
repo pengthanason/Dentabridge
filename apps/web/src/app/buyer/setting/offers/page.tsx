@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useOffers } from "@/lib/offers";
 import AppHeader from "@/components/AppHeader";
+import { money } from "@/lib/format";
 
-const money = (n: number) => "฿" + n.toLocaleString("th-TH");
 const statusCls: Record<string, string> = {
   pending: "bg-amber-soft text-amber",
   accepted: "bg-mint-soft text-teal-700",

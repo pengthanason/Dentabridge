@@ -4,9 +4,9 @@ import { sellerFromBrand } from "@/lib/sellers";
 import ProductImage from "@/components/ProductImage";
 import AppHeader from "@/components/AppHeader";
 import type { Product } from "@/lib/types";
+import { money } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
-const money = (n: number) => "฿" + n.toLocaleString("th-TH");
 
 export default async function ShopPage({
   params,

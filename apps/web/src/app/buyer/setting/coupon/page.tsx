@@ -3,8 +3,8 @@
 import { useState } from "react";
 import AppHeader from "@/components/AppHeader";
 import { COUPONS } from "@/lib/coupons";
+import { money } from "@/lib/format";
 
-const money = (n: number) => "฿" + n.toLocaleString("th-TH");
 
 export default function CouponPage() {
   const [toast, setToast] = useState("");

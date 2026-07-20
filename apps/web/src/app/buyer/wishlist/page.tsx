@@ -10,8 +10,8 @@ import Stars from "@/components/Stars";
 import { IconHeart } from "@/components/Icons";
 import AppHeader from "@/components/AppHeader";
 import type { Product } from "@/lib/types";
+import { money } from "@/lib/format";
 
-const money = (n: number) => "฿" + n.toLocaleString("th-TH");
 
 export default function WishlistPage() {
   const supabase = useMemo(() => createClient(), []);

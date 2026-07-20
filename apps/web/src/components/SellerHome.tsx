@@ -6,9 +6,9 @@ import { createClient } from "@/lib/supabase/client";
 import ChatSheet, { type ChatThread } from "@/components/ChatSheet";
 import { IconChat } from "@/components/Icons";
 import type { Product } from "@/lib/types";
+import { money } from "@/lib/format";
 
 type Tab = "dash" | "products" | "orders" | "settings";
-const money = (n: number) => "฿" + n.toLocaleString("th-TH");
 
 // แชทจำลองฝั่งผู้ขาย (คุยกับลูกค้า/คลินิก)
 const SELLER_CHATS: ChatThread[] = [
