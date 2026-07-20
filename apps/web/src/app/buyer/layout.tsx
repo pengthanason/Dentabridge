@@ -19,11 +19,18 @@ export default async function BuyerLayout({
   const supabase = createClient();
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role")
+    .select("role, status, verified")
     .eq("id", user.id)
     .single();
   if (!profile) redirect("/login");
   if (profile.role !== "buyer") redirect("/seller");
+
+  // Verification Gate — บังคับให้ผ่านการยืนยันตัวตนก่อนเข้าฝั่งซื้อ (เครื่องมือแพทย์)
+  // ปิดไว้เป็นค่าเริ่มต้น (เดโม); ตั้ง REQUIRE_BUYER_VERIFIED=true ใน env เพื่อบังคับใช้ production
+  // production เต็มรูปแบบ ควรบังคับ profile.verified (แอดมินอนุมัติ KYC) ด้วย + enforce ที่ RLS
+  if (process.env.REQUIRE_BUYER_VERIFIED === "true" && profile.status !== "active") {
+    redirect("/verify?next=/buyer");
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">

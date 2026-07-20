@@ -37,8 +37,32 @@ export default function LineAutoLogin() {
       }
       try {
         const p = await l.getProfile();
-        const email = lineAuthEmail(p.userId);
-        const password = lineAuthPassword(p.userId);
+
+        // ทางที่ปลอดภัย: ให้ server ตรวจ idToken แล้วออก credential (password = server secret)
+        // ถ้ายังไม่ได้ตั้งค่า verify (LINE_CHANNEL_ID/LINE_AUTH_SECRET) → fallback โหมด demo
+        let userId = p.userId;
+        let displayName = p.displayName;
+        let email = lineAuthEmail(userId);
+        let password = lineAuthPassword(userId);
+        const idToken = l.getIDToken();
+        if (idToken) {
+          try {
+            const res = await fetch("/api/line-auth", {
+              method: "POST",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify({ idToken }),
+            });
+            if (res.ok) {
+              const d = await res.json();
+              userId = d.userId || userId;
+              displayName = d.displayName || displayName;
+              email = d.email;
+              password = d.password; // ยืนยันฝั่ง server แล้ว
+            }
+          } catch {
+            /* server verify ล้ม → ใช้ fallback ด้านล่าง */
+          }
+        }
 
         // มีบัญชีอยู่แล้ว → เข้าเลย; ยังไม่มี → สมัครอัตโนมัติจากข้อมูล LINE
         const signIn = await supabase.auth.signInWithPassword({ email, password });
@@ -49,8 +73,8 @@ export default function LineAutoLogin() {
             options: {
               data: {
                 role: "buyer",
-                full_name: p.displayName,
-                license_no: lineLicenseNo(p.userId),
+                full_name: displayName,
+                license_no: lineLicenseNo(userId),
                 clinic_name: null,
                 national_id: null,
               },

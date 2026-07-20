@@ -28,6 +28,8 @@ export default function PayPage() {
   const [coupon, setCoupon] = useState<Coupon | null>(null);
   const [couponErr, setCouponErr] = useState("");
   const [done, setDone] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const [payErr, setPayErr] = useState("");
 
   useEffect(() => {
     supabase.from("products").select("*").then(({ data }) => setProducts((data ?? []) as Product[]));
@@ -66,6 +68,24 @@ export default function PayPage() {
     if (!c) return setCouponErr("ไม่พบคูปองนี้");
     if (subtotal < c.minSpend) return setCouponErr(`ต้องซื้อขั้นต่ำ ${money(c.minSpend)}`);
     setCoupon(c);
+  }
+
+  async function confirmPay() {
+    if (paying || items.length === 0) return; // กันกดซ้ำ
+    setPayErr("");
+    setPaying(true);
+    try {
+      // TODO(production): POST /api/orders → server คำนวณยอดใหม่จาก DB (ห้ามเชื่อ total จาก client)
+      // → สร้าง charge ผ่าน gateway (Omise/GB Prime Pay) → webhook verify signature อัปเดตสถานะ 'paid'
+      // ปัจจุบันเป็น mock: ห้ามใช้ในการรับเงินจริง
+      await new Promise((r) => setTimeout(r, 600));
+      clearCart();
+      setDone(true);
+    } catch {
+      setPayErr("ชำระเงินไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
+    } finally {
+      setPaying(false);
+    }
   }
 
   if (done) {
@@ -167,13 +187,17 @@ export default function PayPage() {
 
       <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100">
         <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3">
+          {payErr && (
+            <p className="text-[11px] text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-2">{payErr}</p>
+          )}
           <button
             type="button"
-            disabled={items.length === 0}
-            onClick={() => { clearCart(); setDone(true); }}
-            className="w-full bg-petrol hover:bg-petrol-2 disabled:opacity-50 text-white font-semibold text-sm py-3 rounded-xl transition"
+            disabled={paying || items.length === 0}
+            onClick={confirmPay}
+            className="w-full bg-petrol hover:bg-petrol-2 disabled:opacity-50 text-white font-semibold text-sm py-3 rounded-xl transition flex items-center justify-center gap-2"
           >
-            ยืนยันการชำระเงิน · {money(total)}
+            {paying && <span className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />}
+            {paying ? "กำลังดำเนินการ…" : `ยืนยันการชำระเงิน · ${money(total)}`}
           </button>
         </div>
       </div>
