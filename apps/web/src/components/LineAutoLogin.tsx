@@ -81,7 +81,17 @@ export default function LineAutoLogin() {
               },
             },
           });
-          if (signUp.error) throw signUp.error;
+          if (signUp.error) {
+            // บัญชี LINE เดิม (สร้างก่อนเปิด verify) รหัสผ่านเก่า = fallback → เข้าด้วยรหัสเก่าแล้วอัปเกรดเป็นรหัสใหม่
+            const legacy = lineAuthPassword(userId);
+            if (legacy !== password) {
+              const relog = await supabase.auth.signInWithPassword({ email, password: legacy });
+              if (relog.error) throw signUp.error;
+              await supabase.auth.updateUser({ password }).catch(() => {});
+            } else {
+              throw signUp.error;
+            }
+          }
         }
         if (cancel) return;
         // เข้าเต็มหน้า เพื่อให้ฝั่ง server อ่าน session cookie แล้วผ่าน guard
