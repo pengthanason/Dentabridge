@@ -25,17 +25,22 @@ export default function LineAutoLogin() {
         return;
       }
       setActive(true);
+
+      // กันวนเด็ดขาด: ถ้าเพิ่งพยายาม auto-login ไปเมื่อ < 45 วิ แปลว่ากำลังวน (session/redirect ไม่ติด)
+      // → หยุด แล้วให้ผู้ใช้เข้าเอง (localStorage ทนกว่า sessionStorage บน webview + มี timestamp ให้ retry ได้ทีหลัง)
+      const now = Date.now();
+      const lastTry = Number(localStorage.getItem("db_line_try") || "0");
+      if (now - lastTry < 45000) {
+        setActive(false);
+        setErr("เข้าสู่ระบบด้วย LINE อัตโนมัติไม่สำเร็จบนอุปกรณ์นี้ — เข้าด้วยเลขใบอนุญาต/รหัสผ่านด้านล่างได้เลย");
+        return;
+      }
+      localStorage.setItem("db_line_try", String(now)); // ตั้งก่อนทุก redirect/replace (กันวน)
+
       if (!l.isLoggedIn()) {
         l.login({ redirectUri: window.location.href });
         return;
       }
-      // กันวนรีเฟรช: ลองครั้งเดียวต่อ session — ถ้า session ไม่ติด (เด้งกลับ /login) จะได้ไม่ replace วนไม่จบ
-      if (sessionStorage.getItem("db_line_auth")) {
-        setActive(false);
-        setErr("เข้าสู่ระบบด้วย LINE ไม่สำเร็จ (session อาจไม่ถูกบันทึกบนเบราว์เซอร์นี้) — ปิดหน้าแล้วเปิดใหม่ หรือเข้าด้วยเลขใบอนุญาต");
-        return;
-      }
-      sessionStorage.setItem("db_line_auth", "1"); // ตั้ง flag ก่อนลอง (กันวน)
       try {
         const p = await l.getProfile();
 
@@ -94,6 +99,14 @@ export default function LineAutoLogin() {
           }
         }
         if (cancel) return;
+        // เช็กว่า session ติดจริงก่อนค่อยเข้า /buyer (กันวนถ้า cookie ไม่ถูกบันทึกบน webview)
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          setErr("เข้าสู่ระบบสำเร็จแต่บันทึก session ไม่ได้บนอุปกรณ์นี้ — เข้าด้วยเลขใบอนุญาต/รหัสผ่านด้านล่าง");
+          setActive(false);
+          return;
+        }
+        localStorage.removeItem("db_line_try"); // สำเร็จแล้ว เคลียร์ flag
         // เข้าเต็มหน้า เพื่อให้ฝั่ง server อ่าน session cookie แล้วผ่าน guard
         window.location.replace("/buyer");
       } catch (e) {
