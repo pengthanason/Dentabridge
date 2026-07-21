@@ -31,6 +31,20 @@ body {
   border-radius: 6px;
 }
 
+/* iOS/LINE webview: text input มี default appearance (พื้นขาวทึบ) → reset ให้พื้นหลังที่กำหนดแสดงถูกต้อง
+   (แก้บั๊กช่องค้นหาเป็นสีขาว ต้องกดก่อนถึงขึ้น) — ไม่แตะ checkbox/radio/select */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input:not([type]),
+textarea {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 /* label/ตัวเลข */
 .mono {
   font-family: 'IBM Plex Mono', 'Archivo', ui-monospace, monospace;
