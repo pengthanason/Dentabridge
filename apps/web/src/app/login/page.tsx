@@ -54,7 +54,6 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-6 py-10 bg-gradient-to-b from-petrol to-petrol-ink text-white">
-      <LineAutoLogin />
       <div className="w-full max-w-sm">
         {/* แบรนด์ */}
         <div className="flex items-center gap-2 justify-center mb-8">
@@ -106,6 +105,13 @@ export default function LoginPage() {
                 </span>
               </span>
             </button>
+
+            <div className="flex items-center gap-3 py-1">
+              <span className="h-px flex-1 bg-white/20" />
+              <span className="text-[11px] text-teal-200">หรือ</span>
+              <span className="h-px flex-1 bg-white/20" />
+            </div>
+            <LineAutoLogin />
           </div>
         )}
 
