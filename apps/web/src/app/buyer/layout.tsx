@@ -3,7 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentUser } from "@/lib/supabase/user";
 import BuyerNav from "@/components/BuyerNav";
 import PageFade from "@/components/PageFade";
-import SmoothTransitions from "@/components/SmoothTransitions";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +33,6 @@ export default async function BuyerLayout({
 
   return (
     <div className="min-h-screen bg-[#f4f7f5] pb-20">
-      <SmoothTransitions />
       <PageFade>{children}</PageFade>
       <BuyerNav />
     </div>

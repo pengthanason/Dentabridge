@@ -70,38 +70,9 @@ a:active {
   animation: fadeUp 0.4s cubic-bezier(0.22, 0.8, 0.28, 1) both;
 }
 
-/* เปลี่ยนหน้า: fallback = fade-in (เบราว์เซอร์ที่ไม่รองรับ View Transitions) */
+/* เปลี่ยนหน้า: fade-in นุ่ม ๆ (ทุกเบราว์เซอร์) */
 .page-fade {
   animation: fadeUp 0.4s cubic-bezier(0.22, 0.8, 0.28, 1) both;
-}
-
-/* ถ้ารองรับ View Transitions → ปิด fade-in ของ .page-fade แล้วใช้ cross-fade ของ VT
-   (หน้าเดิมค่อย ๆ จางออก + หน้าใหม่ค่อย ๆ ขึ้นมา) */
-@supports (view-transition-name: none) {
-  .page-fade {
-    animation: none;
-  }
-  @keyframes vtOut {
-    to {
-      opacity: 0;
-    }
-  }
-  @keyframes vtIn {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
-  ::view-transition-old(root) {
-    animation: vtOut 0.22s cubic-bezier(0.4, 0, 1, 1) both;
-  }
-  ::view-transition-new(root) {
-    animation: vtIn 0.32s cubic-bezier(0.22, 0.8, 0.28, 1) both;
-  }
 }
 
 /* ---------- bottom sheet เด้งขึ้น ---------- */

@@ -29,12 +29,13 @@ export default function LineAutoLogin() {
         l.login({ redirectUri: window.location.href });
         return;
       }
-      // กันลูป: ถ้าเคยลองแล้วล้ม อย่าวนซ้ำ
-      if (sessionStorage.getItem("db_line_auth") === "fail") {
+      // กันวนรีเฟรช: ลองครั้งเดียวต่อ session — ถ้า session ไม่ติด (เด้งกลับ /login) จะได้ไม่ replace วนไม่จบ
+      if (sessionStorage.getItem("db_line_auth")) {
         setActive(false);
-        setErr("เข้าสู่ระบบด้วย LINE ไม่สำเร็จ ลองใหม่หรือใช้เลขใบอนุญาต");
+        setErr("เข้าสู่ระบบด้วย LINE ไม่สำเร็จ (session อาจไม่ถูกบันทึกบนเบราว์เซอร์นี้) — ปิดหน้าแล้วเปิดใหม่ หรือเข้าด้วยเลขใบอนุญาต");
         return;
       }
+      sessionStorage.setItem("db_line_auth", "1"); // ตั้ง flag ก่อนลอง (กันวน)
       try {
         const p = await l.getProfile();
 

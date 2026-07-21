@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useWishlist } from "@/lib/wishlist";
-import { runWithTransition } from "@/lib/pageTransition";
 import { IconHeart, IconChat } from "@/components/Icons";
 
 // แถบบนมาตรฐาน — เหมือนกันทุกหน้า: โลโก้+ชื่อ + รายการโปรด + แชท (+ ปุ่มย้อนกลับถ้าเป็นหน้าย่อย)
@@ -21,7 +20,7 @@ export default function AppHeader({
     <header className="bg-petrol text-white sticky top-0 z-20">
       <div className="max-w-md lg:max-w-6xl mx-auto px-4 py-2.5 flex items-center gap-2">
         {back && (
-          <button type="button" onClick={() => runWithTransition(() => router.back())} className="text-xl -ml-1 flex-none" aria-label="กลับ">
+          <button type="button" onClick={() => router.back()} className="text-xl -ml-1 flex-none" aria-label="กลับ">
             ‹
           </button>
         )}
