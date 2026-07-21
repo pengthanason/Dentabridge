@@ -88,7 +88,7 @@ export default function Marketplace({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search products / brands..."
-              className="w-full bg-white/12 placeholder:text-white/55 text-white rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:bg-white/20 focus:ring-2 focus:ring-white/25 transition"
+              className="w-full appearance-none rounded-xl pl-9 pr-3 py-2.5 text-sm text-white placeholder:text-white/60 bg-[rgba(255,255,255,0.16)] border border-white/25 focus:outline-none focus:border-white/50 focus:bg-[rgba(255,255,255,0.26)] transition"
             />
           </div>
         </div>
