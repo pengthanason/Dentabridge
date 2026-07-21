@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { SUGGESTIONS, type Source } from "@/lib/helpKb";
+import { IconChat } from "@/components/Icons";
 
 type BotMsg = {
   from: "me" | "bot";
@@ -92,7 +93,7 @@ export default function AssistantChat() {
     <>
       {/* หัวห้อง (desktop) */}
       <div className="hidden lg:flex items-center gap-2 px-4 py-3 border-b border-gray-100 bg-white flex-none">
-        <div className="w-9 h-9 rounded-full bg-petrol grid place-items-center text-lg text-white">🤖</div>
+        <div className="w-9 h-9 rounded-full bg-petrol grid place-items-center text-white flex-none"><IconChat className="w-5 h-5" /></div>
         <div>
           <p className="font-semibold text-gray-800 leading-tight">DentaBridge Assistant</p>
           <p className="text-[11px] text-mint">● Automated replies · always cites real sources</p>
@@ -168,7 +169,7 @@ export default function AssistantChat() {
         <button
           type="submit"
           disabled={busy || !input.trim()}
-          className="w-9 h-9 rounded-full bg-petrol disabled:bg-gray-200 disabled:text-gray-400 text-white grid place-items-center flex-none"
+          className="w-11 h-11 rounded-full bg-petrol disabled:bg-gray-200 disabled:text-gray-400 text-white grid place-items-center flex-none"
           aria-label="Send"
         >
           ➤

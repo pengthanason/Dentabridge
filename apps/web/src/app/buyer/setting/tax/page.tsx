@@ -69,7 +69,7 @@ export default function TaxPage() {
       </div>
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
-        <div className="print-area bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
+        <div className="print-area bg-white rounded-2xl border border-gray-100 shadow-card p-5 space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-bold text-petrol">DentaBridge</p>

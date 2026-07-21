@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useCart, clearCart } from "@/lib/cart";
 import { findCoupon, discountOf, type Coupon } from "@/lib/coupons";
 import AppHeader from "@/components/AppHeader";
+import { IconBank, IconCheckCircle } from "@/components/Icons";
 import { money } from "@/lib/format";
 import type { Product } from "@/lib/types";
 const BANK_LABEL: Record<string, string> = {
@@ -45,7 +46,7 @@ export default function PayPage() {
       );
       const sel = localStorage.getItem("db_payment_method") || "";
       if (sel.startsWith("bank:")) {
-        list.push({ id: sel, label: `${BANK_LABEL[sel.slice(5)] ?? ""} Bank`, icon: <Tile className="bg-mint-soft">🏦</Tile> });
+        list.push({ id: sel, label: `${BANK_LABEL[sel.slice(5)] ?? ""} Bank`, icon: <Tile className="bg-mint-soft text-petrol"><IconBank className="w-6 h-6" /></Tile> });
       }
       if (sel && list.some((m) => m.id === sel)) setPayMethod(sel);
     } catch {
@@ -90,7 +91,9 @@ export default function PayPage() {
   if (done) {
     return (
       <div className="max-w-md lg:max-w-4xl mx-auto px-6 pt-20 text-center">
-        <div className="text-6xl mb-4">✅</div>
+        <div className="w-16 h-16 rounded-full bg-mint-soft text-mint grid place-items-center mx-auto mb-4">
+          <IconCheckCircle className="w-9 h-9" />
+        </div>
         <h2 className="text-xl font-bold text-gray-900">Payment successful (demo)</h2>
         <p className="text-sm text-gray-500 mt-2">
           Amount due {money(total)} · Consolidated into a single tax invoice via e-Tax
@@ -108,7 +111,7 @@ export default function PayPage() {
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
         {/* คูปอง */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-4">
           <p className="text-[10px] mono uppercase text-gray-400 mb-2">Discount coupon</p>
           {coupon ? (
             <div className="flex items-center justify-between bg-mint-soft rounded-xl px-3 py-2">
@@ -142,7 +145,7 @@ export default function PayPage() {
         </div>
 
         {/* วิธีชำระเงิน */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-2">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-4 space-y-2">
           <p className="text-[10px] mono uppercase text-gray-400">Payment method</p>
           {methods.map((m) => (
             <button
@@ -166,7 +169,7 @@ export default function PayPage() {
         </div>
 
         {payMethod === "promptpay" && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col items-center">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-4 flex flex-col items-center">
             <p className="text-sm font-semibold text-gray-800 mb-2">Scan to pay {money(total)}</p>
             <QrMock />
             <p className="text-[11px] text-gray-400 mt-2">Sample QR — scan with your banking app</p>
@@ -174,7 +177,7 @@ export default function PayPage() {
         )}
 
         {/* สรุปยอด */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-1 text-sm">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-4 space-y-1 text-sm">
           <Row label="Subtotal" value={money(subtotal)} />
           {discount > 0 && <Row label="Coupon discount" value={`−${money(discount)}`} green />}
           <div className="flex justify-between font-bold text-petrol border-t border-gray-100 pt-1">

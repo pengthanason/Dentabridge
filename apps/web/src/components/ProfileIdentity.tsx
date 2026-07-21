@@ -1,6 +1,7 @@
 "use client";
 
 import { useLineProfile } from "@/lib/liff";
+import { IconTooth } from "@/components/Icons";
 
 // การ์ดโปรไฟล์ด้านบน — ใช้ชื่อ/รูปจาก LINE ถ้ามี ไม่งั้นใช้ค่าจากระบบ
 export default function ProfileIdentity({
@@ -18,13 +19,13 @@ export default function ProfileIdentity({
   const name = profile?.displayName ?? fallbackName;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-4">
-      <div className="w-16 h-16 rounded-full bg-mint-soft grid place-items-center text-2xl flex-none overflow-hidden">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-4 flex items-center gap-4">
+      <div className="w-16 h-16 rounded-full bg-mint-soft text-petrol grid place-items-center flex-none overflow-hidden">
         {profile?.pictureUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={profile.pictureUrl} alt={name} className="w-full h-full object-cover" />
         ) : (
-          "🦷"
+          <IconTooth className="w-7 h-7" />
         )}
       </div>
       <div className="min-w-0 flex-1">

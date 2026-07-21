@@ -45,7 +45,7 @@ export default function WishlistPage() {
                 <Link
                   key={p.id}
                   href={`/buyer/product/${p.id}`}
-                  className="relative bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col"
+                  className="relative bg-white rounded-2xl border border-gray-100 shadow-card overflow-hidden flex flex-col"
                 >
                   <button
                     type="button"

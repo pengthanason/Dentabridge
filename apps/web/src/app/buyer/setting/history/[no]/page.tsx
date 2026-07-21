@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { MOCK_ORDERS, orderTotal, money, toneCls } from "@/lib/mockOrders";
 import ReorderButton from "@/components/ReorderButton";
 import AppHeader from "@/components/AppHeader";
+import { IconCamera } from "@/components/Icons";
 
 export default function OrderDetailPage({
   params,
@@ -21,7 +22,7 @@ export default function OrderDetailPage({
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
         {/* ข้อมูลออเดอร์ */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-2 text-sm">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-4 space-y-2 text-sm">
           <div className="flex items-center justify-between">
             <span className="text-gray-400">Status</span>
             <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${toneCls[order.tone]}`}>
@@ -35,7 +36,7 @@ export default function OrderDetailPage({
         </div>
 
         {/* รายการสินค้า */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-4">
           <p className="text-[10px] mono uppercase text-gray-400 mb-2">Items</p>
           <div className="divide-y divide-gray-50">
             {order.items.map((it) => (
@@ -62,7 +63,7 @@ export default function OrderDetailPage({
 
         {/* สถานะจัดส่ง (ตัวอย่าง) */}
         {order.tone === "ship" && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-4">
             <p className="text-[10px] mono uppercase text-gray-400 mb-2">Delivery status</p>
             <div className="space-y-2 text-sm">
               <Step done label="Order received" />
@@ -76,9 +77,10 @@ export default function OrderDetailPage({
         {order.tone !== "cancel" && (
           <Link
             href={`/buyer/receive/${order.no}`}
-            className="block w-full text-center bg-mint text-petrol-ink font-semibold text-sm py-3 rounded-xl"
+            className="flex items-center justify-center gap-2 w-full text-center bg-mint text-petrol-ink font-semibold text-sm py-3 rounded-xl"
           >
-            📷 Inspect on receipt (Safety Net)
+            <IconCamera className="w-4 h-4" />
+            Inspect on receipt (Safety Net)
           </Link>
         )}
 

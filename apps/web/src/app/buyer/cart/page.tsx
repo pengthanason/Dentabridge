@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useCart, setQty, clearCart } from "@/lib/cart";
 import ProductImage from "@/components/ProductImage";
 import AppHeader from "@/components/AppHeader";
+import { IconCart } from "@/components/Icons";
 import { money } from "@/lib/format";
 import type { Product } from "@/lib/types";
 
@@ -42,7 +43,9 @@ export default function CartPage() {
           </div>
         ) : items.length === 0 ? (
           <div className="text-center py-20">
-            <div className="text-5xl mb-3">🛒</div>
+            <div className="w-16 h-16 rounded-full bg-mint-soft text-petrol grid place-items-center mx-auto mb-3">
+              <IconCart className="w-8 h-8" />
+            </div>
             <p className="text-sm text-gray-400">Your cart is empty</p>
             <Link href="/buyer" className="inline-block mt-4 text-mint font-semibold text-sm">
               Browse products ›
@@ -57,12 +60,12 @@ export default function CartPage() {
                   <p className="text-sm font-semibold text-gray-800 truncate">{p.name}</p>
                   <p className="text-sm font-bold text-petrol mono">{money(p.price)}</p>
                 </div>
-                <div className="flex items-center gap-2 flex-none">
-                  <button type="button" onClick={() => setQty(p.id, qty - 1)} className="w-7 h-7 rounded-md border border-gray-200 text-gray-500">
+                <div className="flex items-center rounded-xl border border-gray-200 flex-none">
+                  <button type="button" onClick={() => setQty(p.id, qty - 1)} className="w-11 h-11 grid place-items-center text-gray-500" aria-label="Decrease quantity">
                     −
                   </button>
-                  <span className="text-sm font-semibold w-5 text-center">{qty}</span>
-                  <button type="button" onClick={() => setQty(p.id, qty + 1)} className="w-7 h-7 rounded-md border border-gray-200 text-gray-500">
+                  <span className="text-sm font-semibold w-8 text-center">{qty}</span>
+                  <button type="button" onClick={() => setQty(p.id, qty + 1)} className="w-11 h-11 grid place-items-center text-gray-500" aria-label="Increase quantity">
                     +
                   </button>
                 </div>

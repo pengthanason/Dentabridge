@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { IconBank } from "@/components/Icons";
 
 const KEY = "db_payment_method";
 const CARDS_KEY = "db_cards";
@@ -222,14 +223,14 @@ export default function PaymentPage() {
         </Section>
 
         {/* ธนาคาร (dropdown) */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-card overflow-hidden">
           <button
             type="button"
             onClick={() => setBankOpen((o) => !o)}
             className="w-full flex items-center gap-3 p-4"
           >
-            <div className="w-11 h-11 rounded-lg bg-mint-soft grid place-items-center text-xl flex-none">
-              🏦
+            <div className="w-11 h-11 rounded-lg bg-mint-soft text-petrol grid place-items-center flex-none">
+              <IconBank className="w-6 h-6" />
             </div>
             <div className="flex-1 text-left">
               <p className="text-sm font-semibold text-gray-800">Bank</p>
@@ -343,7 +344,7 @@ export default function PaymentPage() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-4">
       <p className="text-[10px] mono uppercase text-gray-400 mb-2">{title}</p>
       {children}
     </div>

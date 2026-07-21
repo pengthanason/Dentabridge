@@ -86,3 +86,31 @@ export function IconGear({ className }: { className?: string }) {
     </Svg>
   );
 }
+
+export function IconCheckCircle({ className }: { className?: string }) {
+  return (<Svg className={className}><circle cx="12" cy="12" r="9" /><path d="m8.5 12 2.5 2.5 4.5-5" /></Svg>);
+}
+export function IconCamera({ className }: { className?: string }) {
+  return (<Svg className={className}><path d="M14.5 4h-5L8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-4l-1.5-2z" /><circle cx="12" cy="13" r="3.5" /></Svg>);
+}
+export function IconBank({ className }: { className?: string }) {
+  return (<Svg className={className}><path d="M3 10 12 4l9 6" /><path d="M4 10v9M9 10v9M15 10v9M20 10v9" /><path d="M3 21h18" /></Svg>);
+}
+export function IconAlert({ className }: { className?: string }) {
+  return (<Svg className={className}><path d="M10.3 4.3 2.5 18a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z" /><path d="M12 9v4M12 17h.01" /></Svg>);
+}
+export function IconTooth({ className }: { className?: string }) {
+  return (<Svg className={className}><path d="M12 5.5c-2-2-5.5-1.8-6.5.8-1 2.6.4 6.2 1.6 9 .5 1.2 2.2 1.2 2.5-.1l.9-3.7c.2-.8 1.3-.8 1.5 0l.9 3.7c.3 1.3 2 1.3 2.5.1 1.2-2.8 2.6-6.4 1.6-9-1-2.6-4.5-2.8-6.5-.8z" /></Svg>);
+}
+export function IconBuilding({ className }: { className?: string }) {
+  return (<Svg className={className}><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16" /><path d="M15 9h2a2 2 0 0 1 2 2v10" /><path d="M3 21h18M8 7h2M8 11h2M8 15h2" /></Svg>);
+}
+export function IconBox({ className }: { className?: string }) {
+  return (<Svg className={className}><path d="M21 8 12 3 3 8v8l9 5 9-5z" /><path d="m3 8 9 5 9-5M12 13v8" /></Svg>);
+}
+export function IconPin({ className }: { className?: string }) {
+  return (<Svg className={className}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" /><circle cx="12" cy="10" r="3" /></Svg>);
+}
+export function IconBell({ className }: { className?: string }) {
+  return (<Svg className={className}><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.5 21a1.7 1.7 0 0 1-3 0" /></Svg>);
+}

@@ -4,7 +4,17 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import ChatSheet, { type ChatThread } from "@/components/ChatSheet";
-import { IconChat } from "@/components/Icons";
+import {
+  IconChat,
+  IconBox,
+  IconCart,
+  IconBag,
+  IconBank,
+  IconGear,
+  IconBuilding,
+  IconShieldCheck,
+  IconPin,
+} from "@/components/Icons";
 import type { Product } from "@/lib/types";
 import { money } from "@/lib/format";
 
@@ -80,7 +90,7 @@ export default function SellerHome({
             <button
               type="button"
               onClick={() => setChatOpen(true)}
-              className="relative w-9 h-9 grid place-items-center"
+              className="relative w-11 h-11 grid place-items-center"
               aria-label="Messages"
             >
               <IconChat className="w-5 h-5" />
@@ -101,21 +111,23 @@ export default function SellerHome({
               <Kpi label="Total products" value={String(products.length)} tone="petrol" />
               <Kpi label="Pending payout" value="฿0" tone="petrol" />
             </div>
-            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-card">
               <h3 className="font-bold text-sm text-gray-900 mb-2">Management menu</h3>
               <div className="grid grid-cols-4 gap-2 text-center">
                 {[
-                  ["📦", "Products"],
-                  ["🧾", "Orders"],
-                  ["💬", "Messages"],
-                  ["📊", "Reports"],
-                  ["🎟️", "Promotions"],
-                  ["⭐", "Reviews"],
-                  ["💰", "Finance"],
-                  ["🏪", "Store settings"],
-                ].map(([icon, label]) => (
-                  <div key={label} className="py-2">
-                    <div className="text-2xl">{icon}</div>
+                  { icon: <IconBox className="w-5 h-5" />, label: "Products" },
+                  { icon: <IconCart className="w-5 h-5" />, label: "Orders" },
+                  { icon: <IconChat className="w-5 h-5" />, label: "Messages" },
+                  { icon: <span className="text-lg">📊</span>, label: "Reports" },
+                  { icon: <IconBag className="w-5 h-5" />, label: "Promotions" },
+                  { icon: <span className="text-lg">⭐</span>, label: "Reviews" },
+                  { icon: <IconBank className="w-5 h-5" />, label: "Finance" },
+                  { icon: <IconGear className="w-5 h-5" />, label: "Store settings" },
+                ].map(({ icon, label }) => (
+                  <div key={label} className="py-2 flex flex-col items-center">
+                    <span className="w-11 h-11 rounded-full bg-mint-soft text-petrol grid place-items-center">
+                      {icon}
+                    </span>
                     <div className="text-[10px] text-gray-500 mt-1">{label}</div>
                   </div>
                 ))}
@@ -146,7 +158,7 @@ export default function SellerHome({
               products.map((p) => (
                 <div
                   key={p.id}
-                  className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 flex items-center gap-3"
+                  className="bg-white rounded-xl border border-gray-100 shadow-card p-3 flex items-center gap-3"
                 >
                   <div className="w-10 h-10 rounded-lg bg-mint-soft grid place-items-center text-xl">
                     {p.image_emoji ?? "📦"}
@@ -163,8 +175,10 @@ export default function SellerHome({
         )}
 
         {tab === "orders" && (
-          <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm text-center">
-            <p className="text-3xl mb-2">🧾</p>
+          <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-card text-center">
+            <div className="w-16 h-16 rounded-full bg-mint-soft text-petrol grid place-items-center mx-auto mb-3">
+              <IconCart className="w-8 h-8" />
+            </div>
             <p className="text-sm text-gray-500">
               The order system will launch in the next phase.
             </p>
@@ -174,20 +188,22 @@ export default function SellerHome({
         {tab === "settings" && (
           <div className="space-y-3">
             <h2 className="font-bold text-lg text-gray-900">Settings</h2>
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-card divide-y divide-gray-50">
               {[
-                ["🏪", "Store information & logo"],
-                ["🏢", "Company information / documents"],
-                ["📍", "Warehouse / shipping address"],
-                ["💰", "Payout account"],
-                ["🔒", "Security (password / 2FA)"],
-              ].map(([icon, label]) => (
+                { icon: <IconBuilding className="w-5 h-5" />, label: "Store information & logo" },
+                { icon: <IconBox className="w-5 h-5" />, label: "Company information / documents" },
+                { icon: <IconPin className="w-5 h-5" />, label: "Warehouse / shipping address" },
+                { icon: <IconBank className="w-5 h-5" />, label: "Payout account" },
+                { icon: <IconShieldCheck className="w-5 h-5" />, label: "Security (password / 2FA)" },
+              ].map(({ icon, label }) => (
                 <button
                   key={label}
                   type="button"
                   className="w-full flex items-center gap-3 px-4 py-3 text-left text-sm text-gray-700"
                 >
-                  <span className="text-lg">{icon}</span>
+                  <span className="w-9 h-9 rounded-full bg-mint-soft text-petrol grid place-items-center flex-none">
+                    {icon}
+                  </span>
                   <span className="flex-1">{label}</span>
                   <span className="text-gray-300">›</span>
                 </button>
@@ -206,10 +222,10 @@ export default function SellerHome({
 
       <nav className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100">
         <div className="max-w-md lg:max-w-4xl mx-auto grid grid-cols-4">
-          <NavBtn on={tab === "dash"} onClick={() => setTab("dash")} icon="📊" label="Dashboard" />
-          <NavBtn on={tab === "products"} onClick={() => setTab("products")} icon="📦" label="Products" />
-          <NavBtn on={tab === "orders"} onClick={() => setTab("orders")} icon="🧾" label="Orders" />
-          <NavBtn on={tab === "settings"} onClick={() => setTab("settings")} icon="⚙️" label="Settings" />
+          <NavBtn on={tab === "dash"} onClick={() => setTab("dash")} icon={<IconBuilding className="w-6 h-6" />} label="Dashboard" />
+          <NavBtn on={tab === "products"} onClick={() => setTab("products")} icon={<IconBox className="w-6 h-6" />} label="Products" />
+          <NavBtn on={tab === "orders"} onClick={() => setTab("orders")} icon={<IconCart className="w-6 h-6" />} label="Orders" />
+          <NavBtn on={tab === "settings"} onClick={() => setTab("settings")} icon={<IconGear className="w-6 h-6" />} label="Settings" />
         </div>
       </nav>
 
@@ -228,7 +244,7 @@ function Kpi({
   tone: "petrol" | "signal";
 }) {
   return (
-    <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+    <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-card">
       <p className={`text-xl font-bold leading-none ${tone === "signal" ? "text-signal" : "text-petrol"}`}>
         {value}
       </p>
@@ -245,7 +261,7 @@ function NavBtn({
 }: {
   on: boolean;
   onClick: () => void;
-  icon: string;
+  icon: React.ReactNode;
   label: string;
 }) {
   return (
@@ -256,7 +272,7 @@ function NavBtn({
         on ? "text-mint" : "text-gray-400"
       }`}
     >
-      <span className="text-lg">{icon}</span>
+      {icon}
       <span className="text-[10px] font-medium">{label}</span>
     </button>
   );

@@ -8,7 +8,7 @@ import { useWishlist, toggleWish } from "@/lib/wishlist";
 import { ratingFor } from "@/lib/reviews";
 import ProductImage from "@/components/ProductImage";
 import Stars from "@/components/Stars";
-import { IconHeart, IconChat } from "@/components/Icons";
+import { IconHeart, IconChat, IconTooth } from "@/components/Icons";
 import { money } from "@/lib/format";
 import type { Product, Category } from "@/lib/types";
 
@@ -96,12 +96,12 @@ export default function Marketplace({
 
       <main className="max-w-md lg:max-w-6xl mx-auto px-4 pt-4 space-y-4">
         <div className="bg-white rounded-2xl p-4 shadow-card flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-full bg-mint-soft ring-2 ring-white shadow-sm grid place-items-center text-xl flex-none overflow-hidden">
+          <div className="w-12 h-12 rounded-full bg-mint-soft text-petrol ring-2 ring-white shadow-sm grid place-items-center flex-none overflow-hidden">
             {lineProfile?.pictureUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={lineProfile.pictureUrl} alt="" className="w-full h-full object-cover" />
             ) : (
-              "🦷"
+              <IconTooth className="w-6 h-6" />
             )}
           </div>
           <div className="min-w-0">

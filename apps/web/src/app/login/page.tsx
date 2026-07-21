@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { buyerAuthEmail } from "@/lib/auth";
 import LineAutoLogin from "@/components/LineAutoLogin";
+import { IconTooth, IconBuilding } from "@/components/Icons";
 
 type Mode = "select" | "buyer" | "seller";
 
@@ -81,7 +82,9 @@ export default function LoginPage() {
               }}
               className="w-full bg-white text-petrol rounded-2xl p-4 text-left flex items-center gap-3 shadow-lg active:scale-[0.99] transition"
             >
-              <span className="text-3xl">🦷</span>
+              <span className="w-11 h-11 rounded-xl bg-mint-soft text-petrol grid place-items-center flex-none">
+                <IconTooth className="w-6 h-6" />
+              </span>
               <span>
                 <span className="block font-bold">Buyer (Dentist)</span>
                 <span className="block text-xs text-gray-500">
@@ -97,7 +100,9 @@ export default function LoginPage() {
               }}
               className="w-full bg-white/10 border border-white/20 rounded-2xl p-4 text-left flex items-center gap-3 active:scale-[0.99] transition"
             >
-              <span className="text-3xl">🏢</span>
+              <span className="w-11 h-11 rounded-xl bg-mint-soft text-petrol grid place-items-center flex-none">
+                <IconBuilding className="w-6 h-6" />
+              </span>
               <span>
                 <span className="block font-bold">Seller (Dealer/Company)</span>
                 <span className="block text-xs text-teal-200">

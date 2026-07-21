@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useOffers } from "@/lib/offers";
 import AppHeader from "@/components/AppHeader";
 import { money } from "@/lib/format";
+import { IconShieldCheck } from "@/components/Icons";
 
 const statusCls: Record<string, string> = {
   pending: "bg-amber-soft text-amber",
@@ -26,7 +27,9 @@ export default function OffersPage() {
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-3">
         {offers.length === 0 ? (
           <div className="text-center py-20">
-            <div className="text-5xl mb-3">🤝</div>
+            <div className="w-16 h-16 rounded-full bg-mint-soft text-petrol grid place-items-center mx-auto mb-3">
+              <IconShieldCheck className="w-8 h-8" />
+            </div>
             <p className="text-sm text-gray-400">No price offers yet</p>
             <Link href="/buyer" className="inline-block mt-4 text-mint font-semibold text-sm">
               Go make an offer ›
@@ -34,7 +37,7 @@ export default function OffersPage() {
           </div>
         ) : (
           offers.map((o) => (
-            <div key={o.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+            <div key={o.id} className="bg-white rounded-2xl border border-gray-100 shadow-card p-4">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-semibold text-gray-800 truncate pr-2">{o.productName}</p>
                 <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full flex-none ${statusCls[o.status]}`}>

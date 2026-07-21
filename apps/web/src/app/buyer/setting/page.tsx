@@ -3,19 +3,29 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
+import type { ReactNode } from "react";
 import { createClient } from "@/lib/supabase/client";
 import AppHeader from "@/components/AppHeader";
+import {
+  IconTooth,
+  IconBuilding,
+  IconBox,
+  IconShieldCheck,
+  IconBank,
+  IconBag,
+  IconBell,
+} from "@/components/Icons";
 
-const ITEMS: [string, string, string][] = [
-  ["profile", "👤", "Profile"],
-  ["clinic", "🏥", "Clinic information & shipping address"],
-  ["tax", "🧾", "Tax invoice details"],
-  ["docs", "📁", "FDA documents / licenses"],
-  ["payment", "💳", "Payment methods"],
-  ["coupon", "🎟️", "My coupons"],
-  ["offers", "🤝", "My price offers"],
-  ["notifications", "🔔", "Notifications"],
-  ["history", "📜", "Order history"],
+const ITEMS: { slug: string; icon: ReactNode; label: string }[] = [
+  { slug: "profile", icon: <IconTooth className="w-5 h-5" />, label: "Profile" },
+  { slug: "clinic", icon: <IconBuilding className="w-5 h-5" />, label: "Clinic information & shipping address" },
+  { slug: "tax", icon: <IconBox className="w-5 h-5" />, label: "Tax invoice details" },
+  { slug: "docs", icon: <IconShieldCheck className="w-5 h-5" />, label: "FDA documents / licenses" },
+  { slug: "payment", icon: <IconBank className="w-5 h-5" />, label: "Payment methods" },
+  { slug: "coupon", icon: <IconBag className="w-5 h-5" />, label: "My coupons" },
+  { slug: "offers", icon: <IconShieldCheck className="w-5 h-5" />, label: "My price offers" },
+  { slug: "notifications", icon: <IconBell className="w-5 h-5" />, label: "Notifications" },
+  { slug: "history", icon: <IconBox className="w-5 h-5" />, label: "Order history" },
 ];
 
 export default function SettingPage() {
@@ -33,14 +43,16 @@ export default function SettingPage() {
       <AppHeader title="Setting" />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-3">
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
-          {ITEMS.map(([slug, icon, label]) => (
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-card divide-y divide-gray-50">
+          {ITEMS.map(({ slug, icon, label }) => (
             <Link
               key={slug}
               href={`/buyer/setting/${slug}`}
               className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700"
             >
-              <span className="text-lg">{icon}</span>
+              <span className="w-9 h-9 rounded-full bg-mint-soft text-petrol grid place-items-center flex-none">
+                {icon}
+              </span>
               <span className="flex-1">{label}</span>
               <span className="text-gray-300">›</span>
             </Link>

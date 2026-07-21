@@ -1,8 +1,10 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import AppHeader from "@/components/AppHeader";
+import { IconAlert, IconCamera, IconCart, IconBag, IconCheckCircle } from "@/components/Icons";
 
 type Noti = {
-  icon: string;
+  icon: ReactNode;
   title: string;
   detail: string;
   time: string;
@@ -13,7 +15,7 @@ type Noti = {
 
 const NOTIS: Noti[] = [
   {
-    icon: "🚨",
+    icon: <IconAlert className="w-5 h-5" />,
     title: "Safety alert: product FDA registration revoked",
     detail: "The 'Nitrile gloves lot L2312' you previously purchased has been revoked — stop using it and contact the seller",
     time: "30 min",
@@ -21,7 +23,7 @@ const NOTIS: Noti[] = [
     tone: "danger",
   },
   {
-    icon: "📷",
+    icon: <IconCamera className="w-5 h-5" />,
     title: "Order INV-2026-0001 has been delivered",
     detail: "Tap to 'Inspect on receipt' — scan to check FDA/lot/expiry before confirming receipt",
     time: "1 hr",
@@ -29,26 +31,26 @@ const NOTIS: Noti[] = [
     href: "/buyer/receive/INV-2026-0001",
   },
   {
-    icon: "🛒",
+    icon: <IconCart className="w-5 h-5" />,
     title: "Items left in your cart",
     detail: "You have 3 items in your cart that are not yet paid for",
     time: "Yesterday",
     href: "/buyer/cart",
   },
   {
-    icon: "⏰",
+    icon: <IconAlert className="w-5 h-5" />,
     title: "Material nearing expiry",
     detail: "Composite Resin A2 will expire 10/2026",
     time: "2 days",
   },
   {
-    icon: "🏷️",
+    icon: <IconBag className="w-5 h-5" />,
     title: "Promotion from a shop you follow",
     detail: "Dental Vision: 10% off O-Rings",
     time: "3 days",
   },
   {
-    icon: "✅",
+    icon: <IconCheckCircle className="w-5 h-5" />,
     title: "Clinic verification successful",
     detail: "Your account has been approved",
     time: "5 days",
@@ -61,13 +63,13 @@ export default function NotificationsPage() {
       <AppHeader title="Notifications" back />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4">
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-card divide-y divide-gray-50 overflow-hidden">
           {NOTIS.map((n, i) => {
             const inner = (
               <>
                 <div
-                  className={`w-9 h-9 rounded-full grid place-items-center text-lg flex-none ${
-                    n.tone === "danger" ? "bg-signal-soft" : "bg-mint-soft"
+                  className={`w-9 h-9 rounded-full grid place-items-center flex-none ${
+                    n.tone === "danger" ? "bg-signal-soft text-signal" : "bg-mint-soft text-petrol"
                   }`}
                 >
                   {n.icon}

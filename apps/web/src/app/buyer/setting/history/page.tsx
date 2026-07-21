@@ -12,7 +12,7 @@ export default function HistoryPage() {
           <Link
             key={o.no}
             href={`/buyer/setting/history/${o.no}`}
-            className="block bg-white rounded-2xl border border-gray-100 shadow-sm p-4 active:scale-[0.99] transition"
+            className="block bg-white rounded-2xl border border-gray-100 shadow-card p-4 active:scale-[0.99] transition"
           >
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold text-gray-800 mono">{o.no}</p>

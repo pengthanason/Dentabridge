@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { IconCamera, IconCheckCircle, IconAlert } from "@/components/Icons";
 
 type Item = {
   name: string;
@@ -65,7 +66,9 @@ export default function ReceiveCheck({
   if (done) {
     return (
       <main className="max-w-md lg:max-w-2xl mx-auto px-6 pt-16 text-center animate-fade">
-        <div className="text-6xl mb-4">✅</div>
+        <div className="w-16 h-16 rounded-full bg-mint-soft text-mint grid place-items-center mx-auto mb-4">
+          <IconCheckCircle className="w-9 h-9" />
+        </div>
         <h2 className="text-xl font-bold text-gray-900">Receipt confirmed</h2>
         <p className="text-sm text-gray-500 mt-2">
           The inspection results for order {orderNo} have been recorded
@@ -86,7 +89,7 @@ export default function ReceiveCheck({
       {/* แถบสแกน */}
       <div className="bg-petrol-2 text-white">
         <div className="max-w-md lg:max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-mint grid place-items-center flex-none">📷</div>
+          <div className="w-9 h-9 rounded-lg bg-mint text-petrol grid place-items-center flex-none"><IconCamera className="w-5 h-5" /></div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold leading-tight">Scan the box/label to receive</p>
             <p className="text-[11px] text-teal-200">Order {orderNo} · {seller}</p>
@@ -102,13 +105,23 @@ export default function ReceiveCheck({
           return (
             <div
               key={i}
-              className={`bg-white rounded-xl border border-gray-100 shadow-sm p-3 border-l-4 ${
+              className={`bg-white rounded-xl border border-gray-100 shadow-card p-3 border-l-4 ${
                 revealed ? s.border : "border-l-gray-200 opacity-60"
               }`}
             >
               <div className="flex items-start gap-2">
-                <span className="text-base flex-none w-5 text-center">
-                  {revealed ? (r.status === "ok" ? "✅" : r.status === "warn" ? "⚠️" : "❌") : "○"}
+                <span className="flex-none w-5 grid place-items-center">
+                  {revealed ? (
+                    r.status === "ok" ? (
+                      <IconCheckCircle className="w-5 h-5 text-teal-600" />
+                    ) : r.status === "warn" ? (
+                      <IconAlert className="w-5 h-5 text-amber" />
+                    ) : (
+                      <IconAlert className="w-5 h-5 text-signal" />
+                    )
+                  ) : (
+                    <span className="w-3.5 h-3.5 rounded-full border-2 border-gray-300" />
+                  )}
                 </span>
                 <span className="font-semibold text-sm text-gray-800 leading-snug">{r.name}</span>
                 <span className="ml-auto mono text-[11px] text-gray-400 flex-none whitespace-nowrap">
@@ -167,9 +180,10 @@ export default function ReceiveCheck({
             <button
               type="button"
               onClick={() => setScanned((s) => Math.min(total, s + 1))}
-              className="w-full bg-petrol hover:bg-petrol-2 text-white font-semibold text-sm py-3 rounded-xl transition"
+              className="w-full bg-petrol hover:bg-petrol-2 text-white font-semibold text-sm py-3 rounded-xl transition flex items-center justify-center gap-2"
             >
-              📷 Scan product ({scanned}/{total})
+              <IconCamera className="w-5 h-5" />
+              Scan product ({scanned}/{total})
             </button>
           ) : (
             <div className="flex gap-2">

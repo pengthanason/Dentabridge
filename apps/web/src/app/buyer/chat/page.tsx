@@ -1,17 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import AssistantChat from "@/components/AssistantChat";
+import { IconChat, IconBuilding } from "@/components/Icons";
 
 type Msg = { from: "me" | "them"; text: string };
-type Thread = { id: string; name: string; avatar: string; last: string; time: string; messages: Msg[] };
+type Thread = { id: string; name: string; avatar: ReactNode; last: string; time: string; messages: Msg[] };
 
 const THREADS: Thread[] = [
   {
     id: "c1",
     name: "Dental Vision",
-    avatar: "🏢",
+    avatar: <IconBuilding className="w-6 h-6" />,
     last: "Your order is confirmed and will ship tomorrow.",
     time: "10:24",
     messages: [
@@ -25,7 +26,7 @@ const THREADS: Thread[] = [
   {
     id: "c2",
     name: "MedSupply TH",
-    avatar: "🏭",
+    avatar: <IconBuilding className="w-6 h-6" />,
     last: "Thank you for your business. 🙏",
     time: "Yesterday",
     messages: [
@@ -80,7 +81,7 @@ export default function ChatPage() {
               isAssistant ? "lg:bg-mint-soft" : "bg-mint-soft/40"
             }`}
           >
-            <div className="w-12 h-12 rounded-full bg-petrol grid place-items-center text-xl text-white flex-none">🤖</div>
+            <div className="w-12 h-12 rounded-full bg-petrol grid place-items-center text-white flex-none"><IconChat className="w-6 h-6" /></div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
                 <p className="font-semibold text-sm text-gray-800 truncate flex items-center gap-1.5">
@@ -102,7 +103,7 @@ export default function ChatPage() {
                 t.id === activeId ? "lg:bg-mint-soft" : ""
               }`}
             >
-              <div className="w-12 h-12 rounded-full bg-mint-soft grid place-items-center text-xl flex-none">
+              <div className="w-12 h-12 rounded-full bg-mint-soft text-petrol grid place-items-center flex-none">
                 {t.avatar}
               </div>
               <div className="flex-1 min-w-0">
@@ -124,7 +125,7 @@ export default function ChatPage() {
             <>
               {/* ชื่อคู่สนทนา (โชว์บน desktop) */}
               <div className="hidden lg:flex items-center gap-2 px-4 py-3 border-b border-gray-100 bg-white flex-none">
-                <div className="w-9 h-9 rounded-full bg-mint-soft grid place-items-center text-lg">{active.avatar}</div>
+                <div className="w-9 h-9 rounded-full bg-mint-soft text-petrol grid place-items-center">{active.avatar}</div>
                 <p className="font-semibold text-gray-800">{active.name}</p>
               </div>
 
@@ -151,7 +152,7 @@ export default function ChatPage() {
                   className="flex-1 bg-gray-100 text-gray-400 rounded-full px-4 py-2 text-sm"
                   aria-label="Type a message"
                 />
-                <button type="button" disabled className="w-9 h-9 rounded-full bg-gray-200 text-gray-400 grid place-items-center">
+                <button type="button" disabled className="w-11 h-11 rounded-full bg-gray-200 text-gray-400 grid place-items-center">
                   ➤
                 </button>
               </div>
@@ -160,7 +161,9 @@ export default function ChatPage() {
             // ว่าง (เฉพาะ desktop) — ยังไม่เลือกแชท
             <div className="flex-1 grid place-items-center text-center text-gray-400">
               <div>
-                <div className="text-5xl mb-2">💬</div>
+                <div className="w-16 h-16 rounded-full bg-mint-soft text-petrol grid place-items-center mx-auto mb-2">
+                  <IconChat className="w-8 h-8" />
+                </div>
                 <p className="text-sm">Select a conversation to start chatting</p>
               </div>
             </div>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import AppHeader from "@/components/AppHeader";
 import { COUPONS } from "@/lib/coupons";
 import { money } from "@/lib/format";
+import { IconBag } from "@/components/Icons";
 
 
 export default function CouponPage() {
@@ -26,8 +27,8 @@ export default function CouponPage() {
           <p className="text-[10px] mono uppercase text-gray-400 mb-2">Ready to use</p>
           <div className="space-y-3">
             {claimed.map((c) => (
-              <div key={c.code} className="bg-white rounded-2xl border border-mint/40 shadow-sm overflow-hidden flex">
-                <div className="w-16 bg-mint grid place-items-center text-white text-2xl flex-none">🎟️</div>
+              <div key={c.code} className="bg-white rounded-2xl border border-mint/40 shadow-card overflow-hidden flex">
+                <div className="w-16 bg-mint grid place-items-center text-white flex-none"><IconBag className="w-7 h-7" /></div>
                 <div className="flex-1 p-3 min-w-0">
                   <p className="text-sm font-bold text-gray-900">{c.label}</p>
                   <p className="text-[11px] text-gray-500">{c.note} · Min. spend {money(c.minSpend)}</p>
@@ -47,7 +48,7 @@ export default function CouponPage() {
           <p className="text-[10px] mono uppercase text-gray-400 mb-2">Upcoming coupons</p>
           <div className="space-y-3">
             {upcoming.map((c) => (
-              <div key={c.code} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex opacity-70">
+              <div key={c.code} className="bg-white rounded-2xl border border-gray-100 shadow-card overflow-hidden flex opacity-70">
                 <div className="w-16 bg-gray-200 grid place-items-center text-gray-400 text-2xl flex-none">🔒</div>
                 <div className="flex-1 p-3 min-w-0">
                   <p className="text-sm font-bold text-gray-700">{c.label}</p>
