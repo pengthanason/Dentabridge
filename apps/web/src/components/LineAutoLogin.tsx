@@ -106,8 +106,8 @@ export default function LineAutoLogin() {
           setActive(false);
           return;
         }
-        localStorage.removeItem("db_line_try"); // สำเร็จแล้ว เคลียร์ flag
-        // เข้าเต็มหน้า เพื่อให้ฝั่ง server อ่าน session cookie แล้วผ่าน guard
+        // สำคัญ: ห้ามลบ flag db_line_try ตรงนี้! ถ้า cookie ไม่ติดฝั่ง server แล้วเด้งกลับ
+        // guard จะได้ยังเจอ flag (< 45 วิ) แล้วหยุด ไม่วน (ปล่อยให้ timeout เคลียร์เอง)
         window.location.replace("/buyer");
       } catch (e) {
         console.error("LINE auto-login failed", e);
