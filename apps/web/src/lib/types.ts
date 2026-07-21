@@ -31,6 +31,12 @@ export type Product = {
   lat: number | null;
   lng: number | null;
   created_at: string;
+  // ข้อมูลเชิงการแพทย์ (optional — เพิ่มด้วย migration 0007) กันพังถ้ายังไม่มีคอลัมน์
+  model?: string | null; // รุ่น/รหัสรุ่น
+  origin?: string | null; // ประเทศที่ผลิต
+  ifu_url?: string | null; // คู่มือการใช้งาน (IFU)
+  cert_url?: string | null; // ใบรับรอง (CE/ISO)
+  controlled?: boolean | null; // สินค้าควบคุม — ต้องยืนยันใบอนุญาตก่อนซื้อ
 };
 
 export type Profile = {

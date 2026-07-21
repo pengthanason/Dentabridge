@@ -12,6 +12,7 @@ import ProductImage from "@/components/ProductImage";
 import Stars from "@/components/Stars";
 import { IconHeart } from "@/components/Icons";
 import AppHeader from "@/components/AppHeader";
+import { VerifiedBadge } from "@/components/ui/Badge";
 import type { Product } from "@/lib/types";
 import { money } from "@/lib/format";
 
@@ -76,8 +77,10 @@ export default function ProductDetail({
 
         <div className="px-4 py-4 space-y-4">
           <div>
-            {product.fda_verified && (
-              <span className="text-[10px] mono text-teal-700 bg-mint-soft px-2 py-0.5 rounded">✓ FDA verified</span>
+            {product.fda_verified ? (
+              <VerifiedBadge label="FDA verified" />
+            ) : (
+              <span className="text-[10px] font-semibold text-amber bg-amber-soft px-2 py-0.5 rounded-full">⚠ Unverified</span>
             )}
             <h2 className="text-lg font-bold text-gray-900 mt-2">{product.name}</h2>
             <p className="text-xs text-gray-500">
@@ -116,11 +119,9 @@ export default function ProductDetail({
               {(product.brand ?? "S").charAt(0)}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 <p className="text-sm font-bold text-gray-900 truncate">{seller.shop}</p>
-                {seller.verified && (
-                  <span className="text-[9px] bg-mint-soft text-teal-700 font-semibold px-1.5 py-0.5 rounded">✓</span>
-                )}
+                {seller.verified && <VerifiedBadge label="Verified distributor" />}
               </div>
               <p className="text-[11px] text-gray-500">
                 Seller: {seller.sellerName} · ⭐ {seller.rating}
@@ -130,41 +131,67 @@ export default function ProductDetail({
           </Link>
 
           {/* จำนวน */}
-          <div className="flex items-center justify-between bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+          <div className="flex items-center justify-between bg-white rounded-2xl border border-gray-100 shadow-card p-4">
             <span className="text-sm font-semibold text-gray-800">Quantity</span>
-            <div className="flex items-center gap-3">
-              <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} className="w-8 h-8 rounded-lg border border-gray-200 text-gray-500 text-lg">
+            <div className="flex items-center rounded-xl border border-gray-200">
+              <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} className="w-11 h-11 grid place-items-center text-gray-500 text-lg rounded-l-xl active:bg-gray-50" aria-label="Decrease quantity">
                 −
               </button>
-              <span className="text-base font-bold w-6 text-center">{qty}</span>
-              <button type="button" onClick={() => setQty((q) => q + 1)} className="w-8 h-8 rounded-lg border border-gray-200 text-gray-500 text-lg">
+              <span className="text-base font-bold min-w-[2.5rem] text-center mono">{qty}</span>
+              <button type="button" onClick={() => setQty((q) => q + 1)} className="w-11 h-11 grid place-items-center text-petrol text-lg rounded-r-xl active:bg-mint-soft" aria-label="Increase quantity">
                 +
               </button>
             </div>
           </div>
 
-          {/* เสนอราคา (ประมูล) */}
+          {/* Compliance & Specifications (medical) */}
+          <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-card space-y-3">
+            <h3 className="text-[11px] font-semibold tracking-widest uppercase text-gray-400">Compliance &amp; Specifications</h3>
+            <dl className="grid grid-cols-2 gap-x-4 gap-y-3">
+              <Spec label="FDA registration" value={product.fda_no ?? "—"} verified={product.fda_verified} />
+              <Spec label="Brand" value={product.brand ?? "—"} />
+              <Spec label="Model" value={product.model ?? "—"} />
+              <Spec label="Country of origin" value={product.origin ?? "—"} />
+            </dl>
+            {product.ifu_url || product.cert_url ? (
+              <div className="flex flex-wrap gap-2 pt-1">
+                {product.ifu_url && <DocLink href={product.ifu_url} label="Instructions for Use (IFU)" />}
+                {product.cert_url && <DocLink href={product.cert_url} label="Certificate (CE / ISO)" />}
+              </div>
+            ) : (
+              <p className="text-[11px] text-gray-400">Regulatory documents (IFU / Certificate) provided by the distributor on request.</p>
+            )}
+          </div>
+
+          {/* สินค้าควบคุม — ต้องยืนยันใบอนุญาตก่อนซื้อ */}
+          {product.controlled && (
+            <div className="rounded-2xl bg-info-soft border border-info/20 text-info text-xs p-4 flex items-start gap-2.5">
+              <svg viewBox="0 0 24 24" className="w-5 h-5 flex-none" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+              <span className="leading-relaxed">
+                <b>Controlled medical device.</b> A verified professional license is required before purchase.{" "}
+                <Link href="/buyer/setting/profile" className="font-semibold underline">Verify your license</Link>
+              </span>
+            </div>
+          )}
+
+          {/* Request quotation (RFQ) / เสนอราคา */}
           <button
             type="button"
             onClick={() => {
               setOfferQty(qty);
               setShowOffer(true);
             }}
-            className="w-full flex items-center gap-3 bg-amber-soft border border-amber/30 rounded-2xl p-4 text-left"
+            className="w-full flex items-center gap-3 bg-info-soft border border-info/20 rounded-2xl p-4 text-left"
           >
-            <span className="text-2xl">🤝</span>
-            <span className="flex-1">
-              <span className="block text-sm font-bold text-gray-800">Make your offer (bid)</span>
-              <span className="block text-[11px] text-gray-500">Negotiate the price with the seller — enter your own desired price</span>
+            <span className="w-10 h-10 rounded-xl bg-white text-info grid place-items-center flex-none">
+              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z" /><path d="M9 13h6M9 17h4" /></svg>
             </span>
-            <span className="text-amber font-bold">›</span>
+            <span className="flex-1">
+              <span className="block text-sm font-bold text-gray-800">Request quotation / make an offer</span>
+              <span className="block text-[11px] text-gray-500">For clinic / hospital PO — propose your price &amp; quantity; the distributor will respond</span>
+            </span>
+            <span className="text-info font-bold">›</span>
           </button>
-
-          {/* เลข อย. */}
-          <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
-            <p className="text-[10px] mono uppercase text-gray-400 mb-1">FDA Registration</p>
-            <p className="text-sm font-semibold text-gray-800 mono">{product.fda_no ?? "—"}</p>
-          </div>
 
           {/* แผนที่ / เวลาจัดส่ง */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -334,5 +361,28 @@ export default function ProductDetail({
         </div>
       )}
     </div>
+  );
+}
+
+function Spec({ label, value, verified }: { label: string; value: string; verified?: boolean }) {
+  return (
+    <div className="min-w-0">
+      <dt className="text-[10px] text-gray-400">{label}</dt>
+      <dd className="text-sm text-gray-800 font-medium mono flex items-center gap-1 break-all">
+        {value}
+        {verified && (
+          <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 text-info flex-none" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+        )}
+      </dd>
+    </div>
+  );
+}
+
+function DocLink({ href, label }: { href: string; label: string }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-info text-xs font-medium bg-info-soft px-2.5 py-1.5 rounded-lg">
+      <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z" /></svg>
+      {label}
+    </a>
   );
 }

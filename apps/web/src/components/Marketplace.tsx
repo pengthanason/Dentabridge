@@ -165,23 +165,30 @@ export default function Marketplace({
                   </button>
                   <ProductImage name={p.name} imageUrl={p.image_url} emoji={p.image_emoji} className="h-28 bg-gray-50" />
                   <div className="p-3 flex flex-col flex-1">
+                    {/* compliance — Medical Blue = ทางการ */}
                     <span
-                      className={`text-[9px] mono font-medium w-fit px-1.5 py-0.5 rounded-md mb-1.5 ${
-                        p.fda_verified ? "text-teal-700 bg-mint-soft" : "text-amber bg-amber-soft"
+                      className={`inline-flex items-center gap-1 w-fit text-[9px] mono font-semibold px-1.5 py-0.5 rounded-md mb-1.5 ${
+                        p.fda_verified ? "text-info bg-info-soft" : "text-amber bg-amber-soft"
                       }`}
                     >
-                      {p.fda_verified ? "✓ FDA" : "⚠️ Unverified"}
+                      {p.fda_verified ? (
+                        <>
+                          <svg viewBox="0 0 24 24" className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                          FDA
+                        </>
+                      ) : (
+                        "⚠ Unverified"
+                      )}
                     </span>
                     <p className="text-[13px] font-semibold text-gray-800 leading-snug line-clamp-2">{p.name}</p>
+                    {p.brand && <p className="text-[11px] text-gray-400 mt-0.5 truncate">{p.brand}</p>}
                     <div className="flex items-center gap-1 mt-1">
                       <Stars rating={r.rating} />
                       <span className="text-[10px] text-gray-400">({r.count})</span>
                     </div>
                     <div className="flex items-end justify-between mt-auto pt-2.5">
                       <span className="text-[15px] font-bold text-petrol mono leading-none">{money(p.price)}</span>
-                      <span className="w-6 h-6 rounded-full bg-mint-soft text-petrol grid place-items-center flex-none" aria-hidden>
-                        <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-                      </span>
+                      <span className="text-[10px] text-gray-400">Stock {p.stock}</span>
                     </div>
                   </div>
                 </Link>
