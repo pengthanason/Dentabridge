@@ -64,7 +64,7 @@ export function Submit({
       disabled={loading}
       className="w-full bg-petrol hover:bg-petrol-2 disabled:opacity-60 text-white font-semibold text-sm py-3 rounded-xl transition"
     >
-      {loading ? "กำลังดำเนินการ..." : label}
+      {loading ? "Processing..." : label}
     </button>
   );
 }

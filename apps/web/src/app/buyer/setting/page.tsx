@@ -7,15 +7,15 @@ import { createClient } from "@/lib/supabase/client";
 import AppHeader from "@/components/AppHeader";
 
 const ITEMS: [string, string, string][] = [
-  ["profile", "👤", "ข้อมูลส่วนตัว"],
-  ["clinic", "🏥", "ข้อมูลคลินิก & ที่อยู่จัดส่ง"],
-  ["tax", "🧾", "ข้อมูลใบกำกับภาษี"],
-  ["docs", "📁", "เอกสาร อย. / ใบอนุญาต"],
-  ["payment", "💳", "ช่องทางการชำระเงิน"],
-  ["coupon", "🎟️", "คูปองของฉัน"],
-  ["offers", "🤝", "ข้อเสนอราคาของฉัน"],
-  ["notifications", "🔔", "การแจ้งเตือน"],
-  ["history", "📜", "ประวัติการซื้อ"],
+  ["profile", "👤", "Profile"],
+  ["clinic", "🏥", "Clinic information & shipping address"],
+  ["tax", "🧾", "Tax invoice details"],
+  ["docs", "📁", "FDA documents / licenses"],
+  ["payment", "💳", "Payment methods"],
+  ["coupon", "🎟️", "My coupons"],
+  ["offers", "🤝", "My price offers"],
+  ["notifications", "🔔", "Notifications"],
+  ["history", "📜", "Order history"],
 ];
 
 export default function SettingPage() {
@@ -52,7 +52,7 @@ export default function SettingPage() {
           onClick={logout}
           className="w-full bg-white border border-red-100 text-red-600 font-semibold text-sm py-3 rounded-xl"
         >
-          ออกจากระบบ
+          Log out
         </button>
       </main>
     </div>

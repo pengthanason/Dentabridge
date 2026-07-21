@@ -13,10 +13,10 @@ type NavItem = {
 };
 
 const items: NavItem[] = [
-  { href: "/buyer", Icon: IconBag, label: "หน้าร้าน", match: (p) => p === "/buyer" || p.startsWith("/buyer/product") },
-  { href: "/buyer/fda", Icon: IconShieldCheck, label: "ตรวจ อย.", match: (p) => p.startsWith("/buyer/fda") },
-  { href: "/buyer/cart", Icon: IconCart, label: "ตะกร้า", match: (p) => p.startsWith("/buyer/cart") },
-  { href: "/buyer/setting", Icon: IconGear, label: "ตั้งค่า", match: (p) => p.startsWith("/buyer/setting") },
+  { href: "/buyer", Icon: IconBag, label: "Shop", match: (p) => p === "/buyer" || p.startsWith("/buyer/product") },
+  { href: "/buyer/fda", Icon: IconShieldCheck, label: "FDA Check", match: (p) => p.startsWith("/buyer/fda") },
+  { href: "/buyer/cart", Icon: IconCart, label: "Cart", match: (p) => p.startsWith("/buyer/cart") },
+  { href: "/buyer/setting", Icon: IconGear, label: "Settings", match: (p) => p.startsWith("/buyer/setting") },
 ];
 
 export default function BuyerNav() {

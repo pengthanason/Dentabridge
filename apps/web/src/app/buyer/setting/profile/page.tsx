@@ -27,21 +27,21 @@ export default async function ProfilePage() {
     : { data: null };
 
   const rows: [string, string][] = [
-    ["ชื่อ - นามสกุล", buyer?.full_name ?? "—"],
-    ["เลขใบอนุญาตประกอบวิชาชีพ", buyer?.license_no ?? "—"],
-    ["สังกัด / คลินิก", buyer?.clinic_name ?? "—"],
-    ["เลขบัตรประชาชน", buyer?.national_id ?? "—"],
-    ["อีเมล", profile?.email ?? "—"],
-    ["เบอร์โทรศัพท์", profile?.phone ?? "—"],
+    ["Full name", buyer?.full_name ?? "—"],
+    ["Professional license number", buyer?.license_no ?? "—"],
+    ["Affiliation / Clinic", buyer?.clinic_name ?? "—"],
+    ["National ID", buyer?.national_id ?? "—"],
+    ["Email", profile?.email ?? "—"],
+    ["Phone", profile?.phone ?? "—"],
   ];
 
   return (
     <div>
-      <AppHeader title="ข้อมูลส่วนตัว" back />
+      <AppHeader title="Profile" back />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
         <ProfileIdentity
-          fallbackName={buyer?.full_name ?? "ธนสันต์ บุญมาก"}
+          fallbackName={buyer?.full_name ?? "Thanason Boonmak"}
           emailVerified={!!profile?.email_verified}
           phoneVerified={!!profile?.phone_verified}
           verified={!!profile?.verified}
@@ -57,7 +57,7 @@ export default async function ProfilePage() {
         </div>
 
         <p className="text-center text-[11px] text-gray-400">
-          การแก้ไขข้อมูลจะเปิดใช้ในเฟสถัดไป
+          Editing will be enabled in a future phase
         </p>
       </main>
     </div>

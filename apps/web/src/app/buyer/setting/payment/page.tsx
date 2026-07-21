@@ -8,14 +8,14 @@ const CARDS_KEY = "db_cards";
 const BANKS_KEY = "db_bank_accounts";
 
 const BANKS = [
-  { id: "bank:kbank", name: "ธนาคารกสิกรไทย", short: "KBANK", color: "#138f2d", dark: false },
-  { id: "bank:scb", name: "ธนาคารไทยพาณิชย์", short: "SCB", color: "#4e2e7f", dark: false },
-  { id: "bank:bbl", name: "ธนาคารกรุงเทพ", short: "BBL", color: "#1e4598", dark: false },
-  { id: "bank:ktb", name: "ธนาคารกรุงไทย", short: "KTB", color: "#01a4e9", dark: false },
-  { id: "bank:bay", name: "ธนาคารกรุงศรีอยุธยา", short: "BAY", color: "#fec43b", dark: true },
-  { id: "bank:ttb", name: "ธนาคารทหารไทยธนชาต", short: "ttb", color: "#003b70", dark: false },
-  { id: "bank:gsb", name: "ธนาคารออมสิน", short: "GSB", color: "#eb198d", dark: false },
-  { id: "bank:uob", name: "ธนาคารยูโอบี", short: "UOB", color: "#005eb8", dark: false },
+  { id: "bank:kbank", name: "Kasikornbank", short: "KBANK", color: "#138f2d", dark: false },
+  { id: "bank:scb", name: "SCB", short: "SCB", color: "#4e2e7f", dark: false },
+  { id: "bank:bbl", name: "Bangkok Bank", short: "BBL", color: "#1e4598", dark: false },
+  { id: "bank:ktb", name: "Krungthai", short: "KTB", color: "#01a4e9", dark: false },
+  { id: "bank:bay", name: "Krungsri", short: "BAY", color: "#fec43b", dark: true },
+  { id: "bank:ttb", name: "ttb", short: "ttb", color: "#003b70", dark: false },
+  { id: "bank:gsb", name: "GSB", short: "GSB", color: "#eb198d", dark: false },
+  { id: "bank:uob", name: "UOB", short: "UOB", color: "#005eb8", dark: false },
 ];
 
 type Card = { id: string; last4: string; name: string; exp: string; brand: string };
@@ -24,7 +24,7 @@ function detectBrand(num: string) {
   if (num.startsWith("4")) return "VISA";
   if (/^5[1-5]/.test(num)) return "Mastercard";
   if (/^3[47]/.test(num)) return "AMEX";
-  return "บัตร";
+  return "Card";
 }
 
 export default function PaymentPage() {
@@ -67,16 +67,16 @@ export default function PaymentPage() {
   function choose(id: string) {
     setSelected(id);
     localStorage.setItem(KEY, id);
-    showToast("เลือกช่องทางชำระเงินแล้ว ✓");
+    showToast("Payment method selected ✓");
   }
 
   function saveCard(e: React.FormEvent) {
     e.preventDefault();
     const digits = num.replace(/\D/g, "");
-    if (digits.length < 13) return showToast("เลขบัตรไม่ถูกต้อง");
-    if (!name.trim()) return showToast("กรุณากรอกชื่อบนบัตร");
-    if (!/^\d{2}\/\d{2}$/.test(exp)) return showToast("วันหมดอายุต้องเป็น MM/YY");
-    if (cvv.length < 3) return showToast("CVV ไม่ถูกต้อง");
+    if (digits.length < 13) return showToast("Invalid card number");
+    if (!name.trim()) return showToast("Please enter the name on card");
+    if (!/^\d{2}\/\d{2}$/.test(exp)) return showToast("Expiry must be MM/YY");
+    if (cvv.length < 3) return showToast("Invalid CVV");
 
     const card: Card = {
       id: "card:" + digits.slice(-4) + ":" + cards.length,
@@ -94,7 +94,7 @@ export default function PaymentPage() {
     setCvv("");
     setShowForm(false);
     choose(card.id);
-    showToast("เพิ่มบัตรแล้ว ✓");
+    showToast("Card added ✓");
   }
 
   function openBankForm(id: string) {
@@ -105,9 +105,9 @@ export default function PaymentPage() {
   function saveBank(e: React.FormEvent) {
     e.preventDefault();
     if (!bankForm) return;
-    if (!acctName.trim()) return showToast("กรุณากรอกชื่อเจ้าของบัญชี");
+    if (!acctName.trim()) return showToast("Please enter the account holder name");
     const digits = acctNo.replace(/\D/g, "");
-    if (digits.length < 6) return showToast("เลขที่บัญชีไม่ถูกต้อง");
+    if (digits.length < 6) return showToast("Invalid account number");
     const next = { ...bankAccounts, [bankForm]: { name: acctName.trim(), last4: digits.slice(-4) } };
     setBankAccounts(next);
     localStorage.setItem(BANKS_KEY, JSON.stringify(next));
@@ -115,7 +115,7 @@ export default function PaymentPage() {
     setBankForm(null);
     setAcctName("");
     setAcctNo("");
-    showToast("เชื่อมบัญชีธนาคารแล้ว ✓");
+    showToast("Bank account linked ✓");
   }
 
   const selectedBank = BANKS.find((b) => b.id === selected);
@@ -124,16 +124,16 @@ export default function PaymentPage() {
     <div className="pb-10">
       <header className="bg-petrol text-white sticky top-0 z-20">
         <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Link href="/buyer/setting" className="text-lg" aria-label="กลับ">
+          <Link href="/buyer/setting" className="text-lg" aria-label="Back">
             ‹
           </Link>
-          <h1 className="font-semibold flex-1">ช่องทางการชำระเงิน</h1>
+          <h1 className="font-semibold flex-1">Payment methods</h1>
         </div>
       </header>
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
         {/* บัตรเครดิต/เดบิต */}
-        <Section title="บัตรเครดิต / เดบิต">
+        <Section title="Credit / debit card">
           <div className="space-y-2">
             {cards.map((c) => (
               <Option
@@ -157,12 +157,12 @@ export default function PaymentPage() {
               onClick={() => setShowForm(true)}
               className="mt-2 w-full border border-dashed border-mint text-mint font-semibold text-sm py-2.5 rounded-xl"
             >
-              + เพิ่มบัตรใหม่
+              + Add new card
             </button>
           ) : (
             <form onSubmit={saveCard} className="mt-3 space-y-2 border-t border-gray-100 pt-3">
               <CardInput
-                label="เลขบัตร"
+                label="Card number"
                 value={num}
                 onChange={(v) =>
                   setNum(
@@ -177,14 +177,14 @@ export default function PaymentPage() {
                 inputMode="numeric"
               />
               <CardInput
-                label="ชื่อบนบัตร"
+                label="Name on card"
                 value={name}
                 onChange={setName}
                 placeholder="THANASON BOONMAK"
               />
               <div className="grid grid-cols-2 gap-2">
                 <CardInput
-                  label="วันหมดอายุ (MM/YY)"
+                  label="Expiry (MM/YY)"
                   value={exp}
                   onChange={(v) => {
                     const d = v.replace(/\D/g, "").slice(0, 4);
@@ -208,13 +208,13 @@ export default function PaymentPage() {
                   onClick={() => setShowForm(false)}
                   className="flex-1 border border-gray-200 text-gray-500 text-sm py-2.5 rounded-xl"
                 >
-                  ยกเลิก
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   className="flex-1 bg-petrol text-white font-semibold text-sm py-2.5 rounded-xl"
                 >
-                  บันทึกบัตร
+                  Save card
                 </button>
               </div>
             </form>
@@ -232,9 +232,9 @@ export default function PaymentPage() {
               🏦
             </div>
             <div className="flex-1 text-left">
-              <p className="text-sm font-semibold text-gray-800">ธนาคาร</p>
+              <p className="text-sm font-semibold text-gray-800">Bank</p>
               <p className="text-[11px] text-gray-400">
-                {selectedBank ? `เลือก: ${selectedBank.name}` : "หักบัญชีธนาคาร"}
+                {selectedBank ? `Selected: ${selectedBank.name}` : "Direct bank debit"}
               </p>
             </div>
             <span className={`text-gray-400 transition-transform ${bankOpen ? "rotate-180" : ""}`}>▾</span>
@@ -266,7 +266,7 @@ export default function PaymentPage() {
                     <span className="flex-1 text-left">
                       <span className="block text-sm text-gray-800">{b.name}</span>
                       <span className="block text-[11px] text-gray-400">
-                        {acct ? `บัญชี •••• ${acct.last4}` : "แตะเพื่อเชื่อมบัญชี"}
+                        {acct ? `Account •••• ${acct.last4}` : "Tap to link account"}
                       </span>
                     </span>
                     <span
@@ -284,7 +284,7 @@ export default function PaymentPage() {
         </div>
 
         <p className="text-center text-[11px] text-amber">
-          * ข้อมูลบัตรบันทึกในเครื่อง (mock) เพื่อสาธิต — ระบบตัดเงินจริงต่อในเฟสถัดไป
+          * Card details are stored on-device (mock) for demonstration — real payment processing will follow in a future phase
         </p>
       </main>
 
@@ -305,11 +305,11 @@ export default function PaymentPage() {
                     >
                       {b.short}
                     </div>
-                    <h3 className="font-bold text-gray-900">เชื่อมบัญชี{b.name}</h3>
+                    <h3 className="font-bold text-gray-900">Link {b.name} account</h3>
                   </div>
-                  <CardInput label="ชื่อเจ้าของบัญชี" value={acctName} onChange={setAcctName} placeholder="ชื่อ-นามสกุล" />
+                  <CardInput label="Account holder name" value={acctName} onChange={setAcctName} placeholder="Full name" />
                   <CardInput
-                    label="เลขที่บัญชี"
+                    label="Account number"
                     value={acctNo}
                     onChange={(v) => setAcctNo(v.replace(/\D/g, "").slice(0, 15))}
                     placeholder="xxx-x-xxxxx-x"
@@ -317,14 +317,14 @@ export default function PaymentPage() {
                   />
                   <div className="flex gap-2 pt-1">
                     <button type="button" onClick={() => setBankForm(null)} className="flex-1 border border-gray-200 text-gray-500 text-sm py-2.5 rounded-xl">
-                      ยกเลิก
+                      Cancel
                     </button>
                     <button type="submit" className="flex-1 bg-petrol text-white font-semibold text-sm py-2.5 rounded-xl">
-                      บันทึกและใช้บัญชีนี้
+                      Save and use this account
                     </button>
                   </div>
                   <p className="text-[11px] text-amber text-center">
-                    * ข้อมูลบัญชีบันทึกในเครื่อง (mock) — ระบบตัดเงินจริงต่อในเฟสถัดไป
+                    * Account details are stored on-device (mock) — real payment processing will follow in a future phase
                   </p>
                 </form>
               </div>

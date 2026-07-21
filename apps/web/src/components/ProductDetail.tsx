@@ -50,7 +50,7 @@ export default function ProductDetail({
 
   const hasGeo = product.lat != null && product.lng != null;
   const km = hasGeo ? haversineKm(CLINIC, { lat: product.lat as number, lng: product.lng as number }) : null;
-  const eta = km == null ? "1-2 วัน" : km < 10 ? "ภายในวันนี้" : km < 100 ? "พรุ่งนี้" : "2-3 วัน";
+  const eta = km == null ? "1-2 days" : km < 10 ? "Today" : km < 100 ? "Tomorrow" : "2-3 days";
   const seller = sellerFromBrand(product.brand);
 
   function showToast(m: string) {
@@ -61,15 +61,15 @@ export default function ProductDetail({
   function submitOffer(e: React.FormEvent) {
     e.preventDefault();
     const price = Number(offerPrice);
-    if (!price || price <= 0) return showToast("กรุณาใส่ราคาที่ต้องการ");
+    if (!price || price <= 0) return showToast("Please enter your desired price");
     addOffer({ productId: product.id, productName: product.name, price, qty: offerQty });
     setShowOffer(false);
-    showToast("ส่งข้อเสนอแล้ว รอผู้ขายตอบรับ");
+    showToast("Offer submitted, awaiting seller response");
   }
 
   return (
     <div className="pb-28">
-      <AppHeader title="รายละเอียดสินค้า" back />
+      <AppHeader title="Product Details" back />
 
       <main className="max-w-md lg:max-w-4xl mx-auto">
         <ProductImage name={product.name} imageUrl={product.image_url} emoji={product.image_emoji} className="h-56 w-full" />
@@ -77,17 +77,17 @@ export default function ProductDetail({
         <div className="px-4 py-4 space-y-4">
           <div>
             {product.fda_verified && (
-              <span className="text-[10px] mono text-teal-700 bg-mint-soft px-2 py-0.5 rounded">✓ อย. verified</span>
+              <span className="text-[10px] mono text-teal-700 bg-mint-soft px-2 py-0.5 rounded">✓ FDA verified</span>
             )}
             <h2 className="text-lg font-bold text-gray-900 mt-2">{product.name}</h2>
             <p className="text-xs text-gray-500">
               {product.brand}
-              {categoryName ? ` · หมวด ${categoryName}` : ""}
+              {categoryName ? ` · Category ${categoryName}` : ""}
             </p>
             <div className="flex items-center gap-1 mt-1">
               <Stars rating={rate.rating} />
               <span className="text-xs text-gray-500">
-                {rate.rating} · {rate.count} รีวิว
+                {rate.rating} · {rate.count} reviews
               </span>
             </div>
             <div className="flex items-center justify-between mt-2">
@@ -98,13 +98,13 @@ export default function ProductDetail({
                 className={`flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full border ${
                   wished ? "border-signal text-signal bg-signal-soft" : "border-gray-200 text-gray-500"
                 }`}
-                aria-label={wished ? "เอาออกจากรายการโปรด" : "เพิ่มในรายการโปรด"}
+                aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
               >
                 <IconHeart filled={wished} className="w-4 h-4" />
-                {wished ? "อยู่ในรายการโปรด" : "เพิ่มรายการโปรด"}
+                {wished ? "In wishlist" : "Add to wishlist"}
               </button>
             </div>
-            <p className="text-xs text-gray-400 mt-1">คงเหลือ {product.stock} ชิ้น</p>
+            <p className="text-xs text-gray-400 mt-1">{product.stock} in stock</p>
           </div>
 
           {/* ผู้ขาย */}
@@ -123,15 +123,15 @@ export default function ProductDetail({
                 )}
               </div>
               <p className="text-[11px] text-gray-500">
-                ผู้ขาย: {seller.sellerName} · ⭐ {seller.rating}
+                Seller: {seller.sellerName} · ⭐ {seller.rating}
               </p>
             </div>
-            <span className="text-mint font-semibold text-xs flex-none">ดูร้านค้า ›</span>
+            <span className="text-mint font-semibold text-xs flex-none">View store ›</span>
           </Link>
 
           {/* จำนวน */}
           <div className="flex items-center justify-between bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-            <span className="text-sm font-semibold text-gray-800">จำนวน</span>
+            <span className="text-sm font-semibold text-gray-800">Quantity</span>
             <div className="flex items-center gap-3">
               <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} className="w-8 h-8 rounded-lg border border-gray-200 text-gray-500 text-lg">
                 −
@@ -154,15 +154,15 @@ export default function ProductDetail({
           >
             <span className="text-2xl">🤝</span>
             <span className="flex-1">
-              <span className="block text-sm font-bold text-gray-800">เสนอราคาของคุณ (ประมูล)</span>
-              <span className="block text-[11px] text-gray-500">ต่อรองราคากับผู้ขาย — ใส่ราคาที่ต้องการเอง</span>
+              <span className="block text-sm font-bold text-gray-800">Make your offer (bid)</span>
+              <span className="block text-[11px] text-gray-500">Negotiate the price with the seller — enter your own desired price</span>
             </span>
             <span className="text-amber font-bold">›</span>
           </button>
 
           {/* เลข อย. */}
           <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
-            <p className="text-[10px] mono uppercase text-gray-400 mb-1">ทะเบียน อย.</p>
+            <p className="text-[10px] mono uppercase text-gray-400 mb-1">FDA Registration</p>
             <p className="text-sm font-semibold text-gray-800 mono">{product.fda_no ?? "—"}</p>
           </div>
 
@@ -173,28 +173,28 @@ export default function ProductDetail({
               <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl">📍</div>
             </div>
             <div className="p-4">
-              <p className="text-[10px] mono uppercase text-gray-400">ข้อมูลจัดส่ง</p>
+              <p className="text-[10px] mono uppercase text-gray-400">Delivery Information</p>
               <p className="text-sm text-gray-800 mt-1">
-                📦 ระยะทางจากคลัง <b>{km == null ? "—" : `~${km.toFixed(1)} กม.`}</b> · ส่งถึง{" "}
+                📦 Distance from warehouse <b>{km == null ? "—" : `~${km.toFixed(1)} km`}</b> · Delivered{" "}
                 <b className="text-petrol">{eta}</b>
               </p>
-              <p className="text-[11px] text-amber mt-1">* แผนที่/เวลาส่งเป็นตัวอย่าง (ต่อ Google Maps จริงในเฟสถัดไป)</p>
+              <p className="text-[11px] text-amber mt-1">* Map and delivery time are illustrative (live Google Maps integration in the next phase)</p>
             </div>
           </div>
 
           {/* รายละเอียด */}
           <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
-            <p className="text-[10px] mono uppercase text-gray-400 mb-1">รายละเอียด</p>
+            <p className="text-[10px] mono uppercase text-gray-400 mb-1">Description</p>
             <p className="text-sm text-gray-600 leading-relaxed">
               {product.description ??
-                "สินค้าผ่านการตรวจสอบทะเบียน อย. และการประเมินผู้จัดจำหน่ายประจำปี พร้อมใบรับรองครบถ้วน"}
+                "This product has passed FDA registration verification and annual distributor assessment, with complete certification."}
             </p>
           </div>
 
           {/* รีวิว */}
           <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-sm font-bold text-gray-900">รีวิว ({reviews.length})</p>
+              <p className="text-sm font-bold text-gray-900">Reviews ({reviews.length})</p>
               <div className="flex items-center gap-1">
                 <Stars rating={rate.rating} />
                 <span className="text-xs text-gray-500">{rate.rating}</span>
@@ -204,14 +204,14 @@ export default function ProductDetail({
             {/* เขียนรีวิว */}
             <div className="border border-gray-100 rounded-xl p-3 mb-3">
               <div className="flex items-center gap-1 mb-2">
-                <span className="text-xs text-gray-500 mr-1">ให้คะแนน:</span>
+                <span className="text-xs text-gray-500 mr-1">Rating:</span>
                 {[1, 2, 3, 4, 5].map((n) => (
                   <button
                     key={n}
                     type="button"
                     onClick={() => setMyRating(n)}
                     className={`text-lg ${n <= myRating ? "text-amber" : "text-gray-300"}`}
-                    aria-label={`${n} ดาว`}
+                    aria-label={`${n} stars`}
                   >
                     ★
                   </button>
@@ -220,21 +220,21 @@ export default function ProductDetail({
               <textarea
                 value={myText}
                 onChange={(e) => setMyText(e.target.value)}
-                placeholder="เขียนรีวิวสินค้านี้..."
+                placeholder="Write a review for this product..."
                 rows={2}
                 className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mint"
               />
               <button
                 type="button"
                 onClick={() => {
-                  if (!myText.trim()) return showToast("กรุณาเขียนรีวิวก่อน");
+                  if (!myText.trim()) return showToast("Please write a review first");
                   addReview(product.id, myRating, myText.trim());
                   setMyText("");
-                  showToast("ขอบคุณสำหรับรีวิว ✓");
+                  showToast("Thank you for your review ✓");
                 }}
                 className="mt-2 bg-petrol text-white text-xs font-semibold px-4 py-2 rounded-lg"
               >
-                ส่งรีวิว
+                Submit review
               </button>
             </div>
 
@@ -262,11 +262,11 @@ export default function ProductDetail({
             type="button"
             onClick={() => {
               addToCart(product.id, qty);
-              showToast(`เพิ่ม ${qty} ชิ้นลงตะกร้าแล้ว`);
+              showToast(`Added ${qty} item(s) to cart`);
             }}
             className="flex-1 border border-petrol text-petrol font-semibold text-sm py-3 rounded-xl"
           >
-            เพิ่มลงตะกร้า
+            Add to cart
           </button>
           <button
             type="button"
@@ -276,7 +276,7 @@ export default function ProductDetail({
             }}
             className="flex-1 bg-petrol hover:bg-petrol-2 text-white font-semibold text-sm py-3 rounded-xl transition"
           >
-            ซื้อเลย
+            Buy now
           </button>
         </div>
       </div>
@@ -289,13 +289,13 @@ export default function ProductDetail({
             <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-3" />
             <form onSubmit={submitOffer} className="space-y-3">
               <div>
-                <h3 className="font-bold text-gray-900">เสนอราคา · {product.name}</h3>
+                <h3 className="font-bold text-gray-900">Make an offer · {product.name}</h3>
                 <p className="text-[11px] text-gray-500">
-                  ราคาตั้ง {money(product.price)} — ใส่ราคา/ชิ้นที่คุณต้องการ ผู้ขายจะตอบรับหรือต่อรอง
+                  List price {money(product.price)} — enter your desired price per unit; the seller will accept or negotiate
                 </p>
               </div>
               <label className="block">
-                <span className="text-[11px] text-gray-400">ราคาที่เสนอ (ต่อชิ้น)</span>
+                <span className="text-[11px] text-gray-400">Offered price (per unit)</span>
                 <input
                   inputMode="numeric"
                   value={offerPrice}
@@ -304,7 +304,7 @@ export default function ProductDetail({
                 />
               </label>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">จำนวน</span>
+                <span className="text-sm text-gray-600">Quantity</span>
                 <div className="flex items-center gap-3">
                   <button type="button" onClick={() => setOfferQty((q) => Math.max(1, q - 1))} className="w-8 h-8 rounded-lg border border-gray-200 text-gray-500">
                     −
@@ -316,13 +316,13 @@ export default function ProductDetail({
                 </div>
               </div>
               <div className="flex justify-between text-sm border-t border-gray-100 pt-2">
-                <span className="text-gray-500">รวมข้อเสนอ</span>
+                <span className="text-gray-500">Offer total</span>
                 <span className="mono font-bold text-petrol">{money((Number(offerPrice) || 0) * offerQty)}</span>
               </div>
               <button type="submit" className="w-full bg-petrol hover:bg-petrol-2 text-white font-semibold text-sm py-3 rounded-xl transition">
-                ส่งข้อเสนอ
+                Submit offer
               </button>
-              <p className="text-[11px] text-gray-400 text-center">ดูสถานะได้ที่ Setting → ข้อเสนอราคาของฉัน</p>
+              <p className="text-[11px] text-gray-400 text-center">View status under Settings → My Offers</p>
             </form>
           </div>
         </>

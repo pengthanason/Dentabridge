@@ -18,27 +18,27 @@ type Row = {
 export default function FdaPage() {
   return (
     <div className="pb-6">
-      <AppHeader title="ตรวจสอบ อย." />
+      <AppHeader title="FDA Verification" />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
-        <p className="text-[11px] text-mint text-center">✓ ดึงข้อมูลจริงจาก อย. (porta.fda.moph.go.th) ในแอป</p>
+        <p className="text-[11px] text-mint text-center">✓ Live data from the FDA (porta.fda.moph.go.th) in-app</p>
 
         {/* ช่อง 1: เลข อย. ทุกประเภท */}
         <FdaSearch
           type="all"
           icon="🔎"
-          title="ตรวจด้วยเลข อย."
-          hint="ค้นทุกประเภท (อาหาร/ยา/เครื่องสำอาง/เครื่องมือแพทย์) — อาจใช้เวลาสักครู่"
-          placeholder="กรอกเลข อย."
+          title="Verify by FDA number"
+          hint="Searches all types (food / drugs / cosmetics / medical devices) — this may take a moment"
+          placeholder="Enter FDA number"
         />
 
         {/* ช่อง 2: เลขจดแจ้งเครื่องมือแพทย์ */}
         <FdaSearch
           type="mdc"
           icon="🦷"
-          title="ตรวจเลขจดแจ้งเครื่องมือแพทย์"
-          hint="สำหรับวัสดุ/อุปกรณ์ทันตกรรม"
-          placeholder="กรอกเลขจดแจ้งเครื่องมือแพทย์"
+          title="Verify medical device notification number"
+          hint="For dental materials and equipment"
+          placeholder="Enter medical device notification number"
         />
       </main>
     </div>
@@ -78,7 +78,7 @@ function FdaSearch({
       if (!data.ok) throw new Error("upstream");
       setRows(data.results as Row[]);
     } catch {
-      setErr("เชื่อมต่อฐานข้อมูล อย. ไม่ได้ในขณะนี้ ลองใหม่อีกครั้ง");
+      setErr("Unable to connect to the FDA database at this time. Please try again.");
     }
     setLoading(false);
   }
@@ -103,7 +103,7 @@ function FdaSearch({
         <button
           type="button"
           onClick={() => setScanOpen(true)}
-          aria-label="สแกนด้วยกล้อง"
+          aria-label="Scan with camera"
           className="bg-mint-soft text-petrol text-base px-3 rounded-xl flex-none"
         >
           📷
@@ -114,7 +114,7 @@ function FdaSearch({
           disabled={loading}
           className="bg-petrol hover:bg-petrol-2 disabled:opacity-60 text-white text-xs font-medium px-4 rounded-xl"
         >
-          {loading ? "..." : "ตรวจ"}
+          {loading ? "..." : "Verify"}
         </button>
       </div>
 
@@ -132,7 +132,7 @@ function FdaSearch({
       {loading && (
         <div className="flex flex-col items-center py-4 gap-2">
           <div className="w-7 h-7 rounded-full border-[3px] border-mint-soft border-t-petrol animate-spin" />
-          <p className="text-[11px] text-gray-400">กำลังค้นจาก อย....</p>
+          <p className="text-[11px] text-gray-400">Searching the FDA database...</p>
         </div>
       )}
 
@@ -146,13 +146,13 @@ function FdaSearch({
       {rows && rows.length === 0 && !loading && (
         <div className="bg-amber-soft text-amber text-xs p-3 rounded-xl flex items-start gap-2">
           <span>⚠️</span>
-          <span>ไม่พบเลขนี้ในฐานข้อมูล อย. — โปรดตรวจสอบอีกครั้ง</span>
+          <span>This number was not found in the FDA database — please verify and try again</span>
         </div>
       )}
 
       {rows && rows.length > 0 && (
         <div className="space-y-2">
-          <p className="text-[11px] text-gray-500">พบ {rows.length} รายการ</p>
+          <p className="text-[11px] text-gray-500">{rows.length} result(s) found</p>
           {rows.map((r, i) => {
             const expired = r.status.includes("หมดอายุ");
             return (
@@ -167,20 +167,20 @@ function FdaSearch({
                       expired ? "bg-amber-soft text-amber" : "bg-mint-soft text-teal-700"
                     }`}
                   >
-                    {r.status || "ขึ้นทะเบียน"}
+                    {r.status || "Registered"}
                   </span>
                 </div>
                 <div className="mt-1.5 space-y-0.5 text-[11px] text-gray-600">
                   <p>
-                    เลข: <b className="text-gray-800">{r.lcnno}</b>
+                    No.: <b className="text-gray-800">{r.lcnno}</b>
                     {r.productType ? ` · ${r.productType}` : ""}
                     {r.type ? ` · ${r.type}` : ""}
                   </p>
-                  {r.licensee && <p>ผู้รับอนุญาต: {r.licensee}</p>}
+                  {r.licensee && <p>Licensee: {r.licensee}</p>}
                 </div>
                 {r.url && (
                   <a href={r.url} target="_blank" rel="noopener noreferrer" className="inline-block mt-1.5 text-[11px] text-mint font-semibold">
-                    ดูบนเว็บ อย. ↗
+                    View on FDA website ↗
                   </a>
                 )}
               </div>

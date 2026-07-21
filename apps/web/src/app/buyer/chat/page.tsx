@@ -12,26 +12,26 @@ const THREADS: Thread[] = [
     id: "c1",
     name: "Dental Vision",
     avatar: "🏢",
-    last: "ยืนยันออเดอร์แล้วค่ะ จัดส่งพรุ่งนี้",
+    last: "Your order is confirmed and will ship tomorrow.",
     time: "10:24",
     messages: [
-      { from: "them", text: "สวัสดีค่ะ สนใจสินค้าตัวไหนสอบถามได้เลยนะคะ" },
-      { from: "me", text: "ยาง O-Ring มีสีอะไรบ้างครับ" },
-      { from: "them", text: "มีครบ 8 สีเลยค่ะ สั่งขั้นต่ำ 1 แพ็ค มีใบรับรอง อย. ครบ" },
-      { from: "me", text: "โอเคครับ สั่ง 2 แพ็ค" },
-      { from: "them", text: "รับทราบค่ะ ยืนยันออเดอร์แล้ว จัดส่งพรุ่งนี้" },
+      { from: "them", text: "Hello, feel free to ask about any product you're interested in." },
+      { from: "me", text: "What colors do the O-Rings come in?" },
+      { from: "them", text: "All 8 colors are available, minimum order 1 pack, with complete FDA certification." },
+      { from: "me", text: "Alright, I'll order 2 packs." },
+      { from: "them", text: "Noted. Your order is confirmed and will ship tomorrow." },
     ],
   },
   {
     id: "c2",
     name: "MedSupply TH",
     avatar: "🏭",
-    last: "ขอบคุณที่อุดหนุนค่ะ 🙏",
-    time: "เมื่อวาน",
+    last: "Thank you for your business. 🙏",
+    time: "Yesterday",
     messages: [
-      { from: "me", text: "ถุงมือไนไตรล์ล็อตใหม่ Exp ปีไหนครับ" },
-      { from: "them", text: "ล็อตนี้ Exp 2028 ค่ะ" },
-      { from: "them", text: "ขอบคุณที่อุดหนุนค่ะ 🙏" },
+      { from: "me", text: "What's the expiry year for the new nitrile gloves lot?" },
+      { from: "them", text: "This lot expires in 2028." },
+      { from: "them", text: "Thank you for your business. 🙏" },
     ],
   },
 ];
@@ -55,12 +55,12 @@ export default function ChatPage() {
     <div className="flex flex-col bg-gray-50 h-[calc(100dvh-5rem)]">
       <header className="bg-petrol text-white flex-none">
         <div className="max-w-md lg:max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-          <button type="button" onClick={back} className="text-lg" aria-label="กลับ">
+          <button type="button" onClick={back} className="text-lg" aria-label="Back">
             ‹
           </button>
           <h1 className="font-semibold flex-1 truncate">
-            <span className="lg:hidden">{isAssistant ? "ผู้ช่วย DentaBridge" : active ? active.name : "ข้อความ"}</span>
-            <span className="hidden lg:inline">ข้อความ</span>
+            <span className="lg:hidden">{isAssistant ? "DentaBridge Assistant" : active ? active.name : "Messages"}</span>
+            <span className="hidden lg:inline">Messages</span>
           </h1>
         </div>
       </header>
@@ -84,12 +84,12 @@ export default function ChatPage() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
                 <p className="font-semibold text-sm text-gray-800 truncate flex items-center gap-1.5">
-                  ผู้ช่วย DentaBridge
+                  DentaBridge Assistant
                   <span className="text-[9px] font-bold bg-petrol text-white px-1.5 py-0.5 rounded">AI</span>
                 </p>
-                <span className="text-[10px] text-mint ml-2 flex-none">ออนไลน์</span>
+                <span className="text-[10px] text-mint ml-2 flex-none">Online</span>
               </div>
-              <p className="text-xs text-gray-500 truncate">ถามเรื่องเว็บ &amp; อย. ได้เลย · อ้างอิงแหล่งจริง</p>
+              <p className="text-xs text-gray-500 truncate">Ask about the app &amp; FDA · cites real sources</p>
             </div>
           </button>
 
@@ -147,9 +147,9 @@ export default function ChatPage() {
               <div className="p-3 border-t border-gray-100 bg-white flex items-center gap-2 flex-none">
                 <input
                   disabled
-                  placeholder="พิมพ์ข้อความ... (เปิดใช้ใน Phase ถัดไป)"
+                  placeholder="Type a message... (available in the next phase)"
                   className="flex-1 bg-gray-100 text-gray-400 rounded-full px-4 py-2 text-sm"
-                  aria-label="พิมพ์ข้อความ"
+                  aria-label="Type a message"
                 />
                 <button type="button" disabled className="w-9 h-9 rounded-full bg-gray-200 text-gray-400 grid place-items-center">
                   ➤
@@ -161,7 +161,7 @@ export default function ChatPage() {
             <div className="flex-1 grid place-items-center text-center text-gray-400">
               <div>
                 <div className="text-5xl mb-2">💬</div>
-                <p className="text-sm">เลือกการสนทนาเพื่อเริ่มแชท</p>
+                <p className="text-sm">Select a conversation to start chatting</p>
               </div>
             </div>
           )}

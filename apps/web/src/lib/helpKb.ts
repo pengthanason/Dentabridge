@@ -11,133 +11,133 @@ export type KbEntry = {
 
 // แหล่งทางการที่ใช้อ้างอิงเรื่อง อย.
 export const OFFICIAL: Record<string, Source> = {
-  oryor: { label: "อย. (oryor.com)", url: "https://oryor.com" },
-  serial: { label: "ตรวจเลขผลิตภัณฑ์ อย.", url: "https://oryor.com/check-product-serial" },
-  fda: { label: "สำนักงานคณะกรรมการอาหารและยา", url: "https://www.fda.moph.go.th" },
-  mdc: { label: "กองควบคุมเครื่องมือแพทย์ อย.", url: "https://mdcontrol.fda.moph.go.th" },
-  porta: { label: "ระบบสืบค้นใบอนุญาต อย.", url: "http://porta.fda.moph.go.th" },
+  oryor: { label: "FDA (oryor.com)", url: "https://oryor.com" },
+  serial: { label: "FDA product serial check", url: "https://oryor.com/check-product-serial" },
+  fda: { label: "Food and Drug Administration", url: "https://www.fda.moph.go.th" },
+  mdc: { label: "FDA Medical Device Control Division", url: "https://mdcontrol.fda.moph.go.th" },
+  porta: { label: "FDA license lookup system", url: "http://porta.fda.moph.go.th" },
 };
 
 export const KB: KbEntry[] = [
   // ── เรื่องเว็บ DentaBridge ──
   {
     id: "how-fda-check",
-    keywords: ["ตรวจ อย", "ตรวจสอบ อย", "เช็ค อย", "เลข อย", "ตรวจเลข", "check fda", "อย ปลอม"],
+    keywords: ["check fda", "verify fda", "fda number", "check number", "fda registration", "fake fda", "scan fda"],
     answer:
-      "ตรวจเลข อย. ได้ที่แท็บ “ตรวจสอบ อย.” ในแอป — พิมพ์เลข อย. แล้วกด “ตรวจ” ระบบจะดึงข้อมูลจริงจากฐานข้อมูล อย. มาแสดง หรือกดปุ่มกล้อง 📷 เพื่อสแกนเลข/QR บนฉลากให้กรอกและตรวจอัตโนมัติ มีทั้งช่องเลข อย. ทั่วไป และช่องเลขจดแจ้งเครื่องมือแพทย์",
+      "You can verify an FDA number in the “FDA Check” tab of the app — enter the FDA number and tap “Check”, and the system will pull live data from the FDA database. You can also tap the camera button 📷 to scan the number/QR code on the label for automatic entry and verification. There are separate fields for general FDA numbers and for medical device registration numbers.",
     sources: [
-      { label: "หน้าตรวจสอบ อย. ในแอป", url: "/buyer/fda" },
+      { label: "In-app FDA Check page", url: "/buyer/fda" },
       OFFICIAL.serial,
     ],
   },
   {
     id: "scan-camera",
-    keywords: ["สแกน", "กล้อง", "แสกน", "ถ่ายรูป", "qr", "คิวอาร์", "บาร์โค้ด", "scan"],
+    keywords: ["scan", "camera", "photo", "qr", "qr code", "barcode", "scanner"],
     answer:
-      "ในหน้า “ตรวจสอบ อย.” กดปุ่มกล้อง 📷 ข้างช่องกรอก จะเปิดกล้องหลังของเครื่อง เล็งเลข อย. หรือ QR บนฉลากให้อยู่ในกรอบ ระบบจะอ่านตัวเลข (OCR) หรือถอด QR แล้วกรอกให้อัตโนมัติ พร้อมกดตรวจให้ทันที (ต้องมีแสงพอและฉลากชัด)",
-    sources: [{ label: "หน้าตรวจสอบ อย. ในแอป", url: "/buyer/fda" }],
+      "On the “FDA Check” page, tap the camera button 📷 next to the input field to open the rear camera. Point it at the FDA number or QR code on the label so it sits within the frame; the system will read the digits (OCR) or decode the QR code, fill them in automatically, and run the check immediately (adequate lighting and a clear label are required).",
+    sources: [{ label: "In-app FDA Check page", url: "/buyer/fda" }],
   },
   {
     id: "cart-order",
-    keywords: ["ตะกร้า", "สั่งซื้อ", "ซื้อ", "ชำระเงิน", "จ่ายเงิน", "checkout", "cart", "order"],
+    keywords: ["cart", "order", "buy", "payment", "pay", "checkout", "purchase"],
     answer:
-      "กดสินค้าเพื่อดูรายละเอียด เลือกจำนวน แล้วกด “ใส่ตะกร้า” จากนั้นไปที่หน้าตะกร้าเพื่อตรวจรายการและกด “ชำระเงิน” เลือกที่อยู่จัดส่งและช่องทางชำระเงินได้ในขั้นตอนสั่งซื้อ",
+      "Tap a product to view its details, choose the quantity, and tap “Add to cart”. Then go to the cart page to review the items and tap “Checkout”. You can select the delivery address and payment method during checkout.",
     sources: [
-      { label: "ตะกร้าสินค้า", url: "/buyer/cart" },
-      { label: "ช่องทางชำระเงิน", url: "/buyer/setting/payment" },
+      { label: "Cart", url: "/buyer/cart" },
+      { label: "Payment methods", url: "/buyer/setting/payment" },
     ],
   },
   {
     id: "coupon",
-    keywords: ["คูปอง", "โค้ด", "ส่วนลด", "coupon", "โปรโมชั่น", "โปรโมชัน"],
+    keywords: ["coupon", "code", "discount", "promo", "promotion", "voucher"],
     answer:
-      "ดูและเก็บคูปองได้ที่ ตั้งค่า → คูปองของฉัน แล้วนำไปใช้ตอนชำระเงินโดยกรอก/เลือกโค้ดในหน้าตะกร้า",
-    sources: [{ label: "คูปองของฉัน", url: "/buyer/setting/coupon" }],
+      "You can view and claim coupons under Settings → My Coupons, then apply them at checkout by entering or selecting the code on the cart page.",
+    sources: [{ label: "My Coupons", url: "/buyer/setting/coupon" }],
   },
   {
     id: "history",
-    keywords: ["ประวัติ", "คำสั่งซื้อ", "ออเดอร์เก่า", "สั่งซ้ำ", "history", "reorder"],
+    keywords: ["history", "orders", "past orders", "reorder", "purchase history", "invoice"],
     answer:
-      "ดูประวัติการซื้อได้ที่ ตั้งค่า → ประวัติการซื้อ กดเข้าแต่ละออเดอร์เพื่อดูรายละเอียด ใบกำกับภาษี กด “สั่งซ้ำ” หรือกด “ตรวจรับของ” เพื่อเช็กของตอนได้รับ",
-    sources: [{ label: "ประวัติการซื้อ", url: "/buyer/setting/history" }],
+      "You can view your purchase history under Settings → Purchase History. Open each order to see the details and tax invoice, tap “Reorder”, or tap “Receive Order” to inspect the items on delivery.",
+    sources: [{ label: "Purchase History", url: "/buyer/setting/history" }],
   },
   {
     id: "wishlist",
-    keywords: ["รายการโปรด", "โปรด", "ถูกใจ", "หัวใจ", "wishlist", "favorite", "บันทึกไว้"],
+    keywords: ["wishlist", "favorites", "favorite", "like", "heart", "saved", "bookmark"],
     answer:
-      "กดรูปหัวใจที่สินค้าเพื่อเพิ่มเข้ารายการโปรด แล้วดูทั้งหมดได้ที่หน้า “รายการโปรด” (ไอคอนหัวใจมุมบน)",
-    sources: [{ label: "รายการโปรด", url: "/buyer/wishlist" }],
+      "Tap the heart icon on a product to add it to your wishlist, then view all of them on the “Wishlist” page (heart icon in the top corner).",
+    sources: [{ label: "Wishlist", url: "/buyer/wishlist" }],
   },
   {
     id: "receive",
-    keywords: ["ตรวจรับ", "รับของ", "safety net", "ของขาด", "ล็อต", "หมดอายุ", "ตรวจของ"],
+    keywords: ["receive", "receive order", "safety net", "missing items", "lot", "expiry", "inspect goods"],
     answer:
-      "เมื่อของถึง ใช้ระบบ “ตรวจรับของ (Safety Net)” จากหน้าประวัติออเดอร์หรือการแจ้งเตือน สแกน/ตรวจทีละรายการว่าตรงออเดอร์ ล็อต และวันหมดอายุถูกต้อง ถ้ามีปัญหาแจ้งผู้ขายได้ทันที",
-    sources: [{ label: "ประวัติการซื้อ", url: "/buyer/setting/history" }],
+      "When your order arrives, use the “Receive Order (Safety Net)” system from the order history page or a notification. Scan and check each item to confirm it matches the order, and that the lot and expiry date are correct. If there is any problem, you can notify the seller immediately.",
+    sources: [{ label: "Purchase History", url: "/buyer/setting/history" }],
   },
   {
     id: "payment-add",
-    keywords: ["เพิ่มบัตร", "บัตรเครดิต", "ธนาคาร", "พร้อมเพย์", "promptpay", "ช่องทางชำระ", "การเงิน"],
+    keywords: ["add card", "credit card", "bank", "promptpay", "payment method", "finance", "payment"],
     answer:
-      "เพิ่มบัตร/บัญชีธนาคาร/พร้อมเพย์ได้ที่ ตั้งค่า → ช่องทางการชำระเงิน กด “เพิ่มบัตร” แล้วเลือกธนาคารจากรายการ",
-    sources: [{ label: "ช่องทางการชำระเงิน", url: "/buyer/setting/payment" }],
+      "You can add a card, bank account, or PromptPay under Settings → Payment Methods. Tap “Add card” and choose your bank from the list.",
+    sources: [{ label: "Payment Methods", url: "/buyer/setting/payment" }],
   },
   {
     id: "clinic-tax",
-    keywords: ["คลินิก", "ที่อยู่", "ใบกำกับภาษี", "ภาษี", "ข้อมูลร้าน", "ที่อยู่จัดส่ง"],
+    keywords: ["clinic", "address", "tax invoice", "tax", "clinic info", "delivery address"],
     answer:
-      "แก้ไขข้อมูลคลินิก/ที่อยู่จัดส่งได้ที่ ตั้งค่า → ข้อมูลคลินิก และออกใบกำกับภาษีได้ที่ ตั้งค่า → ใบกำกับภาษี",
+      "You can edit your clinic information and delivery address under Settings → Clinic Information, and issue a tax invoice under Settings → Tax Invoice.",
     sources: [
-      { label: "ข้อมูลคลินิก", url: "/buyer/setting/clinic" },
-      { label: "ใบกำกับภาษี", url: "/buyer/setting/tax" },
+      { label: "Clinic Information", url: "/buyer/setting/clinic" },
+      { label: "Tax Invoice", url: "/buyer/setting/tax" },
     ],
   },
 
   // ── เรื่อง อย. (อ้างอิงเว็บทางการ) ──
   {
     id: "fda-what",
-    keywords: ["อย คือ", "อย. คือ", "อย คืออะไร", "หมายถึง", "สำนักงานคณะกรรมการอาหาร"],
+    keywords: ["what is fda", "fda meaning", "fda definition", "food and drug administration"],
     answer:
-      "อย. คือ สำนักงานคณะกรรมการอาหารและยา หน่วยงานกำกับดูแลผลิตภัณฑ์สุขภาพ เช่น อาหาร ยา เครื่องสำอาง เครื่องมือแพทย์ และวัตถุอันตรายในไทย ผลิตภัณฑ์ที่ผ่าน อย. จะมีเลขจดทะเบียน/จดแจ้งกำกับ (ตรวจข้อมูลล่าสุดที่เว็บทางการ)",
+      "The FDA is Thailand's Food and Drug Administration, the agency that regulates health products such as food, drugs, cosmetics, medical devices, and hazardous substances. Products approved by the FDA carry a registration or notification number (check the latest information on the official website).",
     sources: [OFFICIAL.oryor, OFFICIAL.fda],
   },
   {
     id: "fda-number-format",
-    keywords: ["เลขสารบบ", "13 หลัก", "รูปแบบเลข", "อ่านเลข", "เลข อย อ่าน", "ความหมายเลข"],
+    keywords: ["registration number", "13 digits", "number format", "read number", "fda number format", "number meaning"],
     answer:
-      "เลขสารบบอาหารมี 13 หลัก รูปแบบ X X-X-XXXXX-X-XXXX บอกสถานที่ผลิต/นำเข้าและลำดับผลิตภัณฑ์ ส่วนยา เครื่องสำอาง เครื่องมือแพทย์ มีรูปแบบเลขทะเบียน/จดแจ้งต่างกัน แนะนำให้ยืนยันเลขจริงผ่านระบบตรวจสอบของ อย. (ดูรายละเอียดที่ลิงก์ทางการ)",
+      "A food registration number has 13 digits in the format X X-X-XXXXX-X-XXXX, indicating the place of manufacture/import and the product sequence. Drugs, cosmetics, and medical devices use different registration/notification number formats. We recommend verifying the actual number through the FDA's verification system (see details at the official link).",
     sources: [OFFICIAL.serial, OFFICIAL.oryor],
   },
   {
     id: "fda-fake",
-    keywords: ["ปลอม", "หลอก", "ของปลอม", "เลขปลอม", "แอบอ้าง", "ตรวจสอบจริง", "เชื่อถือ"],
+    keywords: ["fake", "scam", "counterfeit", "fake number", "impersonate", "verify genuine", "trust"],
     answer:
-      "ตรวจว่าเลข อย. จริงหรือปลอมได้ที่ระบบตรวจสอบผลิตภัณฑ์ของ อย. โดยตรง หรือใช้ปุ่มตรวจในแอปนี้ที่ดึงข้อมูลจากฐานข้อมูล อย. หากพบผลิตภัณฑ์แอบอ้างเลข อย. แจ้งสายด่วน อย. 1556",
+      "You can verify whether an FDA number is genuine or fake directly through the FDA's product verification system, or use the check button in this app, which pulls data from the FDA database. If you find a product falsely claiming an FDA number, report it to the FDA hotline at 1556.",
     sources: [OFFICIAL.serial, OFFICIAL.oryor],
   },
   {
     id: "mdc",
-    keywords: ["เครื่องมือแพทย์", "จดแจ้ง", "อุปกรณ์ทันตกรรม", "medical device", "ผ.", "วัสดุทันตกรรม"],
+    keywords: ["medical device", "notification", "dental equipment", "dental material", "registration", "device"],
     answer:
-      "เครื่องมือแพทย์ต้องขึ้นทะเบียน/จดแจ้ง/แจ้งรายการละเอียดกับกองควบคุมเครื่องมือแพทย์ อย. แล้วแต่ระดับความเสี่ยง ตรวจเลขจดแจ้งได้ในแอปที่ช่อง “เลขจดแจ้งเครื่องมือแพทย์” หรือที่เว็บกองควบคุมเครื่องมือแพทย์",
-    sources: [OFFICIAL.mdc, { label: "ตรวจเครื่องมือแพทย์ในแอป", url: "/buyer/fda" }],
+      "Medical devices must be registered, notified, or listed in detail with the FDA Medical Device Control Division, depending on their risk level. You can check the registration number in the app under the “Medical device registration number” field, or on the Medical Device Control Division website.",
+    sources: [OFFICIAL.mdc, { label: "Check medical devices in-app", url: "/buyer/fda" }],
   },
   {
     id: "complaint",
-    keywords: ["ร้องเรียน", "แจ้งเบาะแส", "สายด่วน", "1556", "ผิดกฎหมาย", "แจ้ง อย"],
+    keywords: ["complaint", "report tip", "hotline", "1556", "illegal", "report to fda"],
     answer:
-      "ร้องเรียนหรือแจ้งเบาะแสผลิตภัณฑ์สุขภาพผิดกฎหมายได้ที่สายด่วน อย. โทร 1556 หรือช่องทางร้องเรียนออนไลน์ของ อย.",
+      "You can file a complaint or report a tip about illegal health products via the FDA hotline at 1556, or through the FDA's online complaint channels.",
     sources: [OFFICIAL.oryor, OFFICIAL.fda],
   },
 ];
 
 // คำถามแนะนำ (quick replies)
 export const SUGGESTIONS = [
-  "ตรวจเลข อย. ยังไง",
-  "สแกนด้วยกล้องทำยังไง",
-  "เลข อย. 13 หลักอ่านยังไง",
-  "เพิ่มบัตร/ช่องทางชำระเงิน",
-  "ตรวจว่าเลข อย. ปลอมไหม",
+  "How do I check an FDA number?",
+  "How do I scan with the camera?",
+  "How do I read a 13-digit FDA number?",
+  "Add a card / payment method",
+  "Check whether an FDA number is fake",
 ];
 
 // ค้นในคลัง: ให้คะแนนตามจำนวน keyword ที่ตรง — คืน entry ที่ดีที่สุด (หรือ null ถ้าไม่ถึงเกณฑ์)
@@ -159,6 +159,6 @@ export function searchKb(query: string): KbEntry | null {
 }
 
 export const FALLBACK_ANSWER =
-  "ขอโทษค่ะ ยังไม่มีข้อมูลนี้ในระบบที่ยืนยันได้ เพื่อความถูกต้อง แนะนำให้ตรวจสอบจากแหล่งทางการโดยตรง (เราจะไม่เดาข้อมูลให้) หรือถามใหม่เกี่ยวกับการใช้งานแอป เช่น การตรวจ อย. การสั่งซื้อ คูปอง หรือการชำระเงิน";
+  "Sorry, we don't have verified information on this in the system yet. For accuracy, we recommend checking directly with official sources (we won't guess). Alternatively, ask again about using the app, such as FDA checks, ordering, coupons, or payments.";
 
 export const FALLBACK_SOURCES: Source[] = [OFFICIAL.oryor, OFFICIAL.fda, OFFICIAL.serial];

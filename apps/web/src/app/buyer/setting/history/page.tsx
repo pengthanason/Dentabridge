@@ -5,7 +5,7 @@ import AppHeader from "@/components/AppHeader";
 export default function HistoryPage() {
   return (
     <div>
-      <AppHeader title="ประวัติการซื้อ" back />
+      <AppHeader title="Order history" back />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-3">
         {MOCK_ORDERS.map((o) => (
@@ -22,15 +22,15 @@ export default function HistoryPage() {
             </div>
             <div className="flex items-center justify-between mt-1 text-xs text-gray-500">
               <span>
-                {o.date} · {o.items.length} รายการ
+                {o.date} · {o.items.length} items
               </span>
               <span className="text-petrol font-bold mono text-sm">{money(orderTotal(o))}</span>
             </div>
-            <p className="text-[11px] text-mint font-semibold mt-1">ดูรายละเอียด ›</p>
+            <p className="text-[11px] text-mint font-semibold mt-1">View details ›</p>
           </Link>
         ))}
         <p className="text-center text-[11px] text-gray-400">
-          * ประวัติตัวอย่าง — เชื่อมกับออเดอร์จริงในเฟสถัดไป
+          * Sample history — will be connected to real orders in a future phase
         </p>
       </main>
     </div>

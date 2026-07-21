@@ -30,7 +30,7 @@ export default function LineButton() {
     try {
       const l = await ensureLiff();
       if (!l) {
-        setErr("LINE ยังไม่พร้อมใช้งาน");
+        setErr("LINE is not ready yet");
         setBusy(false);
         return;
       }
@@ -99,14 +99,14 @@ export default function LineButton() {
         data: { session },
       } = await supabase.auth.getSession();
       if (!session) {
-        setErr("อุปกรณ์นี้บันทึก session ไม่ได้ — เข้าด้วยเลขใบอนุญาต/รหัสผ่านด้านล่างแทน");
+        setErr("This device cannot save the session — please log in with your license number/password below instead");
         setBusy(false);
         return;
       }
       window.location.replace("/buyer");
     } catch (e) {
       console.error("LINE login failed", e);
-      setErr("เข้าสู่ระบบด้วย LINE ไม่สำเร็จ — เข้าด้วยเลขใบอนุญาต/รหัสผ่านด้านล่างแทน");
+      setErr("LINE login failed — please log in with your license number/password below instead");
       setBusy(false);
     }
   }
@@ -121,7 +121,7 @@ export default function LineButton() {
         disabled={busy}
         className="w-full bg-[#06C755] hover:brightness-105 disabled:opacity-60 text-white font-semibold text-sm py-3 rounded-xl flex items-center justify-center gap-2"
       >
-        {busy ? "กำลังเข้าสู่ระบบ…" : "เข้าสู่ระบบด้วย LINE"}
+        {busy ? "Logging in…" : "Log in with LINE"}
       </button>
       {err && <p className="text-xs text-amber-100 bg-black/25 rounded-lg px-3 py-2 mt-2 text-center">{err}</p>}
     </div>

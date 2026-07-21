@@ -26,15 +26,15 @@ export default function WishlistPage() {
 
   return (
     <div>
-      <AppHeader title="รายการโปรด" back />
+      <AppHeader title="Wishlist" back />
 
       <main className="max-w-md lg:max-w-6xl mx-auto px-4 pt-4">
         {items.length === 0 ? (
           <div className="text-center py-20">
             <div className="flex justify-center mb-3 text-gray-300"><IconHeart className="w-12 h-12" /></div>
-            <p className="text-sm text-gray-400">ยังไม่มีสินค้าที่ถูกใจ</p>
+            <p className="text-sm text-gray-400">No products in your wishlist yet</p>
             <Link href="/buyer" className="inline-block mt-4 text-mint font-semibold text-sm">
-              เลือกดูสินค้า ›
+              Browse products ›
             </Link>
           </div>
         ) : (
@@ -55,7 +55,7 @@ export default function WishlistPage() {
                       toggleWish(p.id);
                     }}
                     className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-white/90 grid place-items-center text-signal shadow"
-                    aria-label="เอาออกจากรายการโปรด"
+                    aria-label="Remove from wishlist"
                   >
                     <IconHeart filled className="w-4 h-4" />
                   </button>
@@ -68,7 +68,7 @@ export default function WishlistPage() {
                     </div>
                     <div className="flex items-center justify-between mt-auto pt-2">
                       <span className="text-sm font-bold text-petrol mono">{money(p.price)}</span>
-                      <span className="text-[10px] text-mint font-semibold">ดู ›</span>
+                      <span className="text-[10px] text-mint font-semibold">View ›</span>
                     </div>
                   </div>
                 </Link>

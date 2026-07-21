@@ -34,7 +34,7 @@ export default async function SellerPage() {
 
   return (
     <SellerHome
-      shopName={seller?.shop_name ?? seller?.company_name ?? "ร้านของฉัน"}
+      shopName={seller?.shop_name ?? seller?.company_name ?? "My Store"}
       verified={profile.verified}
       products={(products ?? []) as Product[]}
     />

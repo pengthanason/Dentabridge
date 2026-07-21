@@ -20,7 +20,7 @@ function VerifyInner() {
     e.preventDefault();
     setErr("");
     if (emailOtp.length !== 6 || phoneOtp.length !== 6)
-      return setErr("กรุณากรอกรหัส 6 หลักทั้งสองช่อง");
+      return setErr("Please enter the 6-digit code in both fields");
 
     setLoading(true);
     // TODO(จริง): ตรวจ OTP กับ provider (อีเมล + SMS) — ตอนนี้ mock: รหัส 6 หลักใดก็ผ่าน
@@ -52,17 +52,17 @@ function VerifyInner() {
         <Brand />
         <form onSubmit={submit} className="bg-white rounded-2xl p-5 shadow-lg space-y-4">
           <div>
-            <h2 className="font-bold text-petrol">ยืนยันตัวตน 2 ชั้น</h2>
+            <h2 className="font-bold text-petrol">Two-factor identity verification</h2>
             <p className="text-xs text-gray-500">
-              เราส่งรหัสไปที่อีเมลและ SMS ของคุณ
+              We sent a code to your email and SMS.
             </p>
             <p className="text-[11px] text-amber mt-1">
-              โหมดทดสอบ: กรอกเลข 6 หลักอะไรก็ได้
+              Test mode: enter any 6-digit number
             </p>
           </div>
 
           <label className="block">
-            <span className="text-xs text-gray-500">รหัสจากอีเมล (6 หลัก)</span>
+            <span className="text-xs text-gray-500">Code from email (6 digits)</span>
             <input
               inputMode="numeric"
               value={emailOtp}
@@ -73,7 +73,7 @@ function VerifyInner() {
           </label>
 
           <label className="block">
-            <span className="text-xs text-gray-500">รหัสจาก SMS (6 หลัก)</span>
+            <span className="text-xs text-gray-500">Code from SMS (6 digits)</span>
             <input
               inputMode="numeric"
               value={phoneOtp}
@@ -84,7 +84,7 @@ function VerifyInner() {
           </label>
 
           <ErrMsg msg={err} />
-          <Submit loading={loading} label="ยืนยันและเข้าสู่ระบบ" />
+          <Submit loading={loading} label="Verify and log in" />
         </form>
       </div>
     </main>

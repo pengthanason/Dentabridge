@@ -13,7 +13,7 @@ type BotMsg = {
 
 const GREETING: BotMsg = {
   from: "bot",
-  text: "สวัสดีค่ะ 🦷 เค้าคือผู้ช่วย DentaBridge ถามได้เลยเรื่องการใช้งานแอป หรือเรื่อง อย. — จะตอบจากข้อมูลจริงและแนบแหล่งอ้างอิงให้เสมอ ไม่เดาข้อมูลค่ะ",
+  text: "Hello 🦷 I'm the DentaBridge Assistant. Feel free to ask about using the app or about the FDA — I answer from verified information and always attach references, and I never guess.",
 };
 
 // แยกลิงก์ภายในแอป (ขึ้นต้น /) กับลิงก์ภายนอก (เว็บทางการ)
@@ -71,7 +71,7 @@ export default function AssistantChat() {
         const next = [...prev];
         next[next.length - 1] = {
           from: "bot",
-          text: data.answer || "ขออภัย ระบบขัดข้องชั่วคราว ลองใหม่อีกครั้งค่ะ",
+          text: data.answer || "Sorry, the system is temporarily unavailable. Please try again.",
           sources: data.sources,
         };
         return next;
@@ -79,7 +79,7 @@ export default function AssistantChat() {
     } catch {
       setMessages((prev) => {
         const next = [...prev];
-        next[next.length - 1] = { from: "bot", text: "เชื่อมต่อไม่ได้ในขณะนี้ ลองใหม่อีกครั้งค่ะ" };
+        next[next.length - 1] = { from: "bot", text: "Unable to connect right now. Please try again." };
         return next;
       });
     }
@@ -94,8 +94,8 @@ export default function AssistantChat() {
       <div className="hidden lg:flex items-center gap-2 px-4 py-3 border-b border-gray-100 bg-white flex-none">
         <div className="w-9 h-9 rounded-full bg-petrol grid place-items-center text-lg text-white">🤖</div>
         <div>
-          <p className="font-semibold text-gray-800 leading-tight">ผู้ช่วย DentaBridge</p>
-          <p className="text-[11px] text-mint">● ตอบอัตโนมัติ · อ้างอิงแหล่งจริงเสมอ</p>
+          <p className="font-semibold text-gray-800 leading-tight">DentaBridge Assistant</p>
+          <p className="text-[11px] text-mint">● Automated replies · always cites real sources</p>
         </div>
       </div>
 
@@ -123,7 +123,7 @@ export default function AssistantChat() {
               </div>
               {m.sources && m.sources.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
-                  <span className="text-[10px] text-gray-400 w-full">แหล่งอ้างอิง:</span>
+                  <span className="text-[10px] text-gray-400 w-full">Sources:</span>
                   {m.sources.map((s, j) => (
                     <SourceChip key={j} s={s} />
                   ))}
@@ -161,15 +161,15 @@ export default function AssistantChat() {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="พิมพ์คำถามเรื่องเว็บ หรือ อย...."
-          aria-label="พิมพ์ข้อความ"
+          placeholder="Type a question about the app or FDA...."
+          aria-label="Type a message"
           className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-mint"
         />
         <button
           type="submit"
           disabled={busy || !input.trim()}
           className="w-9 h-9 rounded-full bg-petrol disabled:bg-gray-200 disabled:text-gray-400 text-white grid place-items-center flex-none"
-          aria-label="ส่ง"
+          aria-label="Send"
         >
           ➤
         </button>

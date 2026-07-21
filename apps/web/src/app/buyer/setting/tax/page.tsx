@@ -55,8 +55,8 @@ export default function TaxPage() {
 
   // ใบกำกับตัวอย่าง
   const items = [
-    { name: "ยางจัดฟัน O-Ring คละสี", qty: 1, price: 450 },
-    { name: "วัสดุอุดฟัน Composite A2", qty: 2, price: 1890 },
+    { name: "Orthodontic O-Rings (assorted colors)", qty: 1, price: 450 },
+    { name: "Composite filling material A2", qty: 2, price: 1890 },
   ];
   const sub = items.reduce((s, x) => s + x.qty * x.price, 0);
   const vat = Math.round(sub * 0.07 * 100) / 100;
@@ -65,7 +65,7 @@ export default function TaxPage() {
   return (
     <div className="pb-10">
       <div className="no-print">
-        <AppHeader title="ข้อมูลใบกำกับภาษี" back />
+        <AppHeader title="Tax invoice details" back />
       </div>
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
@@ -73,20 +73,20 @@ export default function TaxPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="font-bold text-petrol">DentaBridge</p>
-              <p className="text-[11px] text-gray-400">ใบกำกับภาษี (ตัวอย่าง)</p>
+              <p className="text-[11px] text-gray-400">Tax invoice (sample)</p>
             </div>
             <div className="text-right text-[11px] text-gray-500">
-              <p>เลขที่ INV-2026-0001</p>
-              <p>วันที่ 06/07/2026</p>
+              <p>No. INV-2026-0001</p>
+              <p>Date 06/07/2026</p>
             </div>
           </div>
 
           <div className="border-t border-gray-100 pt-3">
-            <p className="text-[10px] mono uppercase text-gray-400 mb-1">ข้อมูลผู้เสียภาษี</p>
+            <p className="text-[10px] mono uppercase text-gray-400 mb-1">Taxpayer information</p>
             <p className="text-sm font-semibold text-gray-800">{info.name}</p>
             {info.clinic && <p className="text-xs text-gray-500">{info.clinic}</p>}
-            <p className="text-xs text-gray-500">เลขผู้เสียภาษี: {info.taxId}</p>
-            <p className="text-xs text-gray-500">ที่อยู่: {address}</p>
+            <p className="text-xs text-gray-500">Tax ID: {info.taxId}</p>
+            <p className="text-xs text-gray-500">Address: {address}</p>
             <p className="text-xs text-gray-500">
               {info.email} · {info.phone}
             </p>
@@ -96,9 +96,9 @@ export default function TaxPage() {
             <table className="w-full text-xs">
               <thead>
                 <tr className="text-gray-400">
-                  <th className="text-left font-medium pb-1">รายการ</th>
-                  <th className="text-center font-medium pb-1">จำนวน</th>
-                  <th className="text-right font-medium pb-1">รวม</th>
+                  <th className="text-left font-medium pb-1">Item</th>
+                  <th className="text-center font-medium pb-1">Qty</th>
+                  <th className="text-right font-medium pb-1">Total</th>
                 </tr>
               </thead>
               <tbody className="text-gray-700">
@@ -114,10 +114,10 @@ export default function TaxPage() {
           </div>
 
           <div className="border-t border-gray-100 pt-3 space-y-1 text-sm">
-            <Row label="ยอดก่อน VAT" value={money(sub)} />
-            <Row label="ภาษีมูลค่าเพิ่ม 7%" value={money(vat)} />
+            <Row label="Subtotal (before VAT)" value={money(sub)} />
+            <Row label="VAT 7%" value={money(vat)} />
             <div className="flex justify-between font-bold text-petrol">
-              <span>ยอดรวมทั้งสิ้น</span>
+              <span>Grand total</span>
               <span className="mono">{money(total)}</span>
             </div>
           </div>
@@ -128,10 +128,10 @@ export default function TaxPage() {
           onClick={() => window.print()}
           className="no-print w-full bg-petrol hover:bg-petrol-2 text-white font-semibold text-sm py-3 rounded-xl transition"
         >
-          ⬇ Export เป็น PDF
+          ⬇ Export as PDF
         </button>
         <p className="no-print text-center text-[11px] text-gray-400">
-          กด Export แล้วเลือก "Save as PDF" ในหน้าต่างพิมพ์
+          Press Export, then choose "Save as PDF" in the print dialog
         </p>
       </main>
     </div>

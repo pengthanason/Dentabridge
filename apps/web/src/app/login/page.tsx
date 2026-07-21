@@ -33,7 +33,7 @@ export default function LoginPage() {
       ({ error } = await supabase.auth.signInWithPassword({ email, password: `db_${password}` }));
     }
     setLoading(false);
-    if (error) return setErr("เลขใบอนุญาตหรือรหัสผ่านไม่ถูกต้อง");
+    if (error) return setErr("Invalid license number or password");
     router.push("/buyer");
     router.refresh();
   }
@@ -47,7 +47,7 @@ export default function LoginPage() {
       password,
     });
     setLoading(false);
-    if (error) return setErr("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+    if (error) return setErr("Invalid email or password");
     router.push("/seller");
     router.refresh();
   }
@@ -71,7 +71,7 @@ export default function LoginPage() {
         {mode === "select" && (
           <div className="space-y-3">
             <p className="text-center text-sm text-teal-100 mb-4">
-              เข้าสู่ระบบในฐานะ
+              Log in as
             </p>
             <button
               type="button"
@@ -83,9 +83,9 @@ export default function LoginPage() {
             >
               <span className="text-3xl">🦷</span>
               <span>
-                <span className="block font-bold">ผู้ซื้อ (ทันตแพทย์)</span>
+                <span className="block font-bold">Buyer (Dentist)</span>
                 <span className="block text-xs text-gray-500">
-                  ล็อกอินด้วยเลขใบอนุญาต
+                  Log in with license number
                 </span>
               </span>
             </button>
@@ -99,16 +99,16 @@ export default function LoginPage() {
             >
               <span className="text-3xl">🏢</span>
               <span>
-                <span className="block font-bold">ผู้ขาย (ดีลเลอร์/บริษัท)</span>
+                <span className="block font-bold">Seller (Dealer/Company)</span>
                 <span className="block text-xs text-teal-200">
-                  ล็อกอินด้วยอีเมล
+                  Log in with email
                 </span>
               </span>
             </button>
 
             <div className="flex items-center gap-3 py-1">
               <span className="h-px flex-1 bg-white/20" />
-              <span className="text-[11px] text-teal-200">หรือ</span>
+              <span className="text-[11px] text-teal-200">or</span>
               <span className="h-px flex-1 bg-white/20" />
             </div>
             <LineAutoLogin />
@@ -120,26 +120,26 @@ export default function LoginPage() {
             onSubmit={loginBuyer}
             className="bg-white text-gray-800 rounded-2xl p-5 shadow-lg space-y-3"
           >
-            <h2 className="font-bold text-petrol">เข้าสู่ระบบ · ทันตแพทย์</h2>
+            <h2 className="font-bold text-petrol">Log in · Dentist</h2>
             <Field
-              label="เลขใบอนุญาตประกอบวิชาชีพ"
+              label="License number"
               value={license}
               onChange={setLicense}
-              placeholder="เช่น ท.12345"
+              placeholder="e.g. D.12345"
             />
             <Field
-              label="รหัสผ่าน"
+              label="Password"
               value={password}
               onChange={setPassword}
               placeholder="••••••••"
               type="password"
             />
             {err && <Err msg={err} />}
-            <Submit loading={loading} label="เข้าสู่ระบบ" />
+            <Submit loading={loading} label="Log in" />
             <p className="text-xs text-center text-gray-500">
-              ยังไม่มีบัญชี?{" "}
+              Don&apos;t have an account?{" "}
               <Link href="/signup/buyer" className="text-mint font-semibold">
-                สมัครสำหรับทันตแพทย์
+                Sign up as a Dentist
               </Link>
             </p>
             <BackBtn onClick={() => setMode("select")} />
@@ -151,27 +151,27 @@ export default function LoginPage() {
             onSubmit={loginSeller}
             className="bg-white text-gray-800 rounded-2xl p-5 shadow-lg space-y-3"
           >
-            <h2 className="font-bold text-petrol">เข้าสู่ระบบ · ผู้ขาย</h2>
+            <h2 className="font-bold text-petrol">Log in · Seller</h2>
             <Field
-              label="อีเมล"
+              label="Email"
               value={email}
               onChange={setEmail}
               placeholder="you@company.com"
               type="email"
             />
             <Field
-              label="รหัสผ่าน"
+              label="Password"
               value={password}
               onChange={setPassword}
               placeholder="••••••••"
               type="password"
             />
             {err && <Err msg={err} />}
-            <Submit loading={loading} label="เข้าสู่ระบบ" />
+            <Submit loading={loading} label="Log in" />
             <p className="text-xs text-center text-gray-500">
-              ยังไม่มีบัญชี?{" "}
+              Don&apos;t have an account?{" "}
               <Link href="/signup/seller" className="text-mint font-semibold">
-                สมัครสำหรับผู้ขาย
+                Sign up as a Seller
               </Link>
             </p>
             <BackBtn onClick={() => setMode("select")} />
@@ -220,7 +220,7 @@ function Submit({ loading, label }: { loading: boolean; label: string }) {
       disabled={loading}
       className="w-full bg-petrol hover:bg-petrol-2 disabled:opacity-60 text-white font-semibold text-sm py-3 rounded-xl transition"
     >
-      {loading ? "กำลังดำเนินการ..." : label}
+      {loading ? "Processing..." : label}
     </button>
   );
 }
@@ -240,7 +240,7 @@ function BackBtn({ onClick }: { onClick: () => void }) {
       onClick={onClick}
       className="w-full text-xs text-gray-400 pt-1"
     >
-      ← เลือกประเภทผู้ใช้ใหม่
+      ← Choose a different user type
     </button>
   );
 }

@@ -10,15 +10,15 @@ type AssistantReply = { answer: string; sources: Source[]; mode: "mock" | "live"
 // โดเมนทางการที่อนุญาตให้บอตค้น (กันมั่ว — ตอบเฉพาะจากเว็บทางการ)
 const ALLOWED_DOMAINS = ["oryor.com", "fda.moph.go.th", "mdcontrol.fda.moph.go.th", "porta.fda.moph.go.th"];
 
-const SYSTEM_PROMPT = `คุณคือ "ผู้ช่วย DentaBridge" — ผู้ช่วย Help Center ของแอปสั่งซื้อวัสดุทันตกรรม B2B สำหรับคลินิกในไทย
-หน้าที่: ตอบคำถามเกี่ยวกับการใช้งานแอป และเรื่องเกี่ยวกับ อย. (สำนักงานคณะกรรมการอาหารและยา)
+const SYSTEM_PROMPT = `You are the "DentaBridge Assistant" — the Help Center assistant for a B2B dental-supply ordering app for clinics in Thailand.
+Role: Answer questions about using the app and about the FDA (Thailand's Food and Drug Administration).
 
-กฎเหล็ก (ห้ามฝ่าฝืน):
-1. ห้ามเดาหรือแต่งข้อมูลเด็ดขาด ถ้าไม่รู้หรือค้นไม่พบ ให้บอกตรง ๆ ว่าไม่พบข้อมูลที่ยืนยันได้ และแนะนำให้ติดต่อ อย. สายด่วน 1556
-2. เรื่อง อย. / กฎหมาย / ผลิตภัณฑ์สุขภาพ ต้องใช้ web_search ค้นจากเว็บทางการก่อนตอบเสมอ และอ้างอิงลิงก์ที่ค้นเจอ
-3. แนบแหล่งอ้างอิง (ลิงก์) ทุกครั้งที่ให้ข้อมูลเชิงข้อเท็จจริง
-4. ตอบเป็นภาษาไทย กระชับ สุภาพ เข้าใจง่าย
-5. ห้ามให้คำวินิจฉัย/คำแนะนำทางการแพทย์ ให้ชี้ไปแหล่งทางการหรือผู้เชี่ยวชาญ`;
+Strict rules (must not be violated):
+1. Never guess or fabricate information. If you do not know or cannot find it, say plainly that you could not find verified information, and advise contacting the FDA hotline at 1556.
+2. For FDA / legal / health-product matters, always use web_search to look them up on official websites before answering, and cite the links you find.
+3. Attach a reference (link) every time you provide factual information.
+4. Answer in English, concisely, politely, and clearly.
+5. Do not provide medical diagnoses or advice; refer users to official sources or professionals.`;
 
 // ── โหมด mock: ตอบจากคลัง FAQ (เขียนจากข้อมูลจริง) + แนบ source เสมอ ──
 function mockReply(question: string): AssistantReply {
@@ -184,7 +184,7 @@ export async function GET() {
     geminiModel: process.env.GEMINI_MODEL || "gemini-2.5-flash",
     mode: geminiKey ? "gemini" : anthropicKey ? "claude" : "mock",
   };
-  const test: ChatMsg[] = [{ role: "user", content: "อย. ย่อมาจากอะไร ตอบสั้น ๆ" }];
+  const test: ChatMsg[] = [{ role: "user", content: "What does FDA stand for? Answer briefly." }];
   try {
     if (geminiKey) {
       const r = await geminiReply(test, geminiKey);
@@ -193,7 +193,7 @@ export async function GET() {
       const r = await liveReply(test, anthropicKey);
       info.test = { ok: true, mode: r.mode, sources: r.sources.length, answerPreview: r.answer.slice(0, 100) };
     } else {
-      info.test = { ok: false, note: "ยังไม่พบ API key — เซิร์ฟเวอร์ตอบด้วย FAQ (mock)" };
+      info.test = { ok: false, note: "No API key found — the server responds with the FAQ (mock)." };
     }
   } catch (e) {
     info.test = { ok: false, error: String(e).slice(0, 400) };

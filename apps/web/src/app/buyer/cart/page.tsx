@@ -32,20 +32,20 @@ export default function CartPage() {
 
   return (
     <div className="pb-40">
-      <AppHeader title="ตะกร้าสินค้า" />
+      <AppHeader title="Cart" />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4">
         {loading ? (
           <div className="flex flex-col items-center py-20 gap-3">
             <div className="w-8 h-8 rounded-full border-[3px] border-mint-soft border-t-petrol animate-spin" />
-            <p className="text-xs text-gray-400">กำลังโหลดตะกร้า…</p>
+            <p className="text-xs text-gray-400">Loading cart…</p>
           </div>
         ) : items.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-5xl mb-3">🛒</div>
-            <p className="text-sm text-gray-400">ยังไม่มีสินค้าในตะกร้า</p>
+            <p className="text-sm text-gray-400">Your cart is empty</p>
             <Link href="/buyer" className="inline-block mt-4 text-mint font-semibold text-sm">
-              เลือกซื้อสินค้า ›
+              Browse products ›
             </Link>
           </div>
         ) : (
@@ -69,7 +69,7 @@ export default function CartPage() {
               </div>
             ))}
             <button type="button" onClick={() => clearCart()} className="text-xs text-gray-400 underline">
-              ล้างตะกร้า
+              Clear cart
             </button>
           </div>
         )}
@@ -79,15 +79,15 @@ export default function CartPage() {
         <div className="fixed bottom-16 left-0 right-0 z-20 bg-white border-t border-gray-100 pb-[env(safe-area-inset-bottom)]">
           <div className="max-w-md lg:max-w-4xl mx-auto px-4 py-3">
             <div className="flex justify-between text-sm mb-1">
-              <span className="text-gray-500">ยอดรวม</span>
+              <span className="text-gray-500">Total</span>
               <span className="mono font-bold text-gray-900">{money(total)}</span>
             </div>
-            <p className="text-[11px] text-teal-600 mb-2">✓ รวมออกใบกำกับภาษีใบเดียวผ่าน e-Tax</p>
+            <p className="text-[11px] text-teal-600 mb-2">✓ Consolidated into a single tax invoice via e-Tax</p>
             <Link
               href="/buyer/cart/pay"
               className="block text-center w-full bg-petrol hover:bg-petrol-2 text-white font-semibold text-sm py-3 rounded-xl transition"
             >
-              ดำเนินการชำระเงิน · {money(total)}
+              Proceed to payment · {money(total)}
             </Link>
           </div>
         </div>

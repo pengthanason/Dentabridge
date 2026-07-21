@@ -14,51 +14,51 @@ type Noti = {
 const NOTIS: Noti[] = [
   {
     icon: "🚨",
-    title: "แจ้งเตือนความปลอดภัย: สินค้าถูกเพิกถอนทะเบียน อย.",
-    detail: "วัสดุ 'ถุงมือไนไตรล์ ล็อต L2312' ที่คุณเคยซื้อ ถูกเพิกถอน — หยุดใช้และติดต่อผู้ขาย",
-    time: "30 นาที",
+    title: "Safety alert: product FDA registration revoked",
+    detail: "The 'Nitrile gloves lot L2312' you previously purchased has been revoked — stop using it and contact the seller",
+    time: "30 min",
     unread: true,
     tone: "danger",
   },
   {
     icon: "📷",
-    title: "ออเดอร์ INV-2026-0001 จัดส่งถึงแล้ว",
-    detail: "แตะเพื่อ 'ตรวจรับของ' — สแกนเช็ก อย./ล็อต/วันหมดอายุ ก่อนยืนยันรับ",
-    time: "1 ชม.",
+    title: "Order INV-2026-0001 has been delivered",
+    detail: "Tap to 'Inspect on receipt' — scan to check FDA/lot/expiry before confirming receipt",
+    time: "1 hr",
     unread: true,
     href: "/buyer/receive/INV-2026-0001",
   },
   {
     icon: "🛒",
-    title: "มีสินค้าค้างในตะกร้า",
-    detail: "คุณมี 3 ชิ้นในตะกร้าที่ยังไม่ได้ชำระเงิน",
-    time: "เมื่อวาน",
+    title: "Items left in your cart",
+    detail: "You have 3 items in your cart that are not yet paid for",
+    time: "Yesterday",
     href: "/buyer/cart",
   },
   {
     icon: "⏰",
-    title: "วัสดุใกล้หมดอายุ",
-    detail: "Composite Resin A2 จะหมดอายุ 10/2026",
-    time: "2 วัน",
+    title: "Material nearing expiry",
+    detail: "Composite Resin A2 will expire 10/2026",
+    time: "2 days",
   },
   {
     icon: "🏷️",
-    title: "โปรโมชันจากร้านที่คุณติดตาม",
-    detail: "Dental Vision ลดราคายาง O-Ring 10%",
-    time: "3 วัน",
+    title: "Promotion from a shop you follow",
+    detail: "Dental Vision: 10% off O-Rings",
+    time: "3 days",
   },
   {
     icon: "✅",
-    title: "ยืนยันตัวตนคลินิกสำเร็จ",
-    detail: "บัญชีของคุณได้รับการอนุมัติแล้ว",
-    time: "5 วัน",
+    title: "Clinic verification successful",
+    detail: "Your account has been approved",
+    time: "5 days",
   },
 ];
 
 export default function NotificationsPage() {
   return (
     <div>
-      <AppHeader title="การแจ้งเตือน" back />
+      <AppHeader title="Notifications" back />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4">
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50 overflow-hidden">
@@ -80,7 +80,7 @@ export default function NotificationsPage() {
                     {n.unread && <span className="w-2 h-2 rounded-full bg-signal flex-none" />}
                   </div>
                   <p className="text-xs text-gray-500">{n.detail}</p>
-                  {n.href && <span className="text-[11px] text-mint font-semibold">แตะเพื่อดำเนินการ ›</span>}
+                  {n.href && <span className="text-[11px] text-mint font-semibold">Tap to take action ›</span>}
                 </div>
                 <span className="text-[10px] text-gray-400 flex-none">{n.time}</span>
               </>
@@ -97,7 +97,7 @@ export default function NotificationsPage() {
           })}
         </div>
         <p className="text-center text-[11px] text-gray-400 mt-3">
-          * ตัวอย่างการแจ้งเตือน — เชื่อมข้อมูลจริงในเฟสถัดไป
+          * Sample notifications — real data will be connected in a future phase
         </p>
       </main>
     </div>

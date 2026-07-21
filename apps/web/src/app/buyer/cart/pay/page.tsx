@@ -10,8 +10,8 @@ import AppHeader from "@/components/AppHeader";
 import { money } from "@/lib/format";
 import type { Product } from "@/lib/types";
 const BANK_LABEL: Record<string, string> = {
-  kbank: "กสิกรไทย", scb: "ไทยพาณิชย์", bbl: "กรุงเทพ", ktb: "กรุงไทย",
-  bay: "กรุงศรีอยุธยา", ttb: "ทหารไทยธนชาต", gsb: "ออมสิน", uob: "ยูโอบี",
+  kbank: "Kasikorn", scb: "Siam Commercial", bbl: "Bangkok", ktb: "Krungthai",
+  bay: "Krungsri", ttb: "TMBThanachart", gsb: "Government Savings", uob: "UOB",
 };
 type Card = { id: string; last4: string; brand: string };
 type Method = { id: string; label: string; icon: React.ReactNode };
@@ -36,7 +36,7 @@ export default function PayPage() {
 
   useEffect(() => {
     const list: Method[] = [
-      { id: "promptpay", label: "พร้อมเพย์ (QR)", icon: <Tile className="bg-[#003d7a] text-white text-[9px]">QR</Tile> },
+      { id: "promptpay", label: "PromptPay (QR)", icon: <Tile className="bg-[#003d7a] text-white text-[9px]">QR</Tile> },
     ];
     try {
       const cards: Card[] = JSON.parse(localStorage.getItem("db_cards") || "[]");
@@ -45,7 +45,7 @@ export default function PayPage() {
       );
       const sel = localStorage.getItem("db_payment_method") || "";
       if (sel.startsWith("bank:")) {
-        list.push({ id: sel, label: `ธนาคาร${BANK_LABEL[sel.slice(5)] ?? ""}`, icon: <Tile className="bg-mint-soft">🏦</Tile> });
+        list.push({ id: sel, label: `${BANK_LABEL[sel.slice(5)] ?? ""} Bank`, icon: <Tile className="bg-mint-soft">🏦</Tile> });
       }
       if (sel && list.some((m) => m.id === sel)) setPayMethod(sel);
     } catch {
@@ -64,8 +64,8 @@ export default function PayPage() {
   function applyCoupon() {
     setCouponErr("");
     const c = findCoupon(codeInput);
-    if (!c) return setCouponErr("ไม่พบคูปองนี้");
-    if (subtotal < c.minSpend) return setCouponErr(`ต้องซื้อขั้นต่ำ ${money(c.minSpend)}`);
+    if (!c) return setCouponErr("Coupon not found");
+    if (subtotal < c.minSpend) return setCouponErr(`Minimum spend of ${money(c.minSpend)} required`);
     setCoupon(c);
   }
 
@@ -81,7 +81,7 @@ export default function PayPage() {
       clearCart();
       setDone(true);
     } catch {
-      setPayErr("ชำระเงินไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
+      setPayErr("Payment failed. Please try again.");
     } finally {
       setPaying(false);
     }
@@ -91,12 +91,12 @@ export default function PayPage() {
     return (
       <div className="max-w-md lg:max-w-4xl mx-auto px-6 pt-20 text-center">
         <div className="text-6xl mb-4">✅</div>
-        <h2 className="text-xl font-bold text-gray-900">ชำระเงินสำเร็จ (ตัวอย่าง)</h2>
+        <h2 className="text-xl font-bold text-gray-900">Payment successful (demo)</h2>
         <p className="text-sm text-gray-500 mt-2">
-          ยอดชำระ {money(total)} · รวมออกใบกำกับภาษีใบเดียวผ่าน e-Tax
+          Amount due {money(total)} · Consolidated into a single tax invoice via e-Tax
         </p>
         <Link href="/buyer" className="inline-block mt-6 bg-petrol text-white font-semibold text-sm px-6 py-3 rounded-xl">
-          กลับหน้า Marketplace
+          Back to Marketplace
         </Link>
       </div>
     );
@@ -104,12 +104,12 @@ export default function PayPage() {
 
   return (
     <div className="pb-28">
-      <AppHeader title="ชำระเงิน" back />
+      <AppHeader title="Payment" back />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-4">
         {/* คูปอง */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-          <p className="text-[10px] mono uppercase text-gray-400 mb-2">คูปองส่วนลด</p>
+          <p className="text-[10px] mono uppercase text-gray-400 mb-2">Discount coupon</p>
           {coupon ? (
             <div className="flex items-center justify-between bg-mint-soft rounded-xl px-3 py-2">
               <div>
@@ -117,7 +117,7 @@ export default function PayPage() {
                 <p className="text-[11px] text-teal-700">{coupon.label} · −{money(discount)}</p>
               </div>
               <button type="button" onClick={() => { setCoupon(null); setCodeInput(""); }} className="text-xs text-gray-500">
-                นำออก
+                Remove
               </button>
             </div>
           ) : (
@@ -126,16 +126,16 @@ export default function PayPage() {
                 <input
                   value={codeInput}
                   onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
-                  placeholder="กรอกโค้ดคูปอง เช่น WELCOME10"
+                  placeholder="Enter coupon code, e.g. WELCOME10"
                   className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm mono focus:outline-none focus:border-mint"
                 />
                 <button type="button" onClick={applyCoupon} className="bg-petrol text-white text-xs font-medium px-4 rounded-xl">
-                  ใช้
+                  Apply
                 </button>
               </div>
               {couponErr && <p className="text-[11px] text-red-600 mt-1">{couponErr}</p>}
               <Link href="/buyer/setting/coupon" className="text-[11px] text-mint font-semibold mt-2 inline-block">
-                ดูคูปองของฉัน ›
+                View my coupons ›
               </Link>
             </>
           )}
@@ -143,7 +143,7 @@ export default function PayPage() {
 
         {/* วิธีชำระเงิน */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-2">
-          <p className="text-[10px] mono uppercase text-gray-400">วิธีชำระเงิน</p>
+          <p className="text-[10px] mono uppercase text-gray-400">Payment method</p>
           {methods.map((m) => (
             <button
               key={m.id}
@@ -161,24 +161,24 @@ export default function PayPage() {
             </button>
           ))}
           <Link href="/buyer/setting/payment" className="block text-xs text-mint font-semibold pt-1">
-            + จัดการช่องทางชำระเงิน
+            + Manage payment methods
           </Link>
         </div>
 
         {payMethod === "promptpay" && (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col items-center">
-            <p className="text-sm font-semibold text-gray-800 mb-2">สแกนเพื่อจ่าย {money(total)}</p>
+            <p className="text-sm font-semibold text-gray-800 mb-2">Scan to pay {money(total)}</p>
             <QrMock />
-            <p className="text-[11px] text-gray-400 mt-2">QR ตัวอย่าง — สแกนด้วยแอปธนาคาร</p>
+            <p className="text-[11px] text-gray-400 mt-2">Sample QR — scan with your banking app</p>
           </div>
         )}
 
         {/* สรุปยอด */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-1 text-sm">
-          <Row label="ยอดสินค้า" value={money(subtotal)} />
-          {discount > 0 && <Row label="ส่วนลดคูปอง" value={`−${money(discount)}`} green />}
+          <Row label="Subtotal" value={money(subtotal)} />
+          {discount > 0 && <Row label="Coupon discount" value={`−${money(discount)}`} green />}
           <div className="flex justify-between font-bold text-petrol border-t border-gray-100 pt-1">
-            <span>ยอดชำระ</span>
+            <span>Amount due</span>
             <span className="mono">{money(total)}</span>
           </div>
         </div>
@@ -196,7 +196,7 @@ export default function PayPage() {
             className="w-full bg-petrol hover:bg-petrol-2 disabled:opacity-50 text-white font-semibold text-sm py-3 rounded-xl transition flex items-center justify-center gap-2"
           >
             {paying && <span className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />}
-            {paying ? "กำลังดำเนินการ…" : `ยืนยันการชำระเงิน · ${money(total)}`}
+            {paying ? "Processing…" : `Confirm payment · ${money(total)}`}
           </button>
         </div>
       </div>

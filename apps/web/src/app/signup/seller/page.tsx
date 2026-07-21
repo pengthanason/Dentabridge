@@ -26,11 +26,11 @@ export default function SellerSignupPage() {
     e.preventDefault();
     setErr("");
     if (!companyName || !companyReg || !taxId || !authPerson || !saleLicense)
-      return setErr("กรุณากรอกข้อมูลบริษัทให้ครบ");
-    if (!email.includes("@")) return setErr("อีเมลไม่ถูกต้อง");
-    if (phone.length < 9) return setErr("เบอร์โทรศัพท์ไม่ถูกต้อง");
-    if (pw.length < 6) return setErr("รหัสผ่านต้องยาวอย่างน้อย 6 ตัว");
-    if (pw !== pw2) return setErr("รหัสผ่านทั้งสองช่องไม่ตรงกัน");
+      return setErr("Please complete all company details");
+    if (!email.includes("@")) return setErr("Invalid email");
+    if (phone.length < 9) return setErr("Invalid phone number");
+    if (pw.length < 6) return setErr("Password must be at least 6 characters");
+    if (pw !== pw2) return setErr("The two passwords do not match");
 
     setLoading(true);
     const { error } = await supabase.auth.signUp({
@@ -53,8 +53,8 @@ export default function SellerSignupPage() {
     if (error) {
       return setErr(
         error.message.includes("already")
-          ? "อีเมลนี้ถูกใช้สมัครแล้ว"
-          : "สมัครไม่สำเร็จ: " + error.message
+          ? "This email is already registered"
+          : "Registration failed: " + error.message
       );
     }
     router.push("/verify?next=/seller");
@@ -68,22 +68,22 @@ export default function SellerSignupPage() {
           onSubmit={submit}
           className="bg-white rounded-2xl p-5 shadow-lg space-y-3"
         >
-          <h2 className="font-bold text-petrol">สมัครบัญชี · ผู้ขาย</h2>
-          <Field label="ชื่อบริษัท" value={companyName} onChange={setCompanyName} placeholder="บจก. เดนทัล ซัพพลาย" />
-          <Field label="เลขทะเบียนบริษัท" value={companyReg} onChange={setCompanyReg} placeholder="เลขทะเบียนนิติบุคคล" inputMode="numeric" />
-          <Field label="เลขประจำตัวผู้เสียภาษี" value={taxId} onChange={(v) => setTaxId(v.replace(/\D/g, "").slice(0, 13))} placeholder="13 หลัก" inputMode="numeric" />
-          <Field label="ผู้มีอำนาจลงนาม" value={authPerson} onChange={setAuthPerson} placeholder="ชื่อ - นามสกุล" />
-          <Field label="เลขใบอนุญาตการขาย" value={saleLicense} onChange={setSaleLicense} placeholder="เลขใบอนุญาตขายเครื่องมือแพทย์" />
-          <Field label="อีเมล" value={email} onChange={setEmail} placeholder="you@company.com" type="email" inputMode="email" />
-          <Field label="เบอร์โทรศัพท์" value={phone} onChange={(v) => setPhone(v.replace(/\D/g, "").slice(0, 10))} placeholder="0XXXXXXXXX" inputMode="tel" />
-          <Field label="รหัสผ่าน" value={pw} onChange={setPw} placeholder="อย่างน้อย 6 ตัว" type="password" />
-          <Field label="ยืนยันรหัสผ่านอีกครั้ง" value={pw2} onChange={setPw2} placeholder="พิมพ์รหัสผ่านซ้ำ" type="password" />
+          <h2 className="font-bold text-petrol">Sign up · Seller</h2>
+          <Field label="Company name" value={companyName} onChange={setCompanyName} placeholder="Dental Supply Co., Ltd." />
+          <Field label="Company registration no." value={companyReg} onChange={setCompanyReg} placeholder="Legal entity registration no." inputMode="numeric" />
+          <Field label="Tax ID" value={taxId} onChange={(v) => setTaxId(v.replace(/\D/g, "").slice(0, 13))} placeholder="13 digits" inputMode="numeric" />
+          <Field label="Authorized signatory" value={authPerson} onChange={setAuthPerson} placeholder="Full name" />
+          <Field label="Sales license number" value={saleLicense} onChange={setSaleLicense} placeholder="Medical device sales license number" />
+          <Field label="Email" value={email} onChange={setEmail} placeholder="you@company.com" type="email" inputMode="email" />
+          <Field label="Phone number" value={phone} onChange={(v) => setPhone(v.replace(/\D/g, "").slice(0, 10))} placeholder="0XXXXXXXXX" inputMode="tel" />
+          <Field label="Password" value={pw} onChange={setPw} placeholder="At least 6 characters" type="password" />
+          <Field label="Confirm password" value={pw2} onChange={setPw2} placeholder="Re-enter your password" type="password" />
           <ErrMsg msg={err} />
-          <Submit loading={loading} label="สมัครและยืนยันตัวตน" />
+          <Submit loading={loading} label="Sign up and verify identity" />
           <p className="text-xs text-center text-gray-500">
-            มีบัญชีแล้ว?{" "}
+            Already have an account?{" "}
             <Link href="/login" className="text-mint font-semibold">
-              เข้าสู่ระบบ
+              Log in
             </Link>
           </p>
         </form>

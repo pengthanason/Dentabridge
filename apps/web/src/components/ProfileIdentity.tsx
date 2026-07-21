@@ -32,20 +32,20 @@ export default function ProfileIdentity({
 
         {profile ? (
           <p className="text-[11px] text-mint mt-0.5 flex items-center gap-1">
-            <span className="text-sm leading-none">●</span> เชื่อมต่อบัญชี LINE แล้ว
+            <span className="text-sm leading-none">●</span> LINE account connected
           </p>
         ) : null}
 
         <div className="flex items-center gap-1 mt-1 flex-wrap">
-          <Badge ok={emailVerified}>อีเมล</Badge>
-          <Badge ok={phoneVerified}>เบอร์</Badge>
+          <Badge ok={emailVerified}>Email</Badge>
+          <Badge ok={phoneVerified}>Phone</Badge>
           {verified ? (
             <span className="text-[10px] bg-mint-soft text-teal-700 font-semibold px-2 py-0.5 rounded-full">
-              ✓ ยืนยันโดยแอดมิน
+              ✓ Verified by admin
             </span>
           ) : (
             <span className="text-[10px] bg-amber-soft text-amber font-semibold px-2 py-0.5 rounded-full">
-              รออนุมัติ
+              Pending approval
             </span>
           )}
         </div>
@@ -57,7 +57,7 @@ export default function ProfileIdentity({
             onClick={login}
             className="mt-2 text-xs font-semibold text-white bg-[#06C755] px-3 py-1.5 rounded-lg"
           >
-            เชื่อมต่อบัญชี LINE
+            Connect LINE account
           </button>
         )}
       </div>

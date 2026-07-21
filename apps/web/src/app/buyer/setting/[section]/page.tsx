@@ -2,14 +2,14 @@ import Link from "next/link";
 import AppHeader from "@/components/AppHeader";
 
 const TITLES: Record<string, string> = {
-  profile: "โปรไฟล์ / ข้อมูลส่วนตัว",
-  clinic: "ข้อมูลคลินิก & ที่อยู่จัดส่ง",
-  tax: "ข้อมูลใบกำกับภาษี",
-  docs: "เอกสาร อย. / ใบอนุญาต",
-  payment: "ช่องทางการชำระเงิน",
-  notifications: "การแจ้งเตือน",
-  security: "ความปลอดภัย (รหัสผ่าน / 2FA)",
-  history: "ประวัติการซื้อขาย",
+  profile: "Profile",
+  clinic: "Clinic information & shipping address",
+  tax: "Tax invoice details",
+  docs: "FDA documents / licenses",
+  payment: "Payment methods",
+  notifications: "Notifications",
+  security: "Security (password / 2FA)",
+  history: "Transaction history",
 };
 
 export default function SettingSectionPage({
@@ -17,7 +17,7 @@ export default function SettingSectionPage({
 }: {
   params: { section: string };
 }) {
-  const title = TITLES[params.section] ?? "การตั้งค่า";
+  const title = TITLES[params.section] ?? "Settings";
   return (
     <div>
       <AppHeader title={title} back />
@@ -26,13 +26,13 @@ export default function SettingSectionPage({
         <div className="text-5xl mb-3">🚧</div>
         <h2 className="font-bold text-gray-800">{title}</h2>
         <p className="text-sm text-gray-500 mt-2">
-          หน้านี้อยู่ระหว่างพัฒนา — จะเชื่อมข้อมูลจริงในเฟสถัดไป
+          This page is under development — real data will be connected in a future phase.
         </p>
         <Link
           href="/buyer/setting"
           className="inline-block mt-6 text-mint font-semibold text-sm"
         >
-          ‹ กลับไปหน้า Setting
+          ‹ Back to Settings
         </Link>
       </main>
     </div>

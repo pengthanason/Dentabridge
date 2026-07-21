@@ -169,12 +169,12 @@ export default function CameraScan({
         const digits = text.replace(/\D/g, "");
         if (num) setCandidate(num);
         else if (digits.length >= 8) setCandidate(digits);
-        else setMsg(text ? `อ่านได้ไม่ชัด: “${text.slice(0, 24)}” — เลื่อนให้ชัดแล้วถ่ายใหม่` : "อ่านไม่ออก — เพิ่มแสง/ขยับให้ชัดแล้วถ่ายใหม่");
+        else setMsg(text ? `Unclear reading: “${text.slice(0, 24)}” — reposition for clarity and retake` : "Could not read — add light or reposition for clarity and retake");
       } catch {
         setOcrErr(true);
       }
     } else {
-      setMsg("ตัวอ่านเลขยังไม่พร้อม (โหลดไม่ได้) — สแกน QR หรือกรอกเลขเอง");
+      setMsg("Number reader not ready (failed to load) — scan a QR code or enter the number manually");
     }
     setReading(false);
   }
@@ -193,7 +193,7 @@ export default function CameraScan({
         }
         setReady(true);
       } catch {
-        setErr("เปิดกล้องไม่ได้ — โปรดอนุญาตการใช้กล้อง แล้วลองใหม่");
+        setErr("Unable to open the camera — please grant camera permission and try again");
         return;
       }
 
@@ -236,8 +236,8 @@ export default function CameraScan({
 
       {/* หัว */}
       <div className="relative z-10 flex items-center gap-3 px-4 py-3 text-white">
-        <button type="button" onClick={onClose} className="text-2xl" aria-label="ปิด">✕</button>
-        <p className="font-semibold">สแกนเลข อย. / QR บนฉลาก</p>
+        <button type="button" onClick={onClose} className="text-2xl" aria-label="Close">✕</button>
+        <p className="font-semibold">Scan FDA number / QR code on the label</p>
       </div>
 
       {/* ล่าง */}
@@ -247,7 +247,7 @@ export default function CameraScan({
         ) : candidate ? (
           // ยืนยันเลขที่อ่านได้ก่อน (แก้ปัญหาอ่านผิดแล้วเด้งเอง)
           <div className="bg-black/70 rounded-xl p-4 space-y-3 max-w-sm mx-auto">
-            <p className="text-xs text-white/70">อ่านเลขได้:</p>
+            <p className="text-xs text-white/70">Number read:</p>
             <p className="text-2xl font-bold mono text-mint break-all">{candidate}</p>
             <div className="flex gap-2">
               <button
@@ -255,27 +255,27 @@ export default function CameraScan({
                 onClick={() => { setCandidate(null); setMsg(""); }}
                 className="flex-1 border border-white/40 text-white font-medium text-sm py-2.5 rounded-xl"
               >
-                ถ่ายใหม่
+                Retake
               </button>
               <button
                 type="button"
                 onClick={() => finish(candidate, false)}
                 className="flex-1 bg-mint text-petrol-ink font-bold text-sm py-2.5 rounded-xl"
               >
-                ✓ ใช้เลขนี้
+                ✓ Use this number
               </button>
             </div>
-            <p className="text-[10px] text-white/50">ถ้าเลขไม่ถูก กด “ถ่ายใหม่” หรือแก้ในช่องหลังกดใช้ได้</p>
+            <p className="text-[10px] text-white/50">If the number is incorrect, tap “Retake” or edit it in the field after applying</p>
           </div>
         ) : (
           <>
             <p className="text-xs text-white/85">
-              {ready ? "วางเลข อย. ให้อยู่ในกรอบ รอกล้องโฟกัสให้ชัด แล้วกดถ่าย" : "กำลังเปิดกล้อง…"}
+              {ready ? "Position the FDA number within the frame, let the camera focus, then capture" : "Opening camera…"}
             </p>
             {msg && <p className="text-[11px] text-amber bg-black/50 rounded-lg px-3 py-1.5 inline-block">{msg}</p>}
             {ocrErr && (
               <p className="text-[11px] text-amber bg-black/50 rounded-lg px-3 py-1.5">
-                โหลดตัวอ่านเลขไม่ได้ (เน็ตช้า/ถูกบล็อก) — สแกน QR ได้ หรือกรอกเลขเอง
+                Could not load the number reader (slow or blocked connection) — you can scan a QR code or enter the number manually
               </p>
             )}
             <button
@@ -284,14 +284,14 @@ export default function CameraScan({
               disabled={!ready || reading}
               className="w-full max-w-sm mx-auto bg-mint disabled:opacity-50 text-petrol-ink font-bold text-base py-4 rounded-xl flex items-center justify-center gap-2"
             >
-              {reading ? "กำลังอ่าน…" : "📸 ถ่าย & อ่านเลข"}
+              {reading ? "Reading…" : "📸 Capture & read number"}
             </button>
             <button
               type="button"
               onClick={onClose}
               className="w-full max-w-sm mx-auto border border-white/40 text-white font-medium text-sm py-2.5 rounded-xl"
             >
-              กรอกเลขเอง
+              Enter number manually
             </button>
           </>
         )}

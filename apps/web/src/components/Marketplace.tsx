@@ -61,18 +61,18 @@ export default function Marketplace({
               </div>
               <span className="font-bold tracking-tight truncate">DentaBridge</span>
             </div>
-            <Link href="/buyer/wishlist" className="relative flex flex-col items-center justify-center px-1 flex-none text-white" aria-label="รายการโปรด">
+            <Link href="/buyer/wishlist" className="relative flex flex-col items-center justify-center px-1 flex-none text-white" aria-label="Wishlist">
               <IconHeart className="w-5 h-5" />
-              <span className="text-[9px] leading-none mt-0.5 whitespace-nowrap">รายการโปรด</span>
+              <span className="text-[9px] leading-none mt-0.5 whitespace-nowrap">Wishlist</span>
               {wishlist.length > 0 && (
                 <span className="absolute top-0 right-1 bg-signal text-white text-[9px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
                   {wishlist.length}
                 </span>
               )}
             </Link>
-            <Link href="/buyer/chat" className="relative flex flex-col items-center justify-center w-11 flex-none text-white" aria-label="แชท">
+            <Link href="/buyer/chat" className="relative flex flex-col items-center justify-center w-11 flex-none text-white" aria-label="Chat">
               <IconChat className="w-5 h-5" />
-              <span className="text-[9px] leading-none mt-0.5">แชท</span>
+              <span className="text-[9px] leading-none mt-0.5">Chat</span>
               <span className="absolute top-0 right-1 bg-signal text-white text-[9px] font-bold rounded-full min-w-4 h-4 px-1 grid place-items-center">
                 2
               </span>
@@ -87,7 +87,7 @@ export default function Marketplace({
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="ค้นหาสินค้า / ยี่ห้อ..."
+              placeholder="Search products / brands..."
               className="w-full bg-white/12 placeholder:text-white/55 text-white rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:bg-white/20 focus:ring-2 focus:ring-white/25 transition"
             />
           </div>
@@ -105,7 +105,7 @@ export default function Marketplace({
             )}
           </div>
           <div className="min-w-0">
-            <p className="text-[10px] font-semibold tracking-[0.15em] text-mint uppercase">ยินดีต้อนรับ</p>
+            <p className="text-[10px] font-semibold tracking-[0.15em] text-mint uppercase">Welcome</p>
             <h2 className="font-bold text-gray-900 text-[15px] leading-tight truncate">{lineProfile?.displayName ?? fullName}</h2>
             {clinic && <p className="text-xs text-gray-400 truncate mt-0.5">{clinic}</p>}
           </div>
@@ -113,7 +113,7 @@ export default function Marketplace({
 
         {/* หมวดหมู่ */}
         <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
-          <Chip active={catId === null} onClick={() => setCatId(null)}>ทั้งหมด</Chip>
+          <Chip active={catId === null} onClick={() => setCatId(null)}>All</Chip>
           {categories.map((c) => (
             <Chip key={c.id} active={catId === c.id} onClick={() => setCatId(c.id)}>{c.name_th}</Chip>
           ))}
@@ -124,20 +124,20 @@ export default function Marketplace({
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as Sort)}
-            aria-label="เรียงลำดับ"
+            aria-label="Sort by"
             className="text-xs bg-white border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none"
           >
-            <option value="popular">ยอดนิยม</option>
-            <option value="price-asc">ราคา: น้อย → มาก</option>
-            <option value="price-desc">ราคา: มาก → น้อย</option>
-            <option value="rating">คะแนนสูงสุด</option>
+            <option value="popular">Popular</option>
+            <option value="price-asc">Price: low to high</option>
+            <option value="price-desc">Price: high to low</option>
+            <option value="rating">Top rated</option>
           </select>
-          <span className="text-[11px] text-gray-400 ml-auto">{list.length} รายการ</span>
+          <span className="text-[11px] text-gray-400 ml-auto">{list.length} items</span>
         </div>
 
         <div key={`${catId}-${sort}`} className="animate-fade">
         {list.length === 0 ? (
-          <p className="text-center text-sm text-gray-400 py-10">ไม่พบสินค้า</p>
+          <p className="text-center text-sm text-gray-400 py-10">No products found</p>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {list.map((p) => {
@@ -159,7 +159,7 @@ export default function Marketplace({
                     className={`absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-white/90 grid place-items-center shadow ${
                       wished ? "text-signal" : "text-gray-400"
                     }`}
-                    aria-label={wished ? "เอาออกจากรายการโปรด" : "เพิ่มในรายการโปรด"}
+                    aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
                   >
                     <IconHeart filled={wished} className="w-4 h-4" />
                   </button>
@@ -170,7 +170,7 @@ export default function Marketplace({
                         p.fda_verified ? "text-teal-700 bg-mint-soft" : "text-amber bg-amber-soft"
                       }`}
                     >
-                      {p.fda_verified ? "✓ อย." : "⚠️ ยังไม่ยืนยัน"}
+                      {p.fda_verified ? "✓ FDA" : "⚠️ Unverified"}
                     </span>
                     <p className="text-[13px] font-semibold text-gray-800 leading-snug line-clamp-2">{p.name}</p>
                     <div className="flex items-center gap-1 mt-1">

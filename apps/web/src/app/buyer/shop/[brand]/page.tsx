@@ -43,24 +43,24 @@ export default async function ShopPage({
                   </span>
                 )}
               </div>
-              <p className="text-xs text-gray-500">ผู้ขาย: {seller.sellerName}</p>
+              <p className="text-xs text-gray-500">Seller: {seller.sellerName}</p>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2 mt-3 text-center">
-            <Stat label="คะแนน" value={`⭐ ${seller.rating}`} />
-            <Stat label="ขายแล้ว" value={`${seller.sales}+`} />
-            <Stat label="เปิดร้านตั้งแต่" value={seller.since} />
+            <Stat label="Rating" value={`⭐ ${seller.rating}`} />
+            <Stat label="Sold" value={`${seller.sales}+`} />
+            <Stat label="Since" value={seller.since} />
           </div>
           <button type="button" className="w-full mt-3 border border-petrol text-petrol font-semibold text-sm py-2 rounded-xl">
-            + ติดตามร้านค้า
+            + Follow store
           </button>
         </div>
 
         {/* สินค้าในร้าน */}
         <div>
-          <p className="text-[10px] mono uppercase text-gray-400 mb-2">สินค้าในร้าน ({list.length})</p>
+          <p className="text-[10px] mono uppercase text-gray-400 mb-2">Products in store ({list.length})</p>
           {list.length === 0 ? (
-            <p className="text-center text-sm text-gray-400 py-8">ยังไม่มีสินค้า</p>
+            <p className="text-center text-sm text-gray-400 py-8">No products yet</p>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
               {list.map((p) => (
@@ -74,7 +74,7 @@ export default async function ShopPage({
                     <p className="text-xs font-semibold text-gray-800 leading-snug line-clamp-2">{p.name}</p>
                     <div className="flex items-center justify-between mt-auto pt-2">
                       <span className="text-sm font-bold text-petrol mono">{money(p.price)}</span>
-                      <span className="text-[10px] text-mint font-semibold">ดู ›</span>
+                      <span className="text-[10px] text-mint font-semibold">View ›</span>
                     </div>
                   </div>
                 </Link>

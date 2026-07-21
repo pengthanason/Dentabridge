@@ -23,7 +23,7 @@ export default async function BuyerPage() {
 
   return (
     <Marketplace
-      fullName={buyer?.full_name ?? "ธนสันต์ บุญมาก"}
+      fullName={buyer?.full_name ?? "Thanason Boonmak"}
       clinic={buyer?.clinic_name ?? ""}
       products={(products ?? []) as Product[]}
       categories={(categories ?? []) as Category[]}

@@ -20,9 +20,9 @@ export function ratingFor(key: string): { rating: number; count: number } {
 }
 
 const SAMPLE: Omit<Review, "id" | "productId">[] = [
-  { name: "ทพญ. ศิริพร", rating: 5, text: "ของแท้ มีใบรับรอง อย. ครบ ส่งไว ประทับใจค่ะ", date: "2 วันก่อน" },
-  { name: "คลินิกฟันดี", rating: 5, text: "คุณภาพดี ราคาถูกกว่าที่เคยสั่ง สั่งซ้ำแน่นอน", date: "1 สัปดาห์ก่อน" },
-  { name: "ทพ. วิชัย", rating: 4, text: "สินค้าดี แต่แพ็คเกจบุบเล็กน้อย โดยรวมโอเค", date: "2 สัปดาห์ก่อน" },
+  { name: "Dr. Siriporn", rating: 5, text: "Genuine, with complete FDA certification and fast shipping. Very impressed.", date: "2 days ago" },
+  { name: "Healthy Teeth Clinic", rating: 5, text: "Good quality and cheaper than what I used to order. Will definitely reorder.", date: "1 week ago" },
+  { name: "Dr. Wichai", rating: 4, text: "Good product, but the packaging was slightly dented. Overall okay.", date: "2 weeks ago" },
 ];
 
 export function sampleReviews(productId: string): Review[] {
@@ -44,10 +44,10 @@ export function addReview(productId: string, rating: number, text: string) {
   const r: Review = {
     id: "u" + list.length,
     productId,
-    name: "คุณ (รีวิวของฉัน)",
+    name: "You (my review)",
     rating,
     text,
-    date: "เมื่อสักครู่",
+    date: "Just now",
   };
   localStorage.setItem(KEY, JSON.stringify([r, ...list]));
   window.dispatchEvent(new Event("db-reviews-changed"));

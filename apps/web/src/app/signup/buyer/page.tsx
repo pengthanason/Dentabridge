@@ -25,12 +25,12 @@ export default function BuyerSignupPage() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setErr("");
-    if (!fullName || !license || !clinic) return setErr("กรุณากรอกข้อมูลให้ครบ");
-    if (nationalId.length !== 13) return setErr("เลขบัตรประชาชนต้องมี 13 หลัก");
-    if (!email.includes("@")) return setErr("อีเมลไม่ถูกต้อง");
-    if (phone.length < 9) return setErr("เบอร์โทรศัพท์ไม่ถูกต้อง");
-    if (password.length < 8) return setErr("รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร");
-    if (!consent) return setErr("กรุณายอมรับการเก็บและใช้ข้อมูลส่วนบุคคล (PDPA)");
+    if (!fullName || !license || !clinic) return setErr("Please complete all fields");
+    if (nationalId.length !== 13) return setErr("National ID must be 13 digits");
+    if (!email.includes("@")) return setErr("Invalid email");
+    if (phone.length < 9) return setErr("Invalid phone number");
+    if (password.length < 8) return setErr("Password must be at least 8 characters");
+    if (!consent) return setErr("Please accept the collection and use of personal data (PDPA)");
 
     setLoading(true);
     const { error } = await supabase.auth.signUp({
@@ -53,8 +53,8 @@ export default function BuyerSignupPage() {
     if (error) {
       return setErr(
         error.message.includes("already")
-          ? "เลขใบอนุญาตนี้ถูกใช้สมัครแล้ว"
-          : "สมัครไม่สำเร็จ: " + error.message
+          ? "This license number is already registered"
+          : "Registration failed: " + error.message
       );
     }
     // ไปยืนยันตัวตน 2 ชั้น (mock)
@@ -70,25 +70,25 @@ export default function BuyerSignupPage() {
           className="bg-white rounded-2xl p-5 shadow-lg space-y-3"
         >
           <div>
-            <h2 className="font-bold text-petrol">สมัครบัญชี · ทันตแพทย์</h2>
+            <h2 className="font-bold text-petrol">Sign up · Dentist</h2>
             <p className="text-xs text-gray-500">
-              ตั้งรหัสผ่านของคุณเอง · เลขบัตรใช้ยืนยันตัวตนเท่านั้น
+              Set your own password · National ID is used for identity verification only
             </p>
           </div>
-          <Field label="ชื่อ - นามสกุล" value={fullName} onChange={setFullName} placeholder="เช่น ทพ. ธนสันต์ บุญมาก" />
-          <Field label="เลขใบอนุญาตประกอบวิชาชีพ" value={license} onChange={setLicense} placeholder="เช่น ท.12345" />
-          <Field label="สังกัด / คลินิก" value={clinic} onChange={setClinic} placeholder="เช่น คลินิกทันตกรรมสไมล์" />
+          <Field label="Full name" value={fullName} onChange={setFullName} placeholder="e.g. Dr. Thanason Boonmak" />
+          <Field label="License number" value={license} onChange={setLicense} placeholder="e.g. D.12345" />
+          <Field label="Clinic / Affiliation" value={clinic} onChange={setClinic} placeholder="e.g. Smile Dental Clinic" />
           <Field
-            label="เลขบัตรประชาชน (ยืนยันตัวตน)"
+            label="National ID (identity verification)"
             value={nationalId}
             onChange={(v) => setNationalId(v.replace(/\D/g, "").slice(0, 13))}
-            placeholder="13 หลัก"
+            placeholder="13 digits"
             inputMode="numeric"
-            hint="ใช้ยืนยันตัวตนคลินิก (ไม่ใช่รหัสผ่าน)"
+            hint="Used for clinic identity verification (not a password)"
           />
-          <Field label="อีเมล" value={email} onChange={setEmail} placeholder="you@email.com" type="email" inputMode="email" />
-          <Field label="เบอร์โทรศัพท์" value={phone} onChange={(v) => setPhone(v.replace(/\D/g, "").slice(0, 10))} placeholder="08XXXXXXXX" inputMode="tel" />
-          <Field label="ตั้งรหัสผ่าน" value={password} onChange={setPassword} placeholder="อย่างน้อย 8 ตัวอักษร" type="password" hint="ใช้เข้าสู่ระบบครั้งต่อไป" />
+          <Field label="Email" value={email} onChange={setEmail} placeholder="you@email.com" type="email" inputMode="email" />
+          <Field label="Phone number" value={phone} onChange={(v) => setPhone(v.replace(/\D/g, "").slice(0, 10))} placeholder="08XXXXXXXX" inputMode="tel" />
+          <Field label="Set password" value={password} onChange={setPassword} placeholder="At least 8 characters" type="password" hint="Used to log in next time" />
           <label className="flex items-start gap-2 text-[11px] text-gray-500 leading-snug">
             <input
               type="checkbox"
@@ -97,16 +97,16 @@ export default function BuyerSignupPage() {
               className="mt-0.5 accent-mint flex-none"
             />
             <span>
-              ยินยอมให้ DentaBridge เก็บ รวบรวม และใช้ข้อมูลส่วนบุคคล (รวมถึงเลขใบอนุญาต/เลขบัตรประชาชน)
-              เพื่อยืนยันตัวตนและให้บริการ ตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล (PDPA)
+              I consent to DentaBridge collecting and using my personal data (including license number/National ID)
+              for identity verification and service provision, in accordance with the Personal Data Protection Act (PDPA)
             </span>
           </label>
           <ErrMsg msg={err} />
-          <Submit loading={loading} label="สมัครและยืนยันตัวตน" />
+          <Submit loading={loading} label="Sign up and verify identity" />
           <p className="text-xs text-center text-gray-500">
-            มีบัญชีแล้ว?{" "}
+            Already have an account?{" "}
             <Link href="/login" className="text-mint font-semibold">
-              เข้าสู่ระบบ
+              Log in
             </Link>
           </p>
         </form>

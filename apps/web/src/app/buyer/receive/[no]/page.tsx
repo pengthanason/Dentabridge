@@ -9,7 +9,7 @@ export default function ReceivePage({ params }: { params: { no: string } }) {
 
   return (
     <div>
-      <AppHeader title="ตรวจรับของ" back />
+      <AppHeader title="Receive order" back />
       <ReceiveCheck
         orderNo={order.no}
         seller={order.seller}

@@ -11,9 +11,9 @@ const statusCls: Record<string, string> = {
   declined: "bg-gray-100 text-gray-400",
 };
 const statusLabel: Record<string, string> = {
-  pending: "รอผู้ขายตอบรับ",
-  accepted: "ผู้ขายรับข้อเสนอ",
-  declined: "ปฏิเสธ",
+  pending: "Awaiting seller response",
+  accepted: "Seller accepted",
+  declined: "Declined",
 };
 
 export default function OffersPage() {
@@ -21,15 +21,15 @@ export default function OffersPage() {
 
   return (
     <div>
-      <AppHeader title="ข้อเสนอราคาของฉัน" back />
+      <AppHeader title="My price offers" back />
 
       <main className="max-w-md lg:max-w-4xl mx-auto px-4 pt-4 space-y-3">
         {offers.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-5xl mb-3">🤝</div>
-            <p className="text-sm text-gray-400">ยังไม่มีข้อเสนอราคา</p>
+            <p className="text-sm text-gray-400">No price offers yet</p>
             <Link href="/buyer" className="inline-block mt-4 text-mint font-semibold text-sm">
-              ไปเสนอราคาสินค้า ›
+              Go make an offer ›
             </Link>
           </div>
         ) : (
@@ -43,7 +43,7 @@ export default function OffersPage() {
               </div>
               <div className="flex items-center justify-between mt-1 text-xs text-gray-500">
                 <span>
-                  เสนอ {money(o.price)}/ชิ้น × {o.qty} · {o.date}
+                  Offered {money(o.price)}/unit × {o.qty} · {o.date}
                 </span>
                 <span className="text-petrol font-bold mono text-sm">{money(o.price * o.qty)}</span>
               </div>
@@ -51,7 +51,7 @@ export default function OffersPage() {
           ))
         )}
         <p className="text-center text-[11px] text-gray-400">
-          * สถานะเป็นตัวอย่าง — เชื่อมการตอบรับจากผู้ขายจริงในเฟสถัดไป
+          * Statuses are samples — real seller responses will be connected in a future phase
         </p>
       </main>
     </div>
